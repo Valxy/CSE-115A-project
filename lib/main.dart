@@ -45,7 +45,7 @@ class _TMDBAppState extends State<TMDBApp> {
         body: _pages.elementAt(_currentPageIndex),
         bottomNavigationBar: NavigationBar(
           selectedIndex: _currentPageIndex,
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
           onDestinationSelected: _setIndex,
           destinations: const [
             NavigationDestination(
