@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
 
+import 'tabs/explore.dart';
+import 'tabs/search.dart';
+
 void main() {
   runApp(TMDBApp());
 }
 
-class TMDBApp extends StatelessWidget {
+const List<Widget> _pages = <Widget>[
+  ExploreTab(),
+  Center(
+    child: Text(
+      'TBD: FavoriteTab',
+    ),
+  ),
+  SearchTab(),
+  Center(
+    child: Text(
+      'TBD: SettingsTab',
+    ),
+  ),
+];
+
+class TMDBApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'The Movie Database',
-      theme: ThemeData.light(),
-      home: Scaffold(
-        bottomNavigationBar: TMDBNavigationBar(),
-      ),
-    );
-  }
+  _TMDBAppState createState() => _TMDBAppState();
 }
 
-class TMDBNavigationBar extends StatefulWidget {
-  @override
-  _TMDBNavigationBarState createState() => _TMDBNavigationBarState();
-}
-
-class _TMDBNavigationBarState extends State<TMDBNavigationBar> {
+class _TMDBAppState extends State<TMDBApp> {
   int _currentPageIndex = 0;
 
   void _setIndex(int i) {
@@ -33,28 +38,35 @@ class _TMDBNavigationBarState extends State<TMDBNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-    return NavigationBar(
-      selectedIndex: _currentPageIndex,
-      labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-      onDestinationSelected: _setIndex,
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.explore),
-          label: 'Explore',
+    return MaterialApp(
+      title: 'The Movie Database',
+      theme: ThemeData.light(),
+      home: Scaffold(
+        body: _pages.elementAt(_currentPageIndex),
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: _currentPageIndex,
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+          onDestinationSelected: _setIndex,
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.explore),
+              label: 'Explore',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.favorite),
+              label: 'Favorite',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.search),
+              label: 'Search',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.settings),
+              label: 'Settings',
+            ),
+          ],
         ),
-        NavigationDestination(
-          icon: Icon(Icons.favorite),
-          label: 'Favorite',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.search),
-          label: 'Search',
-        ),
-        NavigationDestination(
-          icon: Icon(Icons.settings),
-          label: 'Settings',
-        ),
-      ],
+      ),
     );
   }
 }
