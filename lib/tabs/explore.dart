@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../pages/details.dart';
+
 class ExploreTab extends StatefulWidget {
   const ExploreTab({Key? key}) : super(key: key);
 
@@ -10,9 +12,18 @@ class ExploreTab extends StatefulWidget {
 class _ExploreTabState extends State<ExploreTab> {
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'TBD: ExploreTab',
+    return Center(
+      child: OutlinedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) => ShowDetails(showId: "634649"),
+              fullscreenDialog: true,
+            ),
+          );
+        },
+        child: Text("Spider-Man: No Way Home"),
       ),
     );
   }

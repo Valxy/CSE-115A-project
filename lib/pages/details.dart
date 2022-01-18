@@ -12,6 +12,13 @@ class ShowDetails extends StatefulWidget {
 class _ShowDetailsState extends State<ShowDetails> {
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Text(
+          'showId: ${widget.showId}',
+        ),
+      ),
+    );
   }
 }
