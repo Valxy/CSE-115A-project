@@ -9,15 +9,10 @@ void main() {
 
 const List<Widget> _pages = <Widget>[
   ExploreTab(),
-  Center(
-    child: Text(
-      'TBD: FavoriteTab',
-    ),
-  ),
   SearchTab(),
   Center(
     child: Text(
-      'TBD: SettingsTab',
+      'TBD: BrowseTab',
     ),
   ),
 ];
@@ -53,16 +48,12 @@ class _TMDBAppState extends State<TMDBApp> {
               label: 'Explore',
             ),
             NavigationDestination(
-              icon: Icon(Icons.favorite),
-              label: 'Favorite',
-            ),
-            NavigationDestination(
               icon: Icon(Icons.search),
               label: 'Search',
             ),
             NavigationDestination(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
+              icon: Icon(Icons.view_list),
+              label: 'Browse',
             ),
           ],
         ),
