@@ -31,13 +31,20 @@ class _YoutubeTrailerState extends State<YoutubeTrailer> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return SizedBox(
-      height: kIsWeb ? screenSize.height / 1.13 : screenSize.height,
-      width: screenSize.width,
-      child: YoutubePlayerControllerProvider(
-        controller: _controller,
-        child: YoutubePlayerIFrame(
+    return Container(
+      width: double.infinity,
+      height: 300,
+      padding: const EdgeInsets.all(5.0),
+      margin: const EdgeInsets.all(5.0),
+      alignment: Alignment.centerRight,
+      child: SizedBox(
+        height: screenSize.width,
+        width: screenSize.width,
+        child: YoutubePlayerControllerProvider(
           controller: _controller,
+          child: YoutubePlayerIFrame(
+            controller: _controller,
+          ),
         ),
       ),
     );
