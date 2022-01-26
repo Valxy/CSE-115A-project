@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/tmdb_api_wrapper.dart';
 import '../pages/details.dart';
 

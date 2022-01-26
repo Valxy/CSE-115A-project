@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
@@ -18,8 +17,7 @@ class _YoutubeTrailerState extends State<YoutubeTrailer> {
   @override
   void initState() {
     _controller = YoutubePlayerController(
-        initialVideoId:
-            YoutubePlayerController.convertUrlToId(widget.urlLink!)!,
+        initialVideoId: YoutubePlayerController.convertUrlToId(widget.urlLink)!,
         params: const YoutubePlayerParams(
           showControls: true,
           mute: true,

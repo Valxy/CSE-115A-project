@@ -1,8 +1,6 @@
-import 'package:video_player/video_player.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:video_player_controls/video_player_controls.dart';
+import 'package:video_player/video_player.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   const VideoPlayerScreen({Key? key}) : super(key: key);

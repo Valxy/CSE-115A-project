@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
-import 'VideoPlayer.dart';
-import 'YoutubePlayer.dart';
+
+import '../widgets/YoutubePlayer.dart';
 
 class ShowDetails extends StatefulWidget {
   final String showId;
