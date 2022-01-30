@@ -20,13 +20,49 @@ class _ShowDetailsState extends State<ShowDetails> {
       ),
       body: Column(
         children: [
-          Text(
-            widget.showId,
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 20.0),
+            height: 216.0,
+            child: ListView(
+              // This next line does the trick.
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                Container(
+                  width: 384.0,
+                  color: Colors.red,
+                ),
+                Container(
+                  width: 384.0,
+                  color: Colors.blue,
+                ),
+                Container(
+                  width: 384.0,
+                  color: Colors.green,
+                ),
+                Container(
+                  width: 384.0,
+                  color: Colors.yellow,
+                ),
+                Container(
+                  width: 384.0,
+                  color: Colors.orange,
+                ),
+              ],
+            ),
+          ),
+          Card(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListTile(
+                  title: Text('Title'),
+                  subtitle: Text('showId: ${widget.showId}'),
+                ),
+              ],
+            ),
           ),
           Container(
-            alignment: Alignment.center,
-            height: 600,
-            width: 400,
+            height: 300,
             child:
                 YoutubeTrailer("https://www.youtube.com/watch?v=JfVOs4VSpmA"),
           ),
