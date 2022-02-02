@@ -107,8 +107,8 @@ class TmdbApiWrapper {
   }
 
   ///Returns the Image at [posterPath] as Image Widget
-  Widget getImage({required posterPath}) {
-    return Image.network("http://api.themoviedb.org/3" + posterPath);
+  Widget getImage({required posterPath, String size = "w500"}) {
+    return Image.network("https://image.tmdb.org/t/p/$size" + posterPath);
   }
 
   ///recieves access denied error
