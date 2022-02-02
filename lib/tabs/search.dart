@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'text_input.dart';
+
+import '../widgets/TextInput.dart';
 
 class SearchTab extends StatefulWidget {
   const SearchTab({Key? key}) : super(key: key);
