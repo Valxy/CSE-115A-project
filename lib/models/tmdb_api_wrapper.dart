@@ -589,11 +589,13 @@ class Movie {
     }
     if (json['posters'] != null) {
       final List<dynamic> posters = json['posters'];
-      this.posters =
-          posters.map((el) => Image.network(el['file_path'])).toList();
+      this.posters = posters
+          .map((el) => Image.network(
+              "https://image.tmdb.org/t/p/w500" + el['file_path']))
+          .toList();
     }
   }
-  
+
   ///Returns the poster for this movie as an Image widget
   ///[scale] currently does nothing
   Widget getPoster({scale = 1}) {
