@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/tmdb_api_wrapper.dart';
 import '../widgets/YoutubePlayer.dart';
 
 class ShowDetails extends StatefulWidget {
@@ -12,6 +13,15 @@ class ShowDetails extends StatefulWidget {
 }
 
 class _ShowDetailsState extends State<ShowDetails> {
+  late Future<Movie> movieDetails;
+
+  @override
+  void initState() {
+    super.initState();
+
+    movieDetails = TmdbApiWrapper().getDetailsMovie(movieId: widget.showId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +37,18 @@ class _ShowDetailsState extends State<ShowDetails> {
               // This next line does the trick.
               scrollDirection: Axis.horizontal,
               children: <Widget>[
-                Container(
-                  width: 384.0,
-                  color: Colors.red,
+                FutureBuilder<Movie>(
+                  future: movieDetails,
+                  builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+                    if (snapshot.hasData && snapshot.data?.posters != null) {
+                      final posters = snapshot.data?.posters;
+                      if (posters != null) {
+                        return posters[2];
+                      }
+                    }
+
+                    return CircularProgressIndicator();
+                  },
                 ),
                 Container(
                   width: 384.0,
@@ -54,10 +73,19 @@ class _ShowDetailsState extends State<ShowDetails> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ListTile(
-                  title: Text('Title'),
-                  subtitle: Text('showId: ${widget.showId}'),
-                ),
+                FutureBuilder<Movie>(
+                  future: movieDetails,
+                  builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+                    if (snapshot.hasData) {
+                      return ListTile(
+                        title: Text(snapshot.data?.title ?? ""),
+                        subtitle: Text(snapshot.data?.overview ?? ""),
+                      );
+                    }
+
+                    return CircularProgressIndicator();
+                  },
+                )
               ],
             ),
           ),
