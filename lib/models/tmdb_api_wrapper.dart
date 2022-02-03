@@ -107,8 +107,8 @@ class TmdbApiWrapper {
   }
 
   ///Returns the Image at [posterPath] as Image Widget
-  Widget getImage({required posterPath}) {
-    return Image.network("http://api.themoviedb.org/3" + posterPath);
+  Widget getImage({required posterPath, String size = "w500"}) {
+    return Image.network("https://image.tmdb.org/t/p/$size" + posterPath);
   }
 
   ///recieves access denied error
@@ -589,11 +589,13 @@ class Movie {
     }
     if (json['posters'] != null) {
       final List<dynamic> posters = json['posters'];
-      this.posters =
-          posters.map((el) => Image.network(el['file_path'])).toList();
+      this.posters = posters
+          .map((el) => Image.network(
+              "https://image.tmdb.org/t/p/w500" + el['file_path']))
+          .toList();
     }
   }
-  
+
   ///Returns the poster for this movie as an Image widget
   ///[scale] currently does nothing
   Widget getPoster({scale = 1}) {
