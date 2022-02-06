@@ -4,7 +4,9 @@ import 'tabs/browse.dart';
 import 'tabs/explore.dart';
 import 'tabs/search.dart';
 
-void main() {
+void main() async {
+  ///Need this for apps running asynchronous functions
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(TMDBApp());
 }
 

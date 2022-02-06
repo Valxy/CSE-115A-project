@@ -1,114 +1,285 @@
-library tmdb_api_wrapper;
-
-import 'package:fk_user_agent/fk_user_agent.dart';
-import 'package:flutter/cupertino.dart';
-import 'dart:io';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:async';
-
 ///TmdbApiWrapper provides functionality to make api calls to
 ///The Movie Database without having to worry about endpoints,
 ///verification, or handling the making and recieving of requests.
 ///
-//////"Minimized" Movie objects are Movie objects
-///missing the following data members:
-///
-///[belongsToCollection, budget, genres, homepage,
-///imdbId, productionCompanies, productionCountries,
-///revenue, spokenLanguages, status, tagline]
-///
-///Use the getDetailsMovies method to get a completed Movie
-///object
-///
-///Methods:
+///Methods
+///-------
 ///
 /// Future<Movie> getDetailsMovies({required movieId}) async
 ///   Returns a completed movie object
 ///
-/// Widget getImage({required posterPath})
-///   Returns the Image at [posterPath] as an Image Widget
+/// Future<TvShow> getDetailsTvShow({required tvId}) async
+///   Returns a completed tv show object
 ///
-/// Future<List<Movie>> getPopularMovies() async
-///   Returns a list of minimized Movie objects representing the most
-///   popular movies
+/// Future<List<MinimizedMovie>> getPopularMovies() async
+///   Returns the top 20 most popular movies as a list of
+///   minimized movie objects.
+///
+/// Future<List<MinimizedMovie>> getNowPlayingMovies() async
+///   Returns a list of minimized movie objects representing
+///   movies that are currently playing in theaters.
+///
+/// Future<List<MinimizedMovie>> getTopRatedMovies() async
+///   Returns a list of minimized movie objects representing
+///   the top 20 highest rated movies on TMDB.
 ///
 /// Future<Movie> getLatestMovie() async
-///   Returns a single Movie object representing
-///   the movie most recently added to TMDB
+///   Returns a single complete movie object representing
+///   the movie that was most recently added to TMDB.
 ///
-/// Future<List<Movie>> getNowPlayingMovies() async
-///   Returns a list of minimized Movie objects representing movies
-///   that are now playing in theaters
+///  Widget getImage({required posterPath, String size = "w500"})
+///   Returns the Image at [posterPath] as an Image Widget with size [size].
+///   Default size is set to w500.
 ///
-/// Future<List<Movie>> getTopRatedMovies() async
-///   Returns a list of minimized Movie objects representing the top
-///   rated movies on TMDB
+///  Future<List<MinimizedTvShow>> getNowAiringTvShows() async
+///   Returns a list of MinimizedTvShow objects representing shows
+///   that are airing today.
+///
+/// Future<List<MinimizedTvShow>> getOnTheAirTvShow() async
+///   Returns a list of MinimizedTvShow objects representing
+///   tv shows that will air within the next 7 days
+///
+/// Future<List<MinimizedTvShow>> getPopularTvShows() async
+///   Returns a list of MinimizedTvShow objects representing
+///   popular tv shows
+///
+/// Future<List<MinimizedTvShow>> getTopRatedTvShows() async
+///   Returns a list of MinimizedTvShow objects representing
+///   the top rated tv shows.
+///
+///"Minimized" Movie objects
+///-------------------------
+/// are Movie objects
+/// that have only the following data members:
+///
+///bool [adult], String? [backdropPath], int [id], String [originalTitle],
+///double [popularity], String? [posterPath], String [releaseDate],
+///String? [overview], String [title], bool [video], double [voteAverage],
+///int [voteCount], List<Genre> [genres]
+///
+///Use the getDetailsMovie method to get a completed Movie
+///object. Check the documentation for the Movie class for information
+///on the completed movie object.
+///
+///
+///"Minimized" TV Show Objects
+///---------------------------
+/// are TvShow objects that have only
+/// the following data members:
+///
+///String [originalLanguage], String [originalName],
+///List<ProductionCountry> [originCountries], String? [backdropPath],
+///int [id], String [overview], double [popularity], String? [posterPath],
+///String [firstAirDate], String [name], double [voteAverage],
+///int [voteCount], List<Genre> [genres]
+///
+///Use the getDetailsTvShow method to get a completed TvShow object.
+///Check the documentation for the TvShow class for information on
+///the completed tv show object.
+///
 ///
 
+library tmdb_api_wrapper;
+
+// import 'package:fk_user_agent/fk_user_agent.dart';
+
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:async';
+import 'package:tmdb/models/src/errors.dart';
+import 'package:tmdb/models/src/minimized_movie.dart';
+import 'package:tmdb/models/src/minimized_tv_show.dart';
+import 'package:tmdb/models/src/movie.dart';
+import 'package:tmdb/models/src/tv_show.dart';
+import 'package:tmdb/models/src/api_objects.dart';
+import 'package:flutter/cupertino.dart';
+
+export 'src/api_objects.dart'
+    show
+        ProductionCompany,
+        ProductionCountry,
+        Genre,
+        Video,
+        Review,
+        CastMember,
+        CrewMember,
+        Language;
+export 'src/movie.dart' show Movie;
+export 'src/minimized_movie.dart' show MinimizedMovie;
+export 'src/tv_show.dart' show TvShow;
+export 'src/minimized_tv_show.dart' show MinimizedTvShow;
+
 class TmdbApiWrapper {
-  String apiKey;
-  final ApiBaseHelper _helper = ApiBaseHelper();
-  TmdbApiWrapper({this.apiKey = "b74073680e08dd4625e94ded81f2cb40"});
+  static const String _apiKey = "b74073680e08dd4625e94ded81f2cb40";
+
+  ///A helper object that holds the base url, and returns the
+  ///response or handles the error appropriately
+  final _ApiBaseHelper _helper = _ApiBaseHelper();
+
+  ///singleton class setup
+  static final _tmdbApiWrapper = TmdbApiWrapper._internal();
+  factory TmdbApiWrapper() {
+    return _tmdbApiWrapper;
+  }
+  TmdbApiWrapper._internal();
 
   ///Returns a completed movie object. [movieId] can be found
   ///as a data member of a minimized Movie object.
-  Future<Movie> getDetailsMovie({required movieId}) async {
+  Future<Movie> getDetailsMovie({
+    required movieId,
+  }) async {
     final String endpoint =
-        "movie/$movieId?api_key=$apiKey&append_to_response=credits,images,recommendations,reviews,videos";
+        "movie/$movieId?api_key=$_apiKey&append_to_response=credits,images,recommendations,reviews,videos,release_dates";
     final responseJson = await _helper.get(endpoint);
     return Movie.fromJson(json: responseJson);
   }
 
+  ///returns a completed tv show object. [tvId] can be found as
+  ///a data member of a minimized tv show object.
+  Future<TvShow> getDetailsTvShow({
+    required tvId,
+  }) async {
+    final String endpoint =
+        "tv/$tvId?api_key=$_apiKey&append_to_response=credits,images,recommendations,reviews,videos";
+    final responseJson = await _helper.get(endpoint);
+    return TvShow.fromJson(json: responseJson);
+  }
+
   ///Returns the top 20 most popular movies
   ///as a list of minimized Movie objects.
-  Future<List<Movie>> getPopularMovies() async {
-    final responseJson = await _helper.get("movie/popular?api_key=$apiKey");
+  Future<List<MinimizedMovie>> getPopularMovies() async {
+    final responseJson = await _helper.get("movie/popular?api_key=$_apiKey");
     final List<dynamic> parsed = responseJson['results'];
-    return _getMovieListFromJson(parsed);
+    return _getMovieListFromJson(parsedList: parsed);
+  }
+
+  ///Returns a list of minimized Movie objects representing
+  ///movies currently playing in theaters
+  Future<List<MinimizedMovie>> getNowPlayingMovies() async {
+    final responseJson =
+        await _helper.get("movie/now_playing?api_key=$_apiKey");
+    final List<dynamic> parsed = responseJson['results'];
+    return _getMovieListFromJson(parsedList: parsed);
+  }
+
+  ///Returns the 20 top rated movies
+  ///as a list of minimized Movie objects.
+  Future<List<MinimizedMovie>> getTopRatedMovies() async {
+    final responseJson = await _helper.get("movie/top_rated?api_key=$_apiKey");
+    final List<dynamic> parsed = responseJson['results'];
+    return _getMovieListFromJson(parsedList: parsed);
   }
 
   ///Returns a single Movie object representing
   ///the movie most recently added to TMDB
   Future<Movie> getLatestMovie() async {
-    final responseJson = await _helper.get("movie/latest?api_key=$apiKey");
-    return Movie(
-      title: responseJson['title'],
-      id: responseJson['id'],
-      adult: responseJson['adult'],
-      backdropPath: responseJson['backdrop_path'],
-      originalLanguage: responseJson['original_language'],
-      originalTitle: responseJson['original_title'],
-      overview: responseJson['overview'],
-      popularity: responseJson['popularity'],
-      posterPath: responseJson['poster_path'],
-      releaseDate: responseJson['release_date'],
-      video: responseJson['video'],
-      voteAverage: responseJson['vote_average'],
-      voteCount: responseJson['vote_count'],
-      genres: responseJson['genre_ids'],
-    );
+    final responseJson = await _helper.get("movie/latest?api_key=$_apiKey");
+    return Movie.fromJson(json: responseJson);
   }
 
-  ///Returns a list of minimized Movie objects representing
-  ///movies currently playing in theaters
-  Future<List<Movie>> getNowPlayingMovies() async {
-    final responseJson = await _helper.get("movie/now_playing?api_key=$apiKey");
+  ///Returns the Image at [imagePath] as Image Widget
+  Widget getImage({required imagePath, String size = "w500"}) {
+    return Image.network("https://image.tmdb.org/t/p/$size" + imagePath);
+  }
+
+  ///Allows searching TMDB for movies,
+  ///tv shows and people in a single request.
+  Future<List<dynamic>> search({
+    required String query,
+  }) async {
+    final responseJson =
+        await _helper.get("search/multi?api_key=$_apiKey&query=$query&page=1");
     final List<dynamic> parsed = responseJson['results'];
-    return _getMovieListFromJson(parsed);
+    List<dynamic> someThing =
+        parsed.map((e) => _parseSearchResult(searchResult: e)).toList();
+    return someThing;
   }
 
-  ///Returns the 20 top rated movies
-  ///as a list of minimized Movie objects.
-  Future<List<Movie>> getTopRatedMovies() async {
-    final responseJson = await _helper.get("movie/top_rated?api_key=$apiKey");
-    final List<dynamic> parsed = responseJson['results'];
-    return _getMovieListFromJson(parsed);
+  ///Returns a list of MinimizedTvShow objects representing shows
+  ///that are airing today.
+  Future<List<MinimizedTvShow>> getNowAiringTvShows() async {
+    final response = await _helper.get("tv/airing_today?api_key=$_apiKey");
+    final List<dynamic> parsed = response['results'];
+    return _getTvShowListFromJson(parsedList: parsed);
   }
 
-  ///Returns the Image at [posterPath] as Image Widget
-  Widget getImage({required posterPath, String size = "w500"}) {
-    return Image.network("https://image.tmdb.org/t/p/$size" + posterPath);
+  ///Returns a list of MinimizedTvShow objects representing
+  ///tv shows that will air within the next 7 days
+  Future<List<MinimizedTvShow>> getOnTheAirTvShow() async {
+    final response = await _helper.get("tv/on_the_air?api_key=$_apiKey");
+    final List<dynamic> parsed = response['results'];
+    return _getTvShowListFromJson(parsedList: parsed);
+  }
+
+  ///Returns a list of MinimizedTvShow objects representing
+  ///popular tv shows
+  Future<List<MinimizedTvShow>> getPopularTvShows() async {
+    final response = await _helper.get("tv/popular?api_key=$_apiKey");
+    final List<dynamic> parsed = response['results'];
+    return _getTvShowListFromJson(parsedList: parsed);
+  }
+
+  ///Returns a list of MinimizedTvShow objects representing
+  ///the top rated tv shows.
+  Future<List<MinimizedTvShow>> getTopRatedTvShows() async {
+    final response = await _helper.get("tv/top_rated?api_key=$_apiKey");
+    final List<dynamic> parsed = response['results'];
+    return _getTvShowListFromJson(parsedList: parsed);
+  }
+
+  List<MinimizedTvShow> _getTvShowListFromJson({
+    required parsedList,
+  }) {
+    List<MinimizedTvShow> list =
+        parsedList.map((element) => _getTvShowFromJson(json: element)).toList();
+    return list;
+  }
+
+  dynamic _parseSearchResult({
+    required searchResult,
+  }) {
+    switch (searchResult['media_type']) {
+      case "person":
+        {
+          return Person.fromArguments(
+              profilePath: searchResult['profile_path'],
+              name: searchResult['name'],
+              id: searchResult['id'],
+              adult: searchResult['adult'],
+              popularity: searchResult['popularity']);
+        }
+      case "tv":
+        {
+          return _getTvShowFromJson(json: searchResult);
+        }
+      case "movie":
+        {
+          return _getMovieFromJson(json: searchResult);
+        }
+    }
+  }
+
+  MinimizedTvShow _getTvShowFromJson({
+    required Map json,
+  }) {
+    return MinimizedTvShow.fromJson(json: json);
+  }
+
+  ///Helper function to parse a json result into a movie object
+  MinimizedMovie _getMovieFromJson({
+    required Map json,
+  }) {
+    return MinimizedMovie.fromJson(json: json);
+  }
+
+  List<MinimizedMovie> _getMovieListFromJson({
+    required List<dynamic> parsedList,
+  }) {
+    List<MinimizedMovie> list =
+        parsedList.map((element) => _getMovieFromJson(json: element)).toList();
+    return list;
   }
 
   ///recieves access denied error
@@ -118,7 +289,7 @@ class TmdbApiWrapper {
   ///Attempted to use fk_user_agent package to get
   ///device userAgent, but recieved an 'Unexpected Null Value'
   ///error on FkUserAgent.init(). Only tested on Chrome, should
-  ///check if FkUserAgent works on phone emulator
+  ///check if FkUserAgent works on phone emulator.
   Future<void> getDailyExports() async {
     const String url =
         "http://files.tmdb.org/p/exports/movie_ids_01_01_2022.json.gz/";
@@ -128,145 +299,43 @@ class TmdbApiWrapper {
     );
     //print(response.body);
   }
-
-  List<Movie> _getMovieListFromJson(List<dynamic> parsedList) {
-    List<Movie> list = parsedList
-        .map((element) => Movie(
-              title: element['title'],
-              id: element['id'],
-              adult: element['adult'],
-              backdropPath: element['backdrop_path'],
-              originalLanguage: element['original_language'],
-              originalTitle: element['original_title'],
-              overview: element['overview'],
-              popularity: element['popularity'],
-              posterPath: element['poster_path'],
-              releaseDate: element['release_date'],
-              video: element['video'],
-              voteAverage: element['vote_average'],
-              voteCount: element['vote_count'],
-              genres: element['genre_ids'],
-            ))
-        .toList();
-    return list;
-  }
-
-  Future<List<Movie>> getMovies({
-    sortBy = "vote_average.desc",
-    includeAdult = "false",
-    includeVideo = "false",
-    releaseYear,
-    releaseDateLower,
-    releaseDateUpper,
-    minimumVoteAverage,
-    maximumVoteAverage,
-    withActors,
-    withGenres,
-    withKeywords,
-    minimumRuntime,
-    maximumRuntime,
-    language = "en-US",
-    originalLanguage = "en-US",
-  }) async {
-    if (releaseDateLower != null && !_isValidDate(releaseDateLower)) {
-      throw InvalidDateException();
-    }
-    if (releaseDateUpper != null && !_isValidDate(releaseDateUpper)) {
-      throw InvalidDateException();
-    }
-
-    final responseJson = await _helper.get("discover/movie?=$apiKey");
-    final List parsed = responseJson['results'];
-    return _getMovieListFromJson(parsed);
-  }
-
-  bool _isValidDate(String toCheck) {
-    try {
-      DateTime.parse(toCheck);
-    } catch (e) {
-      return false;
-    }
-    return true;
-  }
-
-  bool _isValidLanguageCode(String toCheck) {
-    return true;
-  }
-
-  bool _isValidCountryCode(String toCheck) {
-    return true;
-  }
 }
 
-class AppException implements Exception {
-  final String message;
-  final String prefix;
-  AppException({required this.message, required this.prefix});
-
-  @override
-  String toString() {
-    return "$prefix$message";
-  }
-}
-
-class InvalidDateException extends AppException {
-  InvalidDateException({message})
-      : super(
-          message: message,
-          prefix: "Invalid Date",
-        );
-}
-
-class FetchDataException extends AppException {
-  FetchDataException({message})
-      : super(
-          message: message,
-          prefix: "Error During Communication: ",
-        );
-}
-
-class BadRequestException extends AppException {
-  BadRequestException({message})
-      : super(
-          message: message,
-          prefix: "Invalid Request: ",
-        );
-}
-
-class UnauthorisedException extends AppException {
-  UnauthorisedException({message})
-      : super(
-          message: message,
-          prefix: "Unauthorized: ",
-        );
-}
-
-class InvalidInputException extends AppException {
-  InvalidInputException({message})
-      : super(
-          message: message,
-          prefix: "Invalid Input: ",
-        );
-}
-
-class ApiBaseHelper {
+class _ApiBaseHelper {
   final String _baseUrl = "http://api.themoviedb.org/3/";
-
+  final _cacheManager = _DataCacheManager();
+  //final _DataCacheManager _dataCacheManager = _DataCacheManager();
+  //final _ImageCacheManager _imageCacheManager = _ImageCacheManager();
   Future<dynamic> get(String endPoint) async {
     dynamic responseJson;
     try {
-      final url = Uri.parse(_baseUrl + endPoint);
-      final response = await http.get(url);
-      responseJson = _returnResponse(response);
+      responseJson = await _cacheManager.getSingleFile(_baseUrl + endPoint);
     } on SocketException {
       throw FetchDataException(message: 'No Internet connection');
     }
-    return responseJson;
+    return json.decode(responseJson);
   }
 
-  dynamic _returnResponse(http.Response response) {
+  Future<dynamic> getImage({
+    required String endPoint,
+    String size = "w500",
+  }) async {
+    dynamic response = await _cacheManager.getSingleFile(_baseUrl + endPoint);
+    print(response);
+    /*
+    try {
+      response = DefaultCacheManager().getImageFile(_baseUrl + endPoint);
+      print(response.toSet());
+    } on SocketException {
+      throw FetchDataException(message: 'No Internet connection');
+    }
+    return response;*/
+  }
+
+  dynamic _returnResponse(var response) {
     switch (response.statusCode) {
       case 200:
+        print(response);
         var responseJson = json.decode(response.body.toString());
         return responseJson;
       case 400:
@@ -283,384 +352,18 @@ class ApiBaseHelper {
   }
 }
 
-class Video {
-  String? language;
-  String? country;
-  String? name;
-  String? key;
-  String? site;
-  int? size;
-  String? type;
-  bool? official;
-  String? publishedAt;
-  String? id;
-  String? youtubeUrl;
-  Video(
-      {this.country,
-      this.id,
-      this.key,
-      this.language,
-      this.name,
-      this.official,
-      this.publishedAt,
-      this.site,
-      this.size,
-      this.type,
-      this.youtubeUrl});
-  Video.fromJson({required Map json, String? url}) {
-    country = json['country'];
-    id = json['id'];
-    key = json['key'];
-    language = json['language'];
-    name = json['name'];
-    official = json['official'];
-    publishedAt = json['published_at'];
-    site = json['site'];
-    size = json['size'];
-    type = json['type'];
-    youtubeUrl = url;
+class _DataCacheManager {
+  static const key = 'tmdbCache';
+  static CacheManager instance = CacheManager(
+    Config(
+      key,
+      stalePeriod: const Duration(days: 14),
+      maxNrOfCacheObjects: 300,
+    ),
+  );
+  Future<String> getSingleFile(url) async {
+    final File file = await instance.getSingleFile(url);
+    return await file.readAsString(encoding: utf8);
   }
-
-  @override
-  String toString() {
-    return "site: $site key: $key url: $youtubeUrl";
-  }
-}
-
-class Review {
-  String? author;
-  dynamic authorDetails;
-  String? content;
-  String? createdAt;
-  String? id;
-  String? updatedAt;
-  String? url;
-  Review(
-      {this.author,
-      this.authorDetails,
-      this.content,
-      this.createdAt,
-      this.id,
-      this.updatedAt,
-      this.url});
-  Review.fromJson({required Map json}) {
-    author = json['author'];
-    authorDetails = json['author_details'];
-    content = json['content'];
-    createdAt = json['created_at'];
-    id = json['id'];
-    updatedAt = json['updated_at'];
-    url = json['url'];
-  }
-}
-
-class MovieImage {
-  double? aspectRatio;
-  String? filePath;
-  int? height;
-  String? language;
-  double? voteAverage; //api docs say integer, but it's a 'number' (double)
-  int? voteCount;
-  int? width;
-  MovieImage(
-      {this.aspectRatio,
-      this.filePath,
-      this.height,
-      this.language,
-      this.voteAverage,
-      this.voteCount,
-      this.width});
-  MovieImage.fromJson({required Map json}) {
-    aspectRatio = json['aspect_ratio'];
-    filePath = json['file_path'];
-    height = json['height'];
-    language = json['iso_639_1'];
-    voteAverage = json['vote_average'];
-    voteCount = json['vote_count'];
-    width = json['width'];
-  }
-}
-
-class CastMember {
-  bool? adult;
-  int? gender;
-  int? id;
-  String? knownForDepartment;
-  String? name;
-  String? originalName;
-  double? popularity;
-  String? profilePath;
-  int? castId;
-  String? character;
-  String? creditId;
-  int? order;
-  CastMember(
-      {this.adult,
-      this.gender,
-      this.id,
-      this.knownForDepartment,
-      this.name,
-      this.order,
-      this.castId,
-      this.character,
-      this.creditId,
-      this.originalName,
-      this.popularity,
-      this.profilePath});
-
-  CastMember.fromJson({required Map json}) {
-    adult = json['adult'];
-    gender = json['gender'];
-    id = json['id'];
-    knownForDepartment = json['known_for_department'];
-    name = json['name'];
-    order = json['order'];
-    castId = json['cast_id'];
-    character = json['character'];
-    creditId = json['credit_id'];
-    originalName = json['original_name'];
-    popularity = json['popularity'];
-    profilePath = json['profile_path'];
-  }
-}
-
-class CrewMember {
-  bool? adult;
-  int? gender;
-  int? id;
-  String? knownForDepartment;
-  String? name;
-  String? originalName;
-  double? popularity;
-  String? profilePath;
-  String? creditId;
-  String? department;
-  String? job;
-  CrewMember(
-      {this.adult,
-      this.gender,
-      this.id,
-      this.knownForDepartment,
-      this.name,
-      this.department,
-      this.job,
-      this.creditId,
-      this.originalName,
-      this.popularity,
-      this.profilePath});
-
-  CrewMember.fromJson({required Map json}) {
-    adult = json['adult'];
-    gender = json['gender'];
-    id = json['id'];
-    knownForDepartment = json['known_for_department'];
-    name = json['name'];
-    department = json['department'];
-    job = json['job'];
-    creditId = json['credit_id'];
-    originalName = json['original_name'];
-    popularity = json['popularity'];
-    profilePath = json['profile_path'];
-  }
-}
-
-class Movie {
-  bool? adult;
-  String? backdropPath;
-  dynamic belongsToCollection;
-  int? budget;
-
-  //genres = [{int id:, String name:},]
-  List<dynamic>? genres;
-
-  String? homepage;
-  int? id;
-
-  //minLength: 9, maxLength: 9
-  //pattern: ^tt[0-9]{7}
-  String? imdbId;
-
-  //iso 639-1 language code
-  String? originalLanguage;
-
-  String? originalTitle;
-  String? overview;
-  double? popularity;
-  String? posterPath;
-
-  //prdCo = [{String name:, int id:,
-  //String? logo_path:, String origin_country:},]
-  List<dynamic>? productionCompanies;
-
-  //prdCou = [{String iso_3166_1:, String name:},]
-  //iso_3166_1 refers to ISO 3166-1 country naming standard
-  List<dynamic>? productionCountries;
-
-  String? releaseDate;
-  int? revenue;
-  int? runtime;
-
-  //lang = [{String iso_639_1:, String name: },]
-  //iso_639_1 refers to ISO 639-1 langauge naming standard
-  List<dynamic>? spokenLanguages;
-
-  //Allowed values = [Rumored, Planned, In Production,
-  //Post Production, Released, Canceled]
-  String? status;
-
-  String? tagline;
-  String? title;
-  bool? video;
-  double? voteAverage;
-  int? voteCount;
-  List<CastMember>? cast;
-  List<CrewMember>? crew;
-  List<Review>? reviews;
-  List<Widget>? backdrops;
-  List<Widget>? posters;
-  List<Movie>? recommendations;
-  List<Video>? videos;
-
-  Movie({
-    this.adult,
-    this.backdropPath,
-    this.belongsToCollection,
-    this.budget,
-    this.genres,
-    this.homepage,
-    this.id,
-    this.imdbId,
-    this.originalLanguage,
-    this.originalTitle,
-    this.overview,
-    this.popularity,
-    this.posterPath,
-    this.productionCompanies,
-    this.productionCountries,
-    this.releaseDate,
-    this.revenue,
-    this.runtime,
-    this.spokenLanguages,
-    this.status,
-    this.tagline,
-    this.title,
-    this.video,
-    this.voteAverage,
-    this.voteCount,
-  });
-  Movie.fromJson({required Map json}) {
-    adult = json['adult'];
-    backdropPath = json['backdrop_path'];
-    belongsToCollection = json['belongs_to_collection'];
-    budget = json['budget'];
-    genres = json['genres'];
-    homepage = json['homepage'];
-    id = json['id'];
-    imdbId = json['imdb_id'];
-    originalLanguage = json['original_language'];
-    originalTitle = json['original_title'];
-    overview = json['overview'];
-    popularity = json['popularity'];
-    posterPath = json['poster_path'];
-    productionCompanies = json['production_companies'];
-    productionCountries = json['production_countries'];
-    releaseDate = json['release_date'];
-    revenue = json['revenue'];
-    runtime = json['runtime'];
-    spokenLanguages = json['spoken_languages'];
-    status = json['status'];
-    tagline = json['tagline'];
-    title = json['title'];
-    video = json['video'];
-    voteAverage = json['vote_average'];
-    voteCount = json['vote_count'];
-    _parseCredits(json: json['credits']);
-    _parseVideos(json: json['videos']);
-    _parseReviews(json: json['reviews']);
-    _parseRecommendations(json: json['recommendations']);
-    _parseImages(json: json['images']);
-  }
-
-  void _parseImages({required Map json}) {
-    if (json['backdrops'] != null) {
-      final List<dynamic> backdrops = json['backdrops'];
-      this.backdrops =
-          backdrops.map((el) => Image.network(el['file_path'])).toList();
-    }
-    if (json['posters'] != null) {
-      final List<dynamic> posters = json['posters'];
-      this.posters = posters
-          .map((el) => Image.network(
-              "https://image.tmdb.org/t/p/w500" + el['file_path']))
-          .toList();
-    }
-  }
-
-  ///Returns the poster for this movie as an Image widget
-  ///[scale] currently does nothing
-  Widget getPoster({scale = 1}) {
-    if (posterPath != null && posterPath!.isNotEmpty) {
-      final url = "http://api.themoviedb.org/3" + posterPath!;
-      return Image.network(url);
-    }
-    return const SizedBox.shrink();
-  }
-
-  void _parseCredits({required Map json}) {
-    if (json['cast'] != null) {
-      final List<dynamic> castList = json['cast'];
-      cast = castList.map((el) => CastMember.fromJson(json: el)).toList();
-    }
-
-    if (json['crew'] != null) {
-      final List<dynamic> crewList = json['crew'];
-      crew = crewList.map((el) => CrewMember.fromJson(json: el)).toList();
-    }
-  }
-
-  void _parseRecommendations({required Map json}) {
-    if (json['results'] != null) {
-      final List<dynamic> parsedList = json['results'];
-      recommendations = parsedList
-          .map((element) => Movie(
-                title: element['title'],
-                id: element['id'],
-                adult: element['adult'],
-                backdropPath: element['backdrop_path'],
-                originalLanguage: element['original_language'],
-                originalTitle: element['original_title'],
-                overview: element['overview'],
-                popularity: element['popularity'],
-                posterPath: element['poster_path'],
-                releaseDate: element['release_date'],
-                video: element['video'],
-                voteAverage: element['vote_average'],
-                voteCount: element['vote_count'],
-                genres: element['genre_ids'],
-              ))
-          .toList();
-    }
-  }
-
-  void _parseVideos({required Map json}) {
-    if (json['results'] != null) {
-      final List<dynamic> parsedList = json['results'];
-      videos = parsedList.map((el) {
-        final url = "https://www.youtube.com/watch?v=${el['key']}";
-        return Video.fromJson(json: el, url: url);
-      }).toList();
-    }
-  }
-
-  void _parseReviews({required Map json}) {
-    if (json['results'] != null) {
-      final List<dynamic> parsedList = json['results'];
-      reviews = parsedList.map((el) => Review.fromJson(json: el)).toList();
-    }
-  }
-
-  @override
-  String toString() {
-    return "Movie: $title id: $id video: $video";
-  }
+  // Image getImage
 }
