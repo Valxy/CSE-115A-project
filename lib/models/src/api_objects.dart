@@ -9,15 +9,14 @@ class Video {
   late String official;
   late String publishedAt;
   late String id;
-  late String youtubeUrl;
 
   Video.fromJson({
     required Map json,
   }) {
-    country = json['country'];
+    country = json['iso_3166_1'];
     id = json['id'];
     key = json['key'];
-    language = json['language'];
+    language = json['iso_639_1'];
     name = json['name'];
     official = json['official'];
     publishedAt = json['published_at'];
