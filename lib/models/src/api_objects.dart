@@ -1,15 +1,15 @@
 class Video {
-  String? language;
-  String? country;
-  String? name;
-  String? key;
-  String? site;
-  int? size;
-  String? type;
-  bool? official;
-  String? publishedAt;
-  String? id;
-  String? youtubeUrl;
+  late String language;
+  late String country;
+  late String name;
+  late String key;
+  late String site;
+  late String size;
+  late String type;
+  late String official;
+  late String publishedAt;
+  late String id;
+  late String youtubeUrl;
 
   Video.fromJson({
     required Map json,
@@ -25,26 +25,53 @@ class Video {
     size = json['size'];
     type = json['type'];
   }
+
+  @override
+  String toString() {
+    return "video id: $id";
+  }
+}
+
+class Author {
+  late String name;
+  late String username;
+  String? avatarPath;
+  late int rating;
+
+  Author.fromJson({
+    required Map json,
+  }) {
+    name = json['name'];
+    username = json['username'];
+    avatarPath = json['avatar_path'];
+    rating = json['rating'];
+  }
 }
 
 class Review {
-  String? author;
-  dynamic authorDetails;
-  String? content;
-  String? createdAt;
-  String? id;
-  String? updatedAt;
-  String? url;
+  late String author;
+  late Author authorDetails;
+  late String content;
+  late String createdAt;
+  late String id;
+  late String updatedAt;
+  late String url;
+
   Review.fromJson({
     required Map json,
   }) {
     author = json['author'];
-    authorDetails = json['author_details'];
+    authorDetails = Author.fromJson(json: json['author_details']);
     content = json['content'];
     createdAt = json['created_at'];
     id = json['id'];
     updatedAt = json['updated_at'];
     url = json['url'];
+  }
+
+  @override
+  String toString() {
+    return "review id: $id";
   }
 }
 
@@ -71,6 +98,11 @@ class Person {
     this.popularity,
     this.adult,
   });
+
+  @override
+  String toString() {
+    return "name: $name, id: $id";
+  }
 }
 
 class CastMember extends Person {
@@ -89,7 +121,6 @@ class CastMember extends Person {
     knownForDepartment = json['known_for_department'];
     name = json['name'];
     order = json['order'];
-    castId = json['cast_id'];
     character = json['character'];
     creditId = json['credit_id'];
     originalName = json['original_name'];
@@ -146,6 +177,11 @@ class ProductionCompany {
     logoPath = json['logo_path'];
     originCountry = json['origin_country'];
   }
+
+  @override
+  String toString() {
+    return "Company name: $name";
+  }
 }
 
 class ProductionCountry {
@@ -164,6 +200,11 @@ class ProductionCountry {
     name = json['name'];
     isoId = json['iso_3166_1'];
   }
+
+  @override
+  String toString() {
+    return "Country name: $name";
+  }
 }
 
 class Language {
@@ -176,6 +217,11 @@ class Language {
   }) {
     name = json['name'];
     isoId = json['iso_639_1'];
+  }
+
+  @override
+  String toString() {
+    return "Language: $name";
   }
 }
 
@@ -193,6 +239,11 @@ class Genre {
     name = json['name'];
     id = json['id'];
   }
+
+  @override
+  String toString() {
+    return "genre id: $id";
+  }
 }
 
 class TvEpisode {
@@ -204,7 +255,7 @@ class TvEpisode {
   late String productionCode;
   late int seasonNumber;
   String? stillPath;
-  late double voteAverage;
+  late num voteAverage;
   late int voteCount;
 
   TvEpisode({
@@ -222,7 +273,23 @@ class TvEpisode {
 
   TvEpisode.fromJson({
     required Map json,
-  });
+  }) {
+    airDate = json['air_date'];
+    episodeNumber = json['episode_number'];
+    id = json['id'];
+    name = json['name'];
+    overview = json['overview'];
+    productionCode = json['production_code'];
+    seasonNumber = json['season_number'];
+    stillPath = json['still_path'];
+    voteAverage = json['vote_average'];
+    voteCount = json['vote_count'];
+  }
+
+  @override
+  String toString() {
+    return "episode name: $name, number: $episodeNumber";
+  }
 }
 
 class Network {
@@ -240,7 +307,17 @@ class Network {
 
   Network.fromJson({
     required Map json,
-  });
+  }) {
+    name = json['name'];
+    id = json['id'];
+    logoPath = json['logo_path'];
+    originCountry = json['origin_country'];
+  }
+
+  @override
+  String toString() {
+    return "network name: $name";
+  }
 }
 
 class TvShowSeason {
@@ -264,7 +341,20 @@ class TvShowSeason {
 
   TvShowSeason.fromJson({
     required Map json,
-  });
+  }) {
+    airDate = json['air_date'];
+    episodeCount = json['episode_count'];
+    id = json['id'];
+    name = json['name'];
+    overview = json['overview'];
+    posterPath = json['poster_path'];
+    seasonNumber = json['season_number'];
+  }
+
+  @override
+  String toString() {
+    return "season number: $seasonNumber";
+  }
 }
 
 ///This class is needed because it contains
@@ -286,5 +376,10 @@ class ReleaseDate {
     releaseDate = json['release_date'];
     type = json['type'];
     note = json['note'];
+  }
+
+  @override
+  String toString() {
+    return "release date: $releaseDate, rating: $certification";
   }
 }

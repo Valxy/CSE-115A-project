@@ -9,11 +9,11 @@ class MinimizedTvShow {
   String? backdropPath;
   late int id;
   late String overview;
-  late double popularity;
+  late num popularity;
   String? posterPath;
   late String firstAirDate;
   late String name;
-  late double voteAverage;
+  late num voteAverage;
   late int voteCount;
   late List<Genre> genres;
 
@@ -52,8 +52,17 @@ class MinimizedTvShow {
     name = json['name'];
     voteAverage = json['vote_average'];
     voteCount = json['vote_count'];
-    _parseCountries(json: json['origin_countries']);
-    _parseGenres(json: json['genres']);
+    _parseCountries(json: json['origin_country']);
+    _parseGenres(json: json['genre_ids']);
+  }
+
+  /// Returns an image widget for the image at [imagePath] with
+  /// size [size]. Default size is w500.
+  Widget getImage({required imagePath, size = "w500"}) {
+    if (imagePath != null && imagePath.isNotEmpty) {
+      return Image.network("https://image.tmdb.org/t/p/$size" + posterPath!);
+    }
+    return const SizedBox.shrink();
   }
 
   void _parseCountries({
@@ -65,7 +74,7 @@ class MinimizedTvShow {
   void _parseGenres({
     required List<dynamic> json,
   }) {
-    genres = json.map((el) => Genre.fromJson(json: el)).toList();
+    genres = json.map((el) => Genre(id: el)).toList();
   }
 
   ///Returns the backdrop for this movie as an Image widget
@@ -73,10 +82,7 @@ class MinimizedTvShow {
   Widget getBackdrop({
     size = "w500",
   }) {
-    if (backdropPath != null && backdropPath!.isNotEmpty) {
-      return Image.network("https://image.tmdb.org/t/p/$size" + backdropPath!);
-    }
-    return const SizedBox.shrink();
+    return getImage(imagePath: backdropPath);
   }
 
   @override

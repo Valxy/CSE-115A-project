@@ -4,10 +4,10 @@ import './minimized_tv_show.dart';
 
 class TvShow extends MinimizedTvShow {
   late List<Person> creators;
-  late List<int> episodeRunTimes;
+  late List<dynamic> episodeRunTimes;
   late String homepage;
   late bool isInProduction;
-  late List<Language> languages;
+  late List<dynamic> languages;
   late String lastAirDate;
   late TvEpisode lastEpisodeToAir;
   TvEpisode? nextEpisodeToAir;
@@ -19,6 +19,7 @@ class TvShow extends MinimizedTvShow {
   late List<TvShowSeason> seasons;
   late List<Language> spokenLanguages;
   late String status;
+
   late String type;
   late List<CrewMember> crew;
   late List<CastMember> cast;
@@ -45,14 +46,21 @@ class TvShow extends MinimizedTvShow {
     homepage = json['homepage'];
     status = json['status'];
     lastEpisodeToAir = TvEpisode.fromJson(json: json['last_episode_to_air']);
+    episodeRunTimes = json['episode_run_time'];
+    isInProduction = json['in_production'];
+    languages = json['languages'];
+    lastAirDate = json['last_air_date'];
+    numberOfEpisodes = json['number_of_episodes'];
+    numberOfSeasons = json['number_of_seasons'];
+    type = json['type'];
 
+    _parseSeasons(json: json['seasons']);
     _parseNetworks(json: json['networks']);
     _parseCountries(json: json['production_companies']);
     _parseGenres(json: json['genres']);
     _parseCreators(json: json['created_by']);
     _parseLanguages(json: json['spoken_languages']);
     _parseCompanies(json: json['production_companies']);
-
     _parseCredits(json: json['credits']);
     _parseVideos(json: json['videos']);
     _parseReviews(json: json['reviews']);
@@ -64,6 +72,12 @@ class TvShow extends MinimizedTvShow {
     required List<dynamic> json,
   }) {
     networks = json.map((e) => Network.fromJson(json: e)).toList();
+  }
+
+  void _parseSeasons({
+    required List<dynamic> json,
+  }) {
+    seasons = json.map((e) => TvShowSeason.fromJson(json: e)).toList();
   }
 
   void _parseCreators({
@@ -111,12 +125,12 @@ class TvShow extends MinimizedTvShow {
     if (json['backdrops'] != null) {
       final List<dynamic> backdrops = json['backdrops'];
       this.backdrops =
-          backdrops.map((el) => Image.network(el['file_path'])).toList();
+          backdrops.map((el) => getImage(imagePath: el['file_path'])).toList();
     }
     if (json['posters'] != null) {
       final List<dynamic> posters = json['posters'];
       this.posters =
-          posters.map((el) => Image.network(el['file_path'])).toList();
+          posters.map((el) => getImage(imagePath: el['file_path'])).toList();
     }
   }
 
@@ -141,7 +155,7 @@ class TvShow extends MinimizedTvShow {
     if (json['results'] != null) {
       final List<dynamic> parsedList = json['results'];
       recommendations = parsedList
-          .map((element) => MinimizedTvShow.fromJson(json: json['results']))
+          .map((element) => MinimizedTvShow.fromJson(json: element))
           .toList();
     }
   }
