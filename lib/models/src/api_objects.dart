@@ -4,9 +4,9 @@ class Video {
   late String name;
   late String key;
   late String site;
-  late String size;
+  late int size;
   late String type;
-  late String official;
+  late bool official;
   late String publishedAt;
   late String id;
 
