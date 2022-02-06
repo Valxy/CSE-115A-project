@@ -82,11 +82,10 @@
 library tmdb_api_wrapper;
 
 // import 'package:fk_user_agent/fk_user_agent.dart';
-
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'dart:io';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:tmdb/models/src/errors.dart';
 import 'package:tmdb/models/src/minimized_movie.dart';
@@ -118,7 +117,7 @@ class TmdbApiWrapper {
   ///response or handles the error appropriately
   final _ApiBaseHelper _helper = _ApiBaseHelper();
 
-  ///singleton class setup
+  // singleton class setup
   static final _tmdbApiWrapper = TmdbApiWrapper._internal();
   factory TmdbApiWrapper() {
     return _tmdbApiWrapper;
@@ -179,9 +178,9 @@ class TmdbApiWrapper {
     return Movie.fromJson(json: responseJson);
   }
 
-  ///Returns the Image at [imagePath] as Image Widget
-  Widget getImage({required imagePath, String size = "w500"}) {
-    return Image.network("https://image.tmdb.org/t/p/$size" + imagePath);
+  ///Returns the Image at [posterPath] as Image Widget
+  Widget getImage({required posterPath, String size = "w500"}) {
+    return Image.network("https://image.tmdb.org/t/p/$size" + posterPath);
   }
 
   ///Allows searching TMDB for movies,
@@ -207,7 +206,7 @@ class TmdbApiWrapper {
 
   ///Returns a list of MinimizedTvShow objects representing
   ///tv shows that will air within the next 7 days
-  Future<List<MinimizedTvShow>> getOnTheAirTvShow() async {
+  Future<List<MinimizedTvShow>> getOnTheAirTvShows() async {
     final response = await _helper.get("tv/on_the_air?api_key=$_apiKey");
     final List<dynamic> parsed = response['results'];
     return _getTvShowListFromJson(parsedList: parsed);
@@ -230,7 +229,7 @@ class TmdbApiWrapper {
   }
 
   List<MinimizedTvShow> _getTvShowListFromJson({
-    required parsedList,
+    required List<dynamic> parsedList,
   }) {
     List<MinimizedTvShow> list =
         parsedList.map((element) => _getTvShowFromJson(json: element)).toList();

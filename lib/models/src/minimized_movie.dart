@@ -5,12 +5,13 @@ class MinimizedMovie {
   ///iso 639-1 language code
   late String originalLanguage;
 
-  ///Sometimes the API returns a double,
-  ///sometimes and int. Both inherit from num.
+  // Used Num since the api returns
+  // both integers and floats
   late num voteAverage;
-
   late bool adult;
   String? backdropPath;
+
+  ///The TMDB ID
   late int id;
   late String originalTitle;
   late num popularity;
