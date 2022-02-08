@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import './api_objects.dart';
 
+///A class to represent a Movie with limited
+///information. Consult the TmdbApiWrapper library
+///doc for more information.
 class MinimizedMovie {
   ///iso 639-1 language code
   late String originalLanguage;
@@ -41,7 +44,17 @@ class MinimizedMovie {
     video = json['video'];
     voteAverage = json['vote_average'];
     voteCount = json['vote_count'];
-    _parseGenres(json: json['genre_ids']);
+
+    // TMDB api inconsistent with naming conventions
+    if (json['genre_ids'] != null) {
+      _parseGenres(json: json['genre_ids']);
+    } else {
+      if (json['genres'] != null) {
+        _parseGenres(json: json['genres']);
+      } else {
+        genres = [];
+      }
+    }
   }
 
   ///Returns the poster for this movie as an Image widget

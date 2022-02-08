@@ -1,23 +1,24 @@
+import 'package:flutter/cupertino.dart';
+
 class Video {
   late String language;
   late String country;
   late String name;
   late String key;
   late String site;
-  late String size;
+  late int size;
   late String type;
-  late String official;
+  late bool official;
   late String publishedAt;
   late String id;
-  late String youtubeUrl;
 
   Video.fromJson({
     required Map json,
   }) {
-    country = json['country'];
+    country = json['iso_3166_1'];
     id = json['id'];
     key = json['key'];
-    language = json['language'];
+    language = json['iso_639_1'];
     name = json['name'];
     official = json['official'];
     publishedAt = json['published_at'];
@@ -28,7 +29,7 @@ class Video {
 
   @override
   String toString() {
-    return "video id: $id";
+    return "video: {id: $id, language: $language, country: $country, name: $name, key: $key, site: $site, size: $size, type: $type, official: $official, published_at: $publishedAt}";
   }
 }
 
@@ -45,6 +46,10 @@ class Author {
     username = json['username'];
     avatarPath = json['avatar_path'];
     rating = json['rating'];
+  }
+
+  String toString() {
+    return "Author: {name: $name, username: $username, avatar_path: $avatarPath, rating: $rating}";
   }
 }
 
@@ -71,7 +76,7 @@ class Review {
 
   @override
   String toString() {
-    return "review id: $id";
+    return "Review: {review id: $id, author_details: $author, content: $content, created_at: $createdAt, updated_at: $updatedAt, url: $url}";
   }
 }
 
@@ -80,17 +85,17 @@ class Review {
 ///into cast/crew member classes
 class Person {
   late int id;
-  String? creditId;
   late String name;
   int? gender;
   String? profilePath;
   double? popularity;
   bool? adult;
+  late String creditId;
 
   Person();
 
   Person.fromArguments({
-    this.creditId,
+    required this.creditId,
     this.gender,
     required this.id,
     required this.name,
@@ -101,7 +106,7 @@ class Person {
 
   @override
   String toString() {
-    return "name: $name, id: $id";
+    return "Person: {name: $name, id: $id, creditId: $creditId,  gender: $gender, profile_path: $profilePath, popularity: $popularity, adult: $adult}";
   }
 }
 
@@ -130,7 +135,7 @@ class CastMember extends Person {
 
   @override
   String toString() {
-    return "name: $name, popularity: $popularity";
+    return "Cast Member: {known_for_department: $knownForDepartment, original_name: $originalName, character: $character, order: $order, name: $name, id: $id, credit_id: $creditId, gender: $gender, profile_path: $profilePath, popularity: $popularity, adult: $adult}";
   }
 }
 
@@ -154,6 +159,10 @@ class CrewMember extends Person {
     originalName = json['original_name'];
     popularity = json['popularity'];
     profilePath = json['profile_path'];
+  }
+  @override
+  String toString() {
+    return "Crew Member: {known_for_department: $knownForDepartment, original_name: $originalName, department: $department, job: $job, name: $name, id: $id, credit_id: $creditId, gender: $gender, profile_path: $profilePath, popularity: $popularity, adult: $adult}";
   }
 }
 
@@ -180,21 +189,21 @@ class ProductionCompany {
 
   @override
   String toString() {
-    return "Company name: $name";
+    return "Company: {Company name: $name, id: $id, logo_path: $logoPath, origin_country: $originCountry}";
   }
 }
 
-class ProductionCountry {
+class Country {
   late String name;
 
   ///per iso 1366-1
   String? isoId;
 
-  ProductionCountry({
+  Country({
     this.isoId,
     required this.name,
   });
-  ProductionCountry.fromJson({
+  Country.fromJson({
     required Map json,
   }) {
     name = json['name'];
@@ -203,7 +212,7 @@ class ProductionCountry {
 
   @override
   String toString() {
-    return "Country name: $name";
+    return "Country: {Country name: $name, iso id: $isoId}";
   }
 }
 
@@ -221,7 +230,7 @@ class Language {
 
   @override
   String toString() {
-    return "Language: $name";
+    return "Language: {Language: $name, iso id: $isoId}";
   }
 }
 
@@ -242,7 +251,7 @@ class Genre {
 
   @override
   String toString() {
-    return "genre id: $id";
+    return "Genre: {genre id: $id, name: $name}";
   }
 }
 
@@ -288,7 +297,7 @@ class TvEpisode {
 
   @override
   String toString() {
-    return "episode name: $name, number: $episodeNumber";
+    return "TvEpisode: {episode name: $name, episode_number: $episodeNumber, air_date: $airDate, id: $id, overview: $overview, production_code: $productionCode, season_number: $seasonNumber, still_path: $stillPath, vote_average: $voteAverage, vote_count: $voteCount}";
   }
 }
 
@@ -316,7 +325,7 @@ class Network {
 
   @override
   String toString() {
-    return "network name: $name";
+    return "Network: {name: $name, id: $id, logo_path: $logoPath, origin_country: $originCountry}";
   }
 }
 
@@ -326,7 +335,9 @@ class TvShowSeason {
   late int id;
   late String name;
   late String overview;
-  late String posterPath;
+
+  // sometimes gives null
+  String? posterPath;
   late int seasonNumber;
 
   TvShowSeason({
@@ -335,7 +346,7 @@ class TvShowSeason {
     required this.id,
     required this.name,
     required this.overview,
-    required this.posterPath,
+    this.posterPath,
     required this.seasonNumber,
   });
 
@@ -353,22 +364,23 @@ class TvShowSeason {
 
   @override
   String toString() {
-    return "season number: $seasonNumber";
+    return "TvShowSeason: {number: $seasonNumber, episode_count: $episodeCount, id: $id, name: $name, overview: $overview}";
   }
 }
 
 ///This class is needed because it contains
 ///the Rating ('G', 'PG', 'R', etc)
-class ReleaseDate {
+class Release {
   late String certification;
 
   ///the iso 639-1 country name
-  late String language;
+  // TMDB API returned null even though not marked as such
+  String? language;
   late String releaseDate;
   late int type;
   late String note;
 
-  ReleaseDate.fromJson({
+  Release.fromJson({
     required Map json,
   }) {
     certification = json['certification'];
@@ -380,6 +392,6 @@ class ReleaseDate {
 
   @override
   String toString() {
-    return "release date: $releaseDate, rating: $certification";
+    return "Release: {release_date: $releaseDate, rating: $certification, language: $language, type: $type, note: $note}";
   }
 }
