@@ -5,7 +5,7 @@ class MinimizedTvShow {
   ///iso 639-1 language code
   late String originalLanguage;
   late String originalName;
-  late List<ProductionCountry> originCountries;
+  late List<Country> originCountries;
   String? backdropPath;
   late int id;
   late String overview;
@@ -53,7 +53,15 @@ class MinimizedTvShow {
     voteAverage = json['vote_average'];
     voteCount = json['vote_count'];
     _parseCountries(json: json['origin_country']);
-    _parseGenres(json: json['genre_ids']);
+    if (json['genre_ids'] != null) {
+      _parseGenres(json: json['genre_ids']);
+    } else {
+      if (json['genres'] != null) {
+        _parseGenres(json: json['genres']);
+      } else {
+        genres = [];
+      }
+    }
   }
 
   /// Returns an image widget for the image at [imagePath] with
@@ -68,7 +76,7 @@ class MinimizedTvShow {
   void _parseCountries({
     required List<dynamic> json,
   }) {
-    originCountries = json.map((el) => ProductionCountry(name: el)).toList();
+    originCountries = json.map((el) => Country(name: el)).toList();
   }
 
   void _parseGenres({

@@ -98,7 +98,7 @@ import 'package:flutter/cupertino.dart';
 export 'src/api_objects.dart'
     show
         ProductionCompany,
-        ProductionCountry,
+        Country,
         Genre,
         Video,
         Review,
@@ -113,8 +113,38 @@ export 'src/minimized_tv_show.dart' show MinimizedTvShow;
 class TmdbApiWrapper {
   static const String _apiKey = "b74073680e08dd4625e94ded81f2cb40";
 
-  ///A helper object that holds the base url, and returns the
-  ///response or handles the error appropriately
+  /// Keys are genre names, capitalized, spaces allowed
+  /// values are the TMDB genre ids
+  static Map genreDictionary = {
+    "Action": 28, //movie only
+    "Action & Adventure": 10759, //tv only
+    "Adventure": 12, //movie only
+    "Animation": 16,
+    "Comedy": 35,
+    "Crime": 80,
+    "Documentary": 99,
+    "Drama": 18,
+    "Family": 10751,
+    "Kids": 10762, //tv only
+    "Fantasy": 14, //movie only
+    "History": 36, //movie only
+    "Horror": 27, //movie only
+    "Music": 10402, //movie only
+    "Mystery": 9648,
+    "News": 10763, //tv only
+    "Romance": 10749, //movie only
+    "Science Fiction": 878, //movie only
+    "Sci-Fi & Fantasy": 10765, //tv only
+    "Talk": 10767, //tv only
+    "TV Movie": 10770, //movie only
+    "Thriller": 53, //movie only
+    "War": 10752, //movie only
+    "War & Politics": 10768, //tv only
+    "Western": 37,
+  };
+
+  /// A helper object that holds the base url, and returns the
+  /// response or handles the error appropriately
   final _ApiBaseHelper _helper = _ApiBaseHelper();
 
   // singleton class setup
@@ -133,6 +163,39 @@ class TmdbApiWrapper {
         "movie/$movieId?api_key=$_apiKey&append_to_response=credits,images,recommendations,reviews,videos,release_dates";
     final responseJson = await _helper.get(endpoint);
     return Movie.fromJson(json: responseJson);
+  }
+
+  Future<List<MinimizedMovie>> getHorrorMovies() async {
+    return getMovieListFromGenreId(genreId: genreDictionary['Horror']);
+  }
+
+  Future<List<MinimizedMovie>> getActionMovies() async {
+    return getMovieListFromGenreId(genreId: genreDictionary['Action']);
+  }
+
+  Future<List<MinimizedMovie>> getRomanceMovies() async {
+    return getMovieListFromGenreId(genreId: genreDictionary['Romance']);
+  }
+
+  Future<List<MinimizedMovie>> getAdventureMovies() async {
+    return getMovieListFromGenreId(genreId: genreDictionary['Adventure']);
+  }
+
+  Future<List<MinimizedMovie>> getComedyMovies() async {
+    return getMovieListFromGenreId(genreId: genreDictionary['Comedy']);
+  }
+
+  Future<List<MinimizedMovie>> getDramaMovies() async {
+    return getMovieListFromGenreId(genreId: genreDictionary['Drama']);
+  }
+
+  Future<List<MinimizedMovie>> getMovieListFromGenreId(
+      {required genreId}) async {
+    final String endPoint =
+        "discover/movie?api_key=$_apiKey&with_genres=$genreId";
+    final responseJson = await _helper.get(endPoint);
+    final List<dynamic> parsed = responseJson['results'];
+    return _getMovieListFromJson(parsedList: parsed);
   }
 
   ///returns a completed tv show object. [tvId] can be found as
@@ -171,16 +234,19 @@ class TmdbApiWrapper {
     return _getMovieListFromJson(parsedList: parsed);
   }
 
-  ///Returns a single Movie object representing
+  ///Returns a single MinimizedMovie object representing
   ///the movie most recently added to TMDB
-  Future<Movie> getLatestMovie() async {
+  Future<MinimizedMovie> getLatestMovie() async {
     final responseJson = await _helper.get("movie/latest?api_key=$_apiKey");
-    return Movie.fromJson(json: responseJson);
+    return MinimizedMovie.fromJson(json: responseJson);
   }
 
-  ///Returns the Image at [posterPath] as Image Widget
-  Widget getImage({required posterPath, String size = "w500"}) {
-    return Image.network("https://image.tmdb.org/t/p/$size" + posterPath);
+  ///Returns the Image at [imagePath] as Widget
+  Future<Widget> getImage({required imagePath, String size = "w500"}) async {
+    if (imagePath != null && imagePath.isNotEmpty) {
+      return await _helper.getImage(endPoint: imagePath, size: size);
+    }
+    return const SizedBox.shrink();
   }
 
   ///Allows searching TMDB for movies,
@@ -243,6 +309,7 @@ class TmdbApiWrapper {
       case "person":
         {
           return Person.fromArguments(
+              creditId: "",
               profilePath: searchResult['profile_path'],
               name: searchResult['name'],
               id: searchResult['id'],
@@ -302,7 +369,10 @@ class TmdbApiWrapper {
 
 class _ApiBaseHelper {
   final String _baseUrl = "http://api.themoviedb.org/3/";
+  final String _baseImageUrl = "https://image.tmdb.org/t/p/";
   final _cacheManager = _DataCacheManager();
+  final _cache = DefaultCacheManager();
+
   //final _DataCacheManager _dataCacheManager = _DataCacheManager();
   //final _ImageCacheManager _imageCacheManager = _ImageCacheManager();
   Future<dynamic> get(String endPoint) async {
@@ -315,20 +385,13 @@ class _ApiBaseHelper {
     return json.decode(responseJson);
   }
 
-  Future<dynamic> getImage({
+  Future<Widget> getImage({
     required String endPoint,
     String size = "w500",
   }) async {
-    dynamic response = await _cacheManager.getSingleFile(_baseUrl + endPoint);
-    print(response);
-    /*
-    try {
-      response = DefaultCacheManager().getImageFile(_baseUrl + endPoint);
-      print(response.toSet());
-    } on SocketException {
-      throw FetchDataException(message: 'No Internet connection');
-    }
-    return response;*/
+    dynamic response =
+        await _cache.getSingleFile("$_baseImageUrl$size$endPoint");
+    return Image.file(response);
   }
 
   dynamic _returnResponse(var response) {
