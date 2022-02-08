@@ -28,73 +28,75 @@ class _ShowDetailsState extends State<ShowDetails> {
       appBar: AppBar(
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 20.0),
-            height: 216.0,
-            child: ListView(
-              // This next line does the trick.
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                FutureBuilder<Movie>(
-                  future: movieDetails,
-                  builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-                    if (snapshot.hasData && snapshot.data?.posters != null) {
-                      final posters = snapshot.data?.posters;
-                      if (posters != null) {
-                        return posters[2];
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 20.0),
+              height: 216.0,
+              child: ListView(
+                // This next line does the trick.
+                scrollDirection: Axis.horizontal,
+                children: <Widget>[
+                  FutureBuilder<Movie>(
+                    future: movieDetails,
+                    builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+                      if (snapshot.hasData && snapshot.data?.posters != null) {
+                        final posters = snapshot.data?.posters;
+                        if (posters != null) {
+                          return posters[2];
+                        }
                       }
-                    }
 
-                    return CircularProgressIndicator();
-                  },
-                ),
-                Container(
-                  width: 384.0,
-                  color: Colors.blue,
-                ),
-                Container(
-                  width: 384.0,
-                  color: Colors.green,
-                ),
-                Container(
-                  width: 384.0,
-                  color: Colors.yellow,
-                ),
-                Container(
-                  width: 384.0,
-                  color: Colors.orange,
-                ),
-              ],
+                      return CircularProgressIndicator();
+                    },
+                  ),
+                  Container(
+                    width: 384.0,
+                    color: Colors.blue,
+                  ),
+                  Container(
+                    width: 384.0,
+                    color: Colors.green,
+                  ),
+                  Container(
+                    width: 384.0,
+                    color: Colors.yellow,
+                  ),
+                  Container(
+                    width: 384.0,
+                    color: Colors.orange,
+                  ),
+                ],
+              ),
             ),
-          ),
-          Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                FutureBuilder<Movie>(
-                  future: movieDetails,
-                  builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-                    if (snapshot.hasData) {
-                      return ListTile(
-                        title: Text(snapshot.data?.title ?? ""),
-                        subtitle: Text(snapshot.data?.overview ?? ""),
-                      );
-                    }
+            Card(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  FutureBuilder<Movie>(
+                    future: movieDetails,
+                    builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+                      if (snapshot.hasData) {
+                        return ListTile(
+                          title: Text(snapshot.data?.title ?? ""),
+                          subtitle: Text(snapshot.data?.overview ?? ""),
+                        );
+                      }
 
-                    return CircularProgressIndicator();
-                  },
-                )
-              ],
+                      return CircularProgressIndicator();
+                    },
+                  )
+                ],
+              ),
             ),
-          ),
-          Container(
-            height: 300,
-            child:
-                YoutubeTrailer("https://www.youtube.com/watch?v=JfVOs4VSpmA"),
-          ),
-        ],
+            Container(
+              height: 300,
+              child:
+                  YoutubeTrailer("https://www.youtube.com/watch?v=JfVOs4VSpmA"),
+            ),
+          ],
+        ),
       ),
     );
   }
