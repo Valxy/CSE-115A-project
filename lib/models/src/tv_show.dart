@@ -15,7 +15,7 @@ class TvShow extends MinimizedTvShow {
   late int numberOfEpisodes;
   late int numberOfSeasons;
   late List<ProductionCompany> productionCompanies;
-  late List<ProductionCountry> productionCountries;
+  late List<Country> productionCountries;
   late List<TvShowSeason> seasons;
   late List<Language> spokenLanguages;
   late String status;
@@ -53,10 +53,20 @@ class TvShow extends MinimizedTvShow {
     numberOfEpisodes = json['number_of_episodes'];
     numberOfSeasons = json['number_of_seasons'];
     type = json['type'];
-
+    List<dynamic> c = json['origin_country'];
+    originCountries = c.map((el) => Country(name: el)).toList();
+    _parseCountries(json: json['production_companies']);
+    if (json['genre_ids'] != null) {
+      _parseGenres(json: json['genre_ids']);
+    } else {
+      if (json['genres'] != null) {
+        _parseGenres(json: json['genres']);
+      } else {
+        genres = [];
+      }
+    }
     _parseSeasons(json: json['seasons']);
     _parseNetworks(json: json['networks']);
-    _parseCountries(json: json['production_companies']);
     _parseGenres(json: json['genres']);
     _parseCreators(json: json['created_by']);
     _parseLanguages(json: json['spoken_languages']);
@@ -85,8 +95,8 @@ class TvShow extends MinimizedTvShow {
   }) {
     creators = json
         .map((el) => Person.fromArguments(
-            id: el['id'],
             creditId: el['credit_id'],
+            id: el['id'],
             name: el['name'],
             gender: el['gender'],
             profilePath: el['profile_path']))
@@ -109,8 +119,7 @@ class TvShow extends MinimizedTvShow {
   void _parseCountries({
     required List<dynamic> json,
   }) {
-    productionCountries =
-        json.map((el) => ProductionCountry.fromJson(json: el)).toList();
+    productionCountries = json.map((el) => Country.fromJson(json: el)).toList();
   }
 
   void _parseGenres({

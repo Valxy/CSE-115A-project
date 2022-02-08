@@ -20,7 +20,7 @@ class Movie extends MinimizedMovie {
   String? tagline;
   late List<Language> spokenLanguages;
   late List<ProductionCompany> productionCompanies;
-  late List<ProductionCountry> productionCountries;
+  late List<Country> productionCountries;
   late List<CastMember> cast;
   late List<CrewMember> crew;
   late List<Review> reviews;
@@ -28,7 +28,7 @@ class Movie extends MinimizedMovie {
   late List<Widget> posters;
   late List<MinimizedMovie> recommendations;
   late List<Video> videos;
-  late List<ReleaseDate> releases;
+  late List<Release> releases;
 
   Movie.fromJson({
     required Map json,
@@ -54,64 +54,96 @@ class Movie extends MinimizedMovie {
     video = json['video'];
     voteAverage = json['vote_average'];
     voteCount = json['vote_count'];
+
     _parseLanguages(json: json['spoken_languages']);
     _parseCompanies(json: json['production_companies']);
     _parseCountries(json: json['production_countries']);
+
     _parseGenres(json: json['genres']);
     _parseCredits(json: json['credits']);
+
     _parseVideos(json: json['videos']);
     _parseReviews(json: json['reviews']);
     _parseRecommendations(json: json['recommendations']);
+
     _parseImages(json: json['images']);
+
     _parseReleaseDates(json: json['release_dates']);
   }
 
   void _parseReleaseDates({
-    required List<dynamic> json,
+    required Map json,
   }) {
-    releases = json
-        .map((e) => ReleaseDate.fromJson(json: e['release_dates']))
-        .toList();
+    releases = [];
+    final List<dynamic> parsed = json['results'];
+    if (parsed.isNotEmpty) {
+      for (var i = 0; i < parsed.length; i++) {
+        List<dynamic> jsonReleaseDate = parsed[i]['release_dates'];
+        for (var j = 0; j < jsonReleaseDate.length; j++) {
+          releases.add(Release.fromJson(json: jsonReleaseDate[j]));
+        }
+      }
+    }
   }
 
   void _parseLanguages({
     required List<dynamic> json,
   }) {
-    spokenLanguages = json.map((e) => Language.fromJson(json: e)).toList();
+    if (json.isNotEmpty) {
+      spokenLanguages = json.map((e) => Language.fromJson(json: e)).toList();
+    } else {
+      spokenLanguages = [];
+    }
   }
 
   void _parseCompanies({
     required List<dynamic> json,
   }) {
-    productionCompanies =
-        json.map((el) => ProductionCompany.fromJson(json: el)).toList();
+    if (json.isNotEmpty) {
+      productionCompanies =
+          json.map((el) => ProductionCompany.fromJson(json: el)).toList();
+    } else {
+      productionCompanies = [];
+    }
   }
 
   void _parseCountries({
     required List<dynamic> json,
   }) {
-    productionCountries =
-        json.map((el) => ProductionCountry.fromJson(json: el)).toList();
+    if (json.isNotEmpty) {
+      productionCountries =
+          json.map((el) => Country.fromJson(json: el)).toList();
+    } else {
+      productionCountries = [];
+    }
   }
 
   void _parseGenres({
     required List<dynamic> json,
   }) {
-    genres = json.map((el) => Genre.fromJson(json: el)).toList();
+    if (json.isNotEmpty) {
+      genres = json.map((el) => Genre.fromJson(json: el)).toList();
+    } else {
+      genres = [];
+    }
   }
 
   void _parseImages({
     required Map json,
   }) {
-    if (json['backdrops'] != null) {
+    if (json['backdrops'] != null && json['backdrops']!.isNotEmpty) {
       final List<dynamic> backdrops = json['backdrops'];
       this.backdrops =
           backdrops.map((el) => getImage(imagePath: el['file_path'])).toList();
+    } else {
+      backdrops = [];
     }
-    if (json['posters'] != null) {
+    if (json['posters'] != null && json['posters']!.isNotEmpty) {
       final List<dynamic> posters = json['posters'];
       this.posters =
           posters.map((el) => getImage(imagePath: el['file_path'])).toList();
+    } else {
+      posters = [];
     }
   }
 
