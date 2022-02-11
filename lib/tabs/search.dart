@@ -104,7 +104,6 @@ class SearchItem extends SearchDelegate<String> {
 
   Widget resultFetching(List<dynamic>? results) {
     int resultSize = results?.length ?? 0;
-    print(resultSize);
 
     return ListView.builder(
         itemCount: results?.length ?? 0,
@@ -186,11 +185,8 @@ class SearchItem extends SearchDelegate<String> {
                   ),
                 );
               },
-              leading:
-                  // TmdbApiWrapper().getImage(posterPath: suggestion.posterPath),
-                  // TmdbApiWrapper().getImage(imagePath: suggestion.posterPath),
-                  Image.network("https://image.tmdb.org/t/p/w500" +
-                      (suggestion.posterPath ?? "")),
+              leading: Image.network("https://image.tmdb.org/t/p/w500" +
+                  (suggestion.posterPath ?? "")),
               title: Text(suggestion?.title ?? ""),
             );
           } else {
