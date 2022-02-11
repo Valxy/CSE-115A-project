@@ -146,16 +146,23 @@ class _ShowDetailsState extends State<ShowDetails> {
                     padding: const EdgeInsets.all(0),
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: snapshot.data!.crew
+                      children: snapshot.data!.cast
                           .map(
                             (e) => Column(
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: CircleAvatar(
-                                    radius: 50.0,
-                                    child: Text(e.name.split(" ")[0][0]),
-                                  ),
+                                  child: e.profilePath != null
+                                      ? CircleAvatar(
+                                          radius: 50.0,
+                                          foregroundImage: NetworkImage(
+                                              "https://image.tmdb.org/t/p/w500" +
+                                                  e.profilePath!),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 50.0,
+                                          child: Text(e.name.split(" ")[0][0]),
+                                        ),
                                 ),
                                 SizedBox(
                                   width: 100,
