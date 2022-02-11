@@ -378,7 +378,7 @@ class Release {
   String? language;
   late String releaseDate;
   late int type;
-  late String note;
+  String? note;
 
   Release.fromJson({
     required Map json,

@@ -117,7 +117,10 @@ class _ShowDetailsState extends State<ShowDetails> {
                                 spacing: 18,
                                 children: [
                                   Text(
-                                    snapshot.data!.releaseDate.split("-")[0],
+                                    snapshot.data?.releaseDate != null
+                                        ? snapshot.data!.releaseDate!
+                                            .split("-")[0]
+                                        : "",
                                   ),
                                   const Text(
                                     "PG-13",
