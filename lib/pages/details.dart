@@ -27,6 +27,12 @@ class _ShowDetailsState extends State<ShowDetails> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+        title: FutureBuilder(
+          future: movieDetails,
+          builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+            return Text(snapshot.data?.title ?? "");
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -41,10 +47,10 @@ class _ShowDetailsState extends State<ShowDetails> {
                   FutureBuilder<Movie>(
                     future: movieDetails,
                     builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-                      if (snapshot.hasData && snapshot.data?.posters != null) {
+                      if (snapshot.hasData) {
                         final posters = snapshot.data?.posters;
                         if (posters != null) {
-                          return posters[2];
+                          return posters[0];
                         }
                       }
 
