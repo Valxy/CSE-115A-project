@@ -90,16 +90,20 @@ class SearchItem extends SearchDelegate<String> {
   // the serach bar is open, this will be implemented later
   @override
   Widget buildSuggestions(BuildContext context) {
-    return FutureBuilder<List<MinimizedMovie>>(
-      future: testDetails,
-      builder:
-          (BuildContext ctx, AsyncSnapshot<List<MinimizedMovie>> snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
-          return buildSuggestionsSuccess(snapshot.data);
-        }
-        return const CircularProgressIndicator();
-      },
-    );
+    if (query.isNotEmpty) {
+      late Future<List<dynamic>> results =
+          TmdbApiWrapper().search(query: query);
+      return FutureBuilder<List<dynamic>>(
+        future: results,
+        builder: (BuildContext ctx, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasData && snapshot.data != null) {
+            return resultFetching(snapshot.data);
+          }
+          return const CircularProgressIndicator();
+        },
+      );
+    }
+    return const Text("");
   }
 
   Widget resultFetching(List<dynamic>? results) {
@@ -131,8 +135,8 @@ class SearchItem extends SearchDelegate<String> {
               posterPath = tvResult?.posterPath ?? "";
               title = tvResult.name;
             } else {
-              print("some other stuff");
-              print(results[index].toString());
+              // if it's a person object, it'll return an empty text box
+              return const Text("");
             }
 
             if (posterPath != "") {
