@@ -34,70 +34,80 @@ class _ShowDetailsState extends State<ShowDetails> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 20.0),
-              height: 216.0,
-              child: ListView(
-                // This next line does the trick.
-                scrollDirection: Axis.horizontal,
-                children: <Widget>[
-                  FutureBuilder<Movie>(
-                    future: movieDetails,
-                    builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-                      if (snapshot.hasData) {
-                        final posters = snapshot.data?.posters;
-                        if (posters != null) {
-                          return posters[0];
-                        }
-                      }
-
-                      return CircularProgressIndicator();
-                    },
-                  ),
-                  Container(
-                    width: 384.0,
-                    color: Colors.blue,
-                  ),
-                  Container(
-                    width: 384.0,
-                    color: Colors.green,
-                  ),
-                  Container(
-                    width: 384.0,
-                    color: Colors.yellow,
-                  ),
-                  Container(
-                    width: 384.0,
-                    color: Colors.orange,
-                  ),
-                ],
-              ),
-            ),
-            Card(
+      body: FutureBuilder(
+        future: movieDetails,
+        builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  FutureBuilder<Movie>(
-                    future: movieDetails,
-                    builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-                      if (snapshot.hasData) {
-                        return ListTile(
-                          title: Text(snapshot.data?.title ?? ""),
-                          subtitle: Text(snapshot.data?.overview ?? ""),
-                        );
-                      }
-
-                      return CircularProgressIndicator();
-                    },
-                  )
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  CircularProgressIndicator(),
                 ],
               ),
+            );
+          }
+
+          final posters = snapshot.data!.posters;
+
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 20.0),
+                  height: 216.0,
+                  child: ListView(
+                    // This next line does the trick.
+                    scrollDirection: Axis.horizontal,
+                    children: <Widget>[
+                      Container(
+                        width: 384.0,
+                        child: posters[0],
+                      ),
+                      Container(
+                        width: 384.0,
+                        color: Colors.blue,
+                      ),
+                      Container(
+                        width: 384.0,
+                        color: Colors.green,
+                      ),
+                      Container(
+                        width: 384.0,
+                        color: Colors.yellow,
+                      ),
+                      Container(
+                        width: 384.0,
+                        color: Colors.orange,
+                      ),
+                    ],
+                  ),
+                ),
+                Card(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      FutureBuilder<Movie>(
+                        future: movieDetails,
+                        builder:
+                            (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+                          if (snapshot.hasData) {
+                            return ListTile(
+                              title: Text(snapshot.data?.title ?? ""),
+                              subtitle: Text(snapshot.data?.overview ?? ""),
+                            );
+                          }
+
+                          return CircularProgressIndicator();
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
