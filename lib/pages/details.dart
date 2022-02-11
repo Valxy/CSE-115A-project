@@ -50,6 +50,24 @@ class _ShowDetailsState extends State<ShowDetails> {
           }
 
           final posters = snapshot.data!.posters;
+          final backdrops = <Widget>[
+            Image.network(
+              "https://image.tmdb.org/t/p/original/VlHt27nCqOuTnuX6bku8QZapzO.jpg",
+              fit: BoxFit.cover,
+            ),
+            Image.network(
+              "https://image.tmdb.org/t/p/original/n7sgwV1TNHUXOf7Aoh7Cr8gWvlZ.jpg",
+              fit: BoxFit.cover,
+            ),
+            Image.network(
+              "https://image.tmdb.org/t/p/original/gespPE81A2RYvMxl9XaVNvIgevS.jpg",
+              fit: BoxFit.cover,
+            ),
+            Image.network(
+              "https://image.tmdb.org/t/p/original/uhYpkLSnlOXTQDmNnu1X4MHMt1S.jpg",
+              fit: BoxFit.cover,
+            ),
+          ];
 
           return SingleChildScrollView(
             child: Column(
@@ -60,28 +78,14 @@ class _ShowDetailsState extends State<ShowDetails> {
                       disableCenter: true,
                       viewportFraction: 1,
                     ),
-                    items: <Widget>[
-                      Container(
-                        width: 384.0,
-                        color: Colors.red,
-                      ),
-                      Container(
-                        width: 384.0,
-                        color: Colors.blue,
-                      ),
-                      Container(
-                        width: 384.0,
-                        color: Colors.green,
-                      ),
-                      Container(
-                        width: 384.0,
-                        color: Colors.yellow,
-                      ),
-                      Container(
-                        width: 384.0,
-                        color: Colors.orange,
-                      ),
-                    ],
+                    items: backdrops
+                        .map(
+                          (e) => Container(
+                            width: 384.0,
+                            child: e,
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
                 Card(
