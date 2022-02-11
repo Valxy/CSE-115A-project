@@ -81,7 +81,7 @@ class SearchItem extends SearchDelegate<String> {
         if (snapshot.hasData && snapshot.data != null) {
           return resultFetching(snapshot.data);
         }
-        return const CircularProgressIndicator();
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }
@@ -99,7 +99,7 @@ class SearchItem extends SearchDelegate<String> {
           if (snapshot.hasData && snapshot.data != null) {
             return resultFetching(snapshot.data);
           }
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         },
       );
     }
