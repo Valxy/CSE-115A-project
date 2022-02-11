@@ -13,20 +13,24 @@ class _SearchTabState extends State<SearchTab> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: const Text("search movies and tv shows"),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              // search button
-              icon: const Icon(Icons.search),
-              onPressed: () {
+            backgroundColor: Colors.white,
+            title: GestureDetector(
+              onTap: () {
                 showSearch(context: context, delegate: SearchItem());
               },
-            )
-          ],
-          backgroundColor: Colors.purple,
-        ),
-        body: Icon(Icons.search),
+              child: Container(
+                height: 50,
+                color: Colors.white,
+                child: Row(
+                  children: const [
+                    Text(
+                      "Search",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+            )),
       );
 }
 
@@ -68,29 +72,17 @@ class SearchItem extends SearchDelegate<String> {
     );
   }
 
-  // this function will build the query result and display it in a list
-  // this will need to be impelmented as a list later
-  // this only show one tile for now
   @override
   Widget buildResults(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.local_movies, size: 120),
-          const SizedBox(
-            height: 48,
-          ),
-          Text(
-            query,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 64,
-              fontWeight: FontWeight.bold,
-            ),
-          )
-        ],
-      ),
+    late Future<List<dynamic>> results = TmdbApiWrapper().search(query: query);
+    return FutureBuilder<List<dynamic>>(
+      future: results,
+      builder: (BuildContext ctx, AsyncSnapshot<List<dynamic>> snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          return resultFetching(snapshot.data);
+        }
+        return const CircularProgressIndicator();
+      },
     );
   }
 
@@ -98,8 +90,6 @@ class SearchItem extends SearchDelegate<String> {
   // the serach bar is open, this will be implemented later
   @override
   Widget buildSuggestions(BuildContext context) {
-    // final suggestions = popularMovies;
-    // return buildSuggestionsSuccess(suggestions);
     return FutureBuilder<List<MinimizedMovie>>(
       future: testDetails,
       builder:
@@ -110,6 +100,70 @@ class SearchItem extends SearchDelegate<String> {
         return const CircularProgressIndicator();
       },
     );
+  }
+
+  Widget resultFetching(List<dynamic>? results) {
+    int resultSize = results?.length ?? 0;
+    print(resultSize);
+
+    return ListView.builder(
+        itemCount: results?.length ?? 0,
+        itemBuilder: (context, index) {
+          if (results != null && results.isNotEmpty && resultSize > 0) {
+            final resultItem = results[index];
+            MinimizedMovie movieResult; // movie object
+            MinimizedTvShow tvResult; // tv object
+            int resultId = 0; // id of the show/tv
+            String posterPath = ""; // path of the poster
+            String title = "no title";
+            Widget noPoster = const Icon(
+              Icons.local_movies_outlined,
+              size: 40,
+            );
+
+            if (results[index] is MinimizedMovie) {
+              movieResult = resultItem;
+              resultId = movieResult.id;
+              posterPath = movieResult?.posterPath ?? "";
+              title = movieResult?.title ?? "";
+            } else if (results[index] is MinimizedTvShow) {
+              tvResult = resultItem;
+              resultId = tvResult.id;
+              posterPath = tvResult?.posterPath ?? "";
+              title = tvResult.name;
+            } else {
+              print("some other stuff");
+              print(results[index].toString());
+            }
+
+            if (posterPath != "") {
+              noPoster = Image.network(
+                  "https://image.tmdb.org/t/p/w500" + (posterPath));
+            }
+
+            return ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => ShowDetails(
+                        showId: resultId.toString(),
+                      ),
+                      fullscreenDialog: true,
+                    ),
+                  );
+                },
+                leading: noPoster,
+                title: Text(title));
+          } else {
+            // return Container(
+            //   alignment: Alignment.center,
+            //   child: const Text("No result"),
+            // );
+            print("I am here");
+            return Text("no data");
+          }
+        });
   }
 
   Widget buildSuggestionsSuccess(List<MinimizedMovie>? suggestions) {
@@ -123,9 +177,11 @@ class SearchItem extends SearchDelegate<String> {
                 Navigator.push(
                   context,
                   MaterialPageRoute<void>(
-                    builder: (BuildContext context) => ShowDetails(
-                      showId: suggestion.id.toString(),
-                    ),
+                    builder: (BuildContext context) {
+                      return ShowDetails(
+                        showId: suggestion.id.toString(),
+                      );
+                    },
                     fullscreenDialog: true,
                   ),
                 );
