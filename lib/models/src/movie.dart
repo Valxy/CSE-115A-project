@@ -5,69 +5,184 @@ import './minimized_movie.dart';
 ///The "completed" Movie class. A Movie object
 ///is an object that represents a movie on the tmdb database.
 class Movie extends MinimizedMovie {
-  ///minLength: 9, maxLength: 9,
-  ///pattern: ^tt[0-9]{7}
-  String? imdbId;
+  //minLength: 9, maxLength: 9,
+  //pattern: ^tt[0-9]{7}
+  ///IMDB movie id.
+  late String imdbId;
 
-  ///Allowed values = [Rumored, Planned, In Production,
-  ///Post Production, Released, Canceled]
+  ///Status of the movie, one of [Rumored, Planned, In Production,
+  ///Post Production, Released, Canceled].
   late String status;
-  dynamic belongsToCollection;
+
+  //Unused. Not even sure what it is.
+  //dynamic belongsToCollection;
   late int budget;
-  String? homepage;
+
+  ///URL to the homepage of the movie.
+  late String homepage;
+
+  ///The revenue of the movie.
   late int revenue;
-  int? runtime;
-  String? tagline;
+
+  ///The length of the movie in minutes.
+  late int runtime;
+
+  ///A one sentence overview of the movie.
+  late String tagline;
+
+  ///A list of language objects representing the languages
+  ///that are spoken in the movie.
   late List<Language> spokenLanguages;
+
+  ///A list of ProductionCompany objects representing the
+  ///companies involved in the production of the movie.
   late List<ProductionCompany> productionCompanies;
+
+  ///A list of country objects representing the countries
+  ///where the movie was produced.
   late List<Country> productionCountries;
+
+  ///A list of CastMember objects representing the cast
+  ///of the movie.
   late List<CastMember> cast;
+
+  ///A list of CrewMember objects representing the crew
+  ///of the movie.
   late List<CrewMember> crew;
+
+  ///A list of Review objects representing the reviews that
+  ///have been left for the movie.
   late List<Review> reviews;
+
+  ///A list of Widgets that are the backdrops for the movie.
   late List<Widget> backdrops;
+
+  ///A list of Widgets that are the posters for the movie.
   late List<Widget> posters;
+
+  ///A list of MinimizedMovie objects representing a list
+  ///of recommendations based off of this movie.
   late List<MinimizedMovie> recommendations;
+
+  ///List of Video objects representing the videos associated with this movie.
   late List<Video> videos;
+
+  ///A list of Release objects representing the releases of this movie.
+  ///This release objects hold the rating ('G', 'PG', 'R', etc).
   late List<Release> releases;
 
   Movie.fromJson({
     required Map json,
   }) {
-    adult = json['adult'];
-    backdropPath = json['backdrop_path'];
-    belongsToCollection = json['belongs_to_collection'];
-    budget = json['budget'];
-    homepage = json['homepage'];
-    id = json['id'];
-    imdbId = json['imdb_id'];
-    originalLanguage = json['original_language'];
-    originalTitle = json['original_title'];
-    overview = json['overview'];
-    popularity = json['popularity'];
-    posterPath = json['poster_path'];
-    releaseDate = json['release_date'];
-    revenue = json['revenue'];
-    runtime = json['runtime'];
-    status = json['status'];
-    tagline = json['tagline'];
-    title = json['title'];
-    video = json['video'];
-    voteAverage = json['vote_average'];
-    voteCount = json['vote_count'];
-
+    if (json['adult'] != null) {
+      adult = json['adult'];
+    } else {
+      adult = true;
+    }
+    if (json['backdrop_path'] != null) {
+      backdropPath = json['backdrop_path'];
+    } else {
+      backdropPath = "";
+    }
+    if (json['budget'] != null) {
+      budget = json['budget'];
+    } else {
+      budget = 0;
+    }
+    if (json['homepage'] != null) {
+      homepage = json['homepage'];
+    } else {
+      homepage = "";
+    }
+    if (json['id'] != null) {
+      id = json['id'];
+    } else {
+      id = 0;
+    }
+    if (json['imdb_id'] != null) {
+      imdbId = json['imdb_id'];
+    } else {
+      imdbId = "";
+    }
+    if (json['original_language'] != null) {
+      originalLanguage = json['original_language'];
+    } else {
+      originalLanguage = "";
+    }
+    if (json['original_title'] != null) {
+      originalTitle = json['original_title'];
+    } else {
+      originalTitle = "";
+    }
+    if (json['overview'] != null) {
+      overview = json['overview'];
+    } else {
+      overview = "";
+    }
+    if (json['popularity'] != null) {
+      popularity = json['popularity'];
+    } else {
+      popularity = 0;
+    }
+    if (json['poster_path'] != null) {
+      posterPath = json['poster_path'];
+    } else {
+      posterPath = "";
+    }
+    if (json['release_date'] != null) {
+      releaseDate = json['release_date'];
+    } else {
+      releaseDate = "";
+    }
+    if (json['revenue'] != null) {
+      revenue = json['revenue'];
+    } else {
+      revenue = 0;
+    }
+    if (json['runtime'] != null) {
+      runtime = json['runtime'];
+    } else {
+      runtime = 0;
+    }
+    if (json['status'] != null) {
+      status = json['status'];
+    } else {
+      status = "";
+    }
+    if (json['tagline'] != null) {
+      tagline = json['tagline'];
+    } else {
+      tagline = "";
+    }
+    if (json['title'] != null) {
+      title = json['title'];
+    } else {
+      title = "";
+    }
+    if (json['video'] != null) {
+      video = json['video'];
+    } else {
+      video = false;
+    }
+    if (json['vote_average'] != null) {
+      voteAverage = json['vote_average'];
+    } else {
+      voteAverage = 0;
+    }
+    if (json['vote_count'] != null) {
+      voteCount = json['vote_count'];
+    } else {
+      voteCount = 0;
+    }
     _parseLanguages(json: json['spoken_languages']);
     _parseCompanies(json: json['production_companies']);
     _parseCountries(json: json['production_countries']);
-
     _parseGenres(json: json['genres']);
     _parseCredits(json: json['credits']);
-
     _parseVideos(json: json['videos']);
     _parseReviews(json: json['reviews']);
     _parseRecommendations(json: json['recommendations']);
-
     _parseImages(json: json['images']);
-
     _parseReleaseDates(json: json['release_dates']);
   }
 
@@ -78,9 +193,15 @@ class Movie extends MinimizedMovie {
     final List<dynamic> parsed = json['results'];
     if (parsed.isNotEmpty) {
       for (var i = 0; i < parsed.length; i++) {
+        String iso31661 = parsed[i]['iso_3166_1'];
         List<dynamic> jsonReleaseDate = parsed[i]['release_dates'];
-        for (var j = 0; j < jsonReleaseDate.length; j++) {
-          releases.add(Release.fromJson(json: jsonReleaseDate[j]));
+        // Currently only returning releases from the US.
+        if (iso31661 == 'US') {
+          for (var j = 0; j < jsonReleaseDate.length; j++) {
+            Release rel = Release.fromJson(json: jsonReleaseDate[j]);
+            rel.country = iso31661;
+            releases.add(rel);
+          }
         }
       }
     }

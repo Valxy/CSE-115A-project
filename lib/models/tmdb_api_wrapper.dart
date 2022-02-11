@@ -314,6 +314,7 @@ class TmdbApiWrapper {
               name: searchResult['name'],
               id: searchResult['id'],
               adult: searchResult['adult'],
+              gender: 0,
               popularity: searchResult['popularity']);
         }
       case "tv":
@@ -381,6 +382,9 @@ class _ApiBaseHelper {
       responseJson = await _cacheManager.getSingleFile(_baseUrl + endPoint);
     } on SocketException {
       throw FetchDataException(message: 'No Internet connection');
+    } on HttpExceptionWithStatus catch (e) {
+      _handleHttpExceptionWithStatus(exception: e);
+      rethrow;
     }
     return json.decode(responseJson);
   }
@@ -394,22 +398,24 @@ class _ApiBaseHelper {
     return Image.file(response);
   }
 
-  dynamic _returnResponse(var response) {
-    switch (response.statusCode) {
+  void _handleHttpExceptionWithStatus({
+    required HttpExceptionWithStatus exception,
+  }) {
+    switch (exception.statusCode) {
       case 200:
-        print(response);
-        var responseJson = json.decode(response.body.toString());
-        return responseJson;
+      // do nothing. shouldnt get here, this is a valid response.
       case 400:
-        throw BadRequestException(message: response.body.toString());
+        throw BadRequestException(message: exception.message);
       case 401:
       case 403:
-        throw UnauthorisedException(message: response.body.toString());
+        throw UnauthorisedException(message: exception.message);
+      case 404:
+        throw PageNotFoundException(message: exception.message);
       case 500:
       default:
         throw FetchDataException(
             message:
-                'Error occured while Communication with Server with StatusCode : ${response.statusCode}');
+                'Error occured while Communication with Server with StatusCode : ${exception.statusCode}');
     }
   }
 }

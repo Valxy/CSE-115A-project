@@ -48,3 +48,12 @@ class InvalidInputException extends AppException {
           prefix: "Invalid Input: ",
         );
 }
+
+class PageNotFoundException extends AppException {
+  PageNotFoundException({
+    message,
+  }) : super(
+          message: message,
+          prefix: "Not Found Error: ",
+        );
+}
