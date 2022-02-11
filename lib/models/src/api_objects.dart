@@ -37,7 +37,7 @@ class Author {
   late String name;
   late String username;
   String? avatarPath;
-  late int rating;
+  late double? rating; // change from late int to late double?
 
   Author.fromJson({
     required Map json,
@@ -45,7 +45,11 @@ class Author {
     name = json['name'];
     username = json['username'];
     avatarPath = json['avatar_path'];
-    rating = json['rating'];
+    rating = json['rating']; // causing null is not type double error
+  }
+
+  String toString() {
+    return "Author: {name: $name, username: $username, avatar_path: $avatarPath, rating: $rating}";
   }
 
   String toString() {
@@ -378,7 +382,7 @@ class Release {
   String? language;
   late String releaseDate;
   late int type;
-  late String note;
+  String? note;
 
   Release.fromJson({
     required Map json,

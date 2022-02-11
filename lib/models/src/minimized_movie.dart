@@ -19,7 +19,7 @@ class MinimizedMovie {
   late String originalTitle;
   late num popularity;
   String? posterPath;
-  late String releaseDate;
+  String? releaseDate;
   String? overview;
   late String title;
   late bool video;
