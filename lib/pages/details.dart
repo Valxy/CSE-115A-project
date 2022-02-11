@@ -96,11 +96,6 @@ class _ShowDetailsState extends State<ShowDetails> {
                 ],
               ),
             ),
-            Container(
-              height: 300,
-              child:
-                  YoutubeTrailer("https://www.youtube.com/watch?v=JfVOs4VSpmA"),
-            ),
           ],
         ),
       ),
