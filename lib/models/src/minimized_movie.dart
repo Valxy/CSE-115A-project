@@ -10,20 +10,43 @@ class MinimizedMovie {
 
   // Used Num since the api returns
   // both integers and floats
+  ///User rating of the movie
   late num voteAverage;
-  late bool adult;
-  String? backdropPath;
 
-  ///The TMDB ID
+  ///Whether the film is an adult film
+  late bool adult;
+
+  ///Path to the backdrop of the movie
+  late String backdropPath;
+
+  ///The TMDB movie id
   late int id;
+
+  ///Original title of the movie
   late String originalTitle;
+
+  ///Popularity of the movie
   late num popularity;
-  String? posterPath;
-  String? releaseDate;
-  String? overview;
+
+  ///Path to the poster for the movie
+  late String posterPath;
+
+  ///Date the movie was released
+  late String releaseDate;
+
+  ///Synopsis of the movie
+  late String overview;
+
+  ///Title of the movie
   late String title;
+
+  ///Whether the movie has videos or not (possibly deprecated?)
   late bool video;
+
+  ///Number of users who rated the movie
   late int voteCount;
+
+  ///List of genre objects representing the genres the movie belongs to
   late List<Genre> genres;
 
   MinimizedMovie();
@@ -31,19 +54,71 @@ class MinimizedMovie {
   MinimizedMovie.fromJson({
     required Map json,
   }) {
-    adult = json['adult'];
-    backdropPath = json['backdrop_path'];
-    id = json['id'];
-    originalLanguage = json['original_language'];
-    originalTitle = json['original_title'];
-    overview = json['overview'];
-    popularity = json['popularity'];
-    posterPath = json['poster_path'];
-    releaseDate = json['release_date'];
-    title = json['title'];
-    video = json['video'];
-    voteAverage = json['vote_average'];
-    voteCount = json['vote_count'];
+    if (json['adult'] != null) {
+      adult = json['adult'];
+    } else {
+      adult = true;
+    }
+    if (json['backdrop_path'] != null) {
+      backdropPath = json['backdrop_path'];
+    } else {
+      backdropPath = "";
+    }
+    if (json['id'] != null) {
+      id = json['id'];
+    } else {
+      id = 0;
+    }
+    if (json['original_language'] != null) {
+      originalLanguage = json['original_language'];
+    } else {
+      originalLanguage = "";
+    }
+    if (json['original_title'] != null) {
+      originalTitle = json['original_title'];
+    } else {
+      originalTitle = "";
+    }
+    if (json['overview'] != null) {
+      overview = json['overview'];
+    } else {
+      overview = "";
+    }
+    if (json['popularity'] != null) {
+      popularity = json['popularity'];
+    } else {
+      popularity = 0;
+    }
+    if (json['poster_path'] != null) {
+      posterPath = json['poster_path'];
+    } else {
+      posterPath = "";
+    }
+    if (json['release_date'] != null) {
+      releaseDate = json['release_date'];
+    } else {
+      releaseDate = "";
+    }
+    if (json['title'] != null) {
+      title = json['title'];
+    } else {
+      title = "";
+    }
+    if (json['video'] != null) {
+      video = json['video'];
+    } else {
+      video = false;
+    }
+    if (json['vote_average'] != null) {
+      voteAverage = json['vote_average'];
+    } else {
+      voteAverage = 0;
+    }
+    if (json['vote_count'] != null) {
+      voteCount = json['vote_count'];
+    } else {
+      voteCount = 0;
+    }
 
     // TMDB api inconsistent with naming conventions
     if (json['genre_ids'] != null) {
@@ -72,7 +147,7 @@ class MinimizedMovie {
     String size = "w500",
   }) {
     if (imagePath != null && imagePath.isNotEmpty) {
-      return Image.network("https://image.tmdb.org/t/p/$size" + posterPath!);
+      return Image.network("https://image.tmdb.org/t/p/$size" + imagePath);
     }
     return const SizedBox.shrink();
   }
@@ -85,6 +160,6 @@ class MinimizedMovie {
   void _parseGenres({
     required List<dynamic> json,
   }) {
-    genres = json.map((el) => Genre(id: el)).toList();
+    genres = json.map((el) => Genre(id: el, name: "")).toList();
   }
 }

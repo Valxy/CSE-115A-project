@@ -227,8 +227,9 @@ Future<void> testApiWrapper() async {
   print(dumpString);
   dumpString = 'status: ${topRatedMovie.status}\n';
   print(dumpString);
-  dumpString = 'belongsToCollection: ${topRatedMovie.belongsToCollection}\n';
-  print(dumpString);
+  //removed
+  //dumpString = 'belongsToCollection: ${topRatedMovie.belongsToCollection}\n';
+  //print(dumpString);
   dumpString = 'budget: ${topRatedMovie.budget}\n';
   print(dumpString);
   dumpString = 'homepage: ${topRatedMovie.homepage}\n';
