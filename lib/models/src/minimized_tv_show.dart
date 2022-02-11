@@ -11,7 +11,7 @@ class MinimizedTvShow {
   late String overview;
   late num popularity;
   String? posterPath;
-  late String firstAirDate;
+  String? firstAirDate;
   late String name;
   late num voteAverage;
   late int voteCount;
