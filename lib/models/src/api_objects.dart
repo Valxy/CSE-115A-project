@@ -246,6 +246,46 @@ class Person {
     required this.popularity,
     required this.adult,
   });
+  
+    Person.fromJson({
+    required Map json,
+  }) {
+    if (json['credit_id'] != null) {
+      creditId = json['credit_id'];
+    } else {
+      creditId = "";
+    }
+    if (json['profile_path'] != null) {
+      profilePath = json['profile_path'];
+    } else {
+      profilePath = "";
+    }
+    if (json['name'] != null) {
+      name = json['name'];
+    } else {
+      name = "";
+    }
+    if (json['id'] != null) {
+      id = json['id'];
+    } else {
+      id = 0;
+    }
+    if (json['adult'] != null) {
+      adult = json['adult'];
+    } else {
+      adult = true;
+    }
+    if (json['gender'] != null) {
+      gender = json['gender'];
+    } else {
+      gender = 0;
+    }
+    if (json['popularity'] != null) {
+      popularity = json['popularity'];
+    } else {
+      popularity = 0;
+    }
+  }
 
   ///A method to get an image from TMDB. Pass the person's
   ///[profilePath] to get their profile picture. [size] is optional,
