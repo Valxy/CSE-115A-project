@@ -308,14 +308,7 @@ class TmdbApiWrapper {
     switch (searchResult['media_type']) {
       case "person":
         {
-          return Person.fromArguments(
-              creditId: "",
-              profilePath: searchResult['profile_path'],
-              name: searchResult['name'],
-              id: searchResult['id'],
-              adult: searchResult['adult'],
-              gender: 0,
-              popularity: searchResult['popularity']);
+          return Person.fromJson(json: searchResult);
         }
       case "tv":
         {
@@ -327,7 +320,7 @@ class TmdbApiWrapper {
         }
     }
   }
-
+    
   MinimizedTvShow _getTvShowFromJson({
     required Map json,
   }) {
