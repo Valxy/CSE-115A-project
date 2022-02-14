@@ -49,26 +49,6 @@ class _ShowDetailsState extends State<ShowDetails> {
             );
           }
 
-          final posters = snapshot.data!.posters;
-          final backdrops = <Widget>[
-            Image.network(
-              "https://image.tmdb.org/t/p/original/VlHt27nCqOuTnuX6bku8QZapzO.jpg",
-              fit: BoxFit.cover,
-            ),
-            Image.network(
-              "https://image.tmdb.org/t/p/original/n7sgwV1TNHUXOf7Aoh7Cr8gWvlZ.jpg",
-              fit: BoxFit.cover,
-            ),
-            Image.network(
-              "https://image.tmdb.org/t/p/original/gespPE81A2RYvMxl9XaVNvIgevS.jpg",
-              fit: BoxFit.cover,
-            ),
-            Image.network(
-              "https://image.tmdb.org/t/p/original/uhYpkLSnlOXTQDmNnu1X4MHMt1S.jpg",
-              fit: BoxFit.cover,
-            ),
-          ];
-
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -78,11 +58,14 @@ class _ShowDetailsState extends State<ShowDetails> {
                       disableCenter: true,
                       viewportFraction: 1,
                     ),
-                    items: backdrops
+                    items: snapshot.data!.backdrops
                         .map(
                           (e) => Container(
                             width: 384.0,
-                            child: e,
+                            child: FittedBox(
+                              child: e,
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         )
                         .toList(),
@@ -93,7 +76,7 @@ class _ShowDetailsState extends State<ShowDetails> {
                     height: 240,
                     padding: const EdgeInsets.all(0),
                     child: Row(children: [
-                      posters[0],
+                      snapshot.data!.posters[0],
                       const Spacer(
                         flex: 1,
                       ),
@@ -118,7 +101,7 @@ class _ShowDetailsState extends State<ShowDetails> {
                                 children: [
                                   Text(
                                     snapshot.data?.releaseDate != null
-                                        ? snapshot.data!.releaseDate!
+                                        ? snapshot.data!.releaseDate
                                             .split("-")[0]
                                         : "",
                                   ),
@@ -126,7 +109,7 @@ class _ShowDetailsState extends State<ShowDetails> {
                                     "PG-13",
                                   ),
                                   Text(
-                                    "${snapshot.data!.runtime! ~/ 60}h",
+                                    "${snapshot.data!.runtime ~/ 60}h",
                                   )
                                 ],
                               ),
@@ -164,7 +147,7 @@ class _ShowDetailsState extends State<ShowDetails> {
                                           radius: 50.0,
                                           foregroundImage: NetworkImage(
                                               "https://image.tmdb.org/t/p/w500" +
-                                                  e.profilePath!),
+                                                  e.profilePath),
                                         )
                                       : CircleAvatar(
                                           radius: 50.0,
