@@ -13,49 +13,63 @@ class ExploreTab extends StatefulWidget {
 }
 
 class _ExploreTabState extends State<ExploreTab> {
-  final ScrollController _scrollController = ScrollController();
+  //final ScrollController _scrollController = ScrollController();
 
   String category = "";
 
   static String? title;
   static String? releaseDate;
-  static int? runtime;
+  static num voteAverage = 0;
+  static String movieID = "634649";
+  static List<MinimizedMovie> movieList = [];
+  static TmdbApiWrapper wrapper = TmdbApiWrapper();
 
   static Future<String?> getTitle(int i, String category) async {
-    TmdbApiWrapper wrapper = TmdbApiWrapper();
-    /*List<Movie> movieList = [];
-    if (category == "Popular Movies")
-      movieList = await wrapper.getPopularMovies();
-    if (category == "In Theaters")
-      movieList = await wrapper.getNowPlayingMovies();
-    if (category == "Top Rated Movies")
-      movieList = await wrapper.getTopRatedMovies();*/
-    List<MinimizedMovie> movieList = await wrapper.getPopularMovies();
-    title = await movieList[i].title;
+    if (category == "Popular Movies") { movieList = await wrapper.getPopularMovies(); }
+    if (category == "In Theaters") { movieList = await wrapper.getNowPlayingMovies(); }
+    if (category == "Top Rated Movies") { movieList = await wrapper.getTopRatedMovies(); }
+    //List<MinimizedMovie> movieList = await wrapper.getPopularMovies();
+    title = movieList[i].title;
     return title;
   }
 
   static Future<String?> getReleaseDate(int i, String category) async {
-    TmdbApiWrapper wrapper = TmdbApiWrapper();
-    List<MinimizedMovie> movieList = await wrapper.getPopularMovies();
-    releaseDate = await movieList[i].releaseDate;
+    if (category == "Popular Movies") { movieList = await wrapper.getPopularMovies(); }
+    if (category == "In Theaters") { movieList = await wrapper.getNowPlayingMovies(); }
+    if (category == "Top Rated Movies") { movieList = await wrapper.getTopRatedMovies(); }
+    releaseDate = movieList[i].releaseDate;
     return releaseDate;
   }
 
-  static Future<int?> getRuntime(int i, String category) async {
-    // TmdbApiWrapper wrapper = TmdbApiWrapper();
-    // List<MinimizedMovie> movieList = await wrapper.getPopularMovies();
-    // runtime = await movieList[i].runtime;
-    return 0;
+  static Future<num> getVoteAverage(int i, String category) async {
+    if (category == "Popular Movies") { movieList = await wrapper.getPopularMovies(); }
+    if (category == "In Theaters") { movieList = await wrapper.getNowPlayingMovies(); }
+    if (category == "Top Rated Movies") { movieList = await wrapper.getTopRatedMovies(); }
+    voteAverage = movieList[i].voteAverage;
+    return voteAverage*10;
   }
 
   static Future<Movie> getPoster(int i, String category) async {
-    TmdbApiWrapper wrapper = TmdbApiWrapper();
-    List<MinimizedMovie> movieList = await wrapper.getPopularMovies();
-    MinimizedMovie movieItem = await movieList[i];
+    if (category == "Popular Movies") { movieList = await wrapper.getPopularMovies(); }
+    if (category == "In Theaters") { movieList = await wrapper.getNowPlayingMovies(); }
+    if (category == "Top Rated Movies") { movieList = await wrapper.getTopRatedMovies(); }
+    MinimizedMovie movieItem = movieList[i];
     int? useID = movieItem.id;
     Future<Movie> movie = wrapper.getDetailsMovie(movieId: useID);
     return movie;
+  }
+
+  /*static Future<String> getMovieID(int i) async {
+    MinimizedMovie movieItem = await movieList[i];
+    int? useID = movieItem.id;
+    movieID = useID.toString();
+    return movieID;
+  }*/
+  static String getMovieID(int i)  {
+    MinimizedMovie movieItem =  movieList[i];
+    int useID = movieItem.id;
+    movieID = useID.toString();
+    return movieID;
   }
 
   @override
@@ -76,17 +90,24 @@ class _ExploreTabState extends State<ExploreTab> {
           }
 
           return _buildText(category);
-        } else {
-          return _horizontalListView();
+        } 
+        if (i == 1) {
+          return _horizontalListViewPopular();
+        }
+        if (i == 3) {
+          return _horizontalListViewInTheaters();
+        }
+        else {
+          return _horizontalListViewTopRated();
         }
       },
     ));
   }
 
   // build method for the different scrolling lists
-  Widget _horizontalListView() {
+  Widget _horizontalListViewPopular() {
     return SizedBox(
-      height: 400,
+      height: 360,
       child: Scrollbar(
         //isAlwaysShown: true,
         //controller: _scrollController,
@@ -94,24 +115,56 @@ class _ExploreTabState extends State<ExploreTab> {
           //controller: _scrollController,
           itemCount: 20,
           scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) => _buildBox(index),
+          itemBuilder: (BuildContext context, int index) => _buildBoxPopular(index),
+        ),
+      ),
+    );
+  }
+
+  Widget _horizontalListViewInTheaters() {
+    return SizedBox(
+      height: 360,
+      child: Scrollbar(
+        //isAlwaysShown: true,
+        //controller: _scrollController,
+        child: ListView.builder(
+          //controller: _scrollController,
+          itemCount: 20,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (BuildContext context, int index) => _buildBoxInTheaters(index),
+        ),
+      ),
+    );
+  }
+
+  Widget _horizontalListViewTopRated() {
+    return SizedBox(
+      height: 360,
+      child: Scrollbar(
+        //isAlwaysShown: true,
+        //controller: _scrollController,
+        child: ListView.builder(
+          //controller: _scrollController,
+          itemCount: 20,
+          scrollDirection: Axis.horizontal,
+          itemBuilder: (BuildContext context, int index) => _buildBoxTopRated(index),
         ),
       ),
     );
   }
 
   // build method for each individual movie
-  Widget _buildBox(int index) => Container(
-        margin: const EdgeInsets.all(12),
-        height: 400,
-        width: 300,
+  Widget _buildBoxPopular(int index) => Container(
+        margin: const EdgeInsets.all(8),
+        height: 360,
+        width: 200,
         child: OutlinedButton(
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute<void>(
                 builder: (BuildContext context) =>
-                    const ShowDetails(showId: "634649"),
+                    ShowDetails(showId: "634649"),
                 fullscreenDialog: true,
               ),
             );
@@ -120,11 +173,11 @@ class _ExploreTabState extends State<ExploreTab> {
           child: new Column(children: <Widget>[
             Container(
               width: 200,
-              height: 200,
+              height: 250,
               margin: const EdgeInsets.only(
-                  left: 0.0, top: 10.0, bottom: 10.0, right: 0.0),
+                  left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<Movie>(
-                future: getPoster(index, category),
+                future: getPoster(index, "Popular Movies"),
                 builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
                   if (snapshot.hasData && snapshot.data?.posters != null) {
                     final posters = snapshot.data?.posters;
@@ -138,48 +191,225 @@ class _ExploreTabState extends State<ExploreTab> {
               ),
             ),
             Container(
+              width: 200,
               margin: const EdgeInsets.only(
-                  left: 0.0, top: 5.0, bottom: 5.0, right: 0.0),
+                  left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getTitle(index,
-                    category), // a previously-obtained Future<String> or null
+                future: getTitle(index, "Popular Movies"), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
                       style: const TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
                           fontWeight: FontWeight.bold,
-                          fontSize: 20.0));
-                },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.only(
-                  left: 0.0, top: 5.0, bottom: 5.0, right: 0.0),
-              child: FutureBuilder<int?>(
-                future: getRuntime(index, category),
-                builder: (BuildContext context, AsyncSnapshot<int?> snapshot) {
-                  return Text('Runtime: ${snapshot.data}',
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.bold,
                           fontSize: 16.0));
                 },
               ),
             ),
             Container(
+              width: 200,
               margin: const EdgeInsets.only(
-                  left: 0.0, top: 5.0, bottom: 5.0, right: 0.0),
+                  left: 0.0, top: 0.0, bottom: 0.0, right: 0.0),
+              child: FutureBuilder<num>(
+                future: getVoteAverage(index, "Popular Movies"),
+                builder: (BuildContext context, AsyncSnapshot<num> snapshot) {
+                  return Text('Rating: ${snapshot.data?.toInt()}%',
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0));
+                },
+              ),
+            ),
+            Container(
+              width: 200,
+              margin: const EdgeInsets.only(
+                  left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getReleaseDate(index,
-                    category), // a previously-obtained Future<String> or null
+                future: getReleaseDate(index, "Popular Movies"), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Released: ${snapshot.data}',
                       style: const TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
                           fontWeight: FontWeight.bold,
+                          fontSize: 12.0));
+                },
+              ),
+            ),
+          ]),
+        ),
+      );
+
+  // build method for each individual movie
+  Widget _buildBoxInTheaters(int index) => Container(
+        margin: const EdgeInsets.all(8),
+        height: 360,
+        width: 200,
+        child: OutlinedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) =>
+                    ShowDetails(showId: movieID),
+                fullscreenDialog: true,
+              ),
+            );
+          },
+          // ignore: unnecessary_new
+          child: new Column(children: <Widget>[
+            Container(
+              width: 200,
+              height: 250,
+              margin: const EdgeInsets.only(
+                  left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
+              child: FutureBuilder<Movie>(
+                future: getPoster(index, "In Theaters"),
+                builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+                  if (snapshot.hasData && snapshot.data?.posters != null) {
+                    final posters = snapshot.data?.posters;
+                    if (posters != null) {
+                      // Gets the first poster in the array of posters for that movie
+                      return posters[0];
+                    }
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+            ),
+            Container(
+              width: 200,
+              margin: const EdgeInsets.only(
+                  left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
+              child: FutureBuilder<String?>(
+                future: getTitle(index, "In Theaters"), // a previously-obtained Future<String> or null
+                builder:
+                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  return Text('${snapshot.data}',
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontWeight: FontWeight.bold,
                           fontSize: 16.0));
+                },
+              ),
+            ),
+            Container(
+              width: 200,
+              margin: const EdgeInsets.only(
+                  left: 0.0, top: 0.0, bottom: 0.0, right: 0.0),
+              child: FutureBuilder<num>(
+                future: getVoteAverage(index, "In Theaters"),
+                builder: (BuildContext context, AsyncSnapshot<num> snapshot) {
+                  return Text('Rating: ${snapshot.data?.toInt()}%',
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0));
+                },
+              ),
+            ),
+            Container(
+              width: 200,
+              margin: const EdgeInsets.only(
+                  left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
+              child: FutureBuilder<String?>(
+                future: getReleaseDate(index, "In Theaters"), // a previously-obtained Future<String> or null
+                builder:
+                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  return Text('Released: ${snapshot.data}',
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0));
+                },
+              ),
+            ),
+          ]),
+        ),
+      );
+
+  // build method for each individual movie
+  Widget _buildBoxTopRated(int index) => Container(
+        margin: const EdgeInsets.all(8),
+        height: 360,
+        width: 200,
+        child: OutlinedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (BuildContext context) =>
+                    ShowDetails(showId: movieID),
+                fullscreenDialog: true,
+              ),
+            );
+          },
+          // ignore: unnecessary_new
+          child: new Column(children: <Widget>[
+            Container(
+              width: 200,
+              height: 250,
+              margin: const EdgeInsets.only(
+                  left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
+              child: FutureBuilder<Movie>(
+                future: getPoster(index, "Top Rated Movies"),
+                builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+                  if (snapshot.hasData && snapshot.data?.posters != null) {
+                    final posters = snapshot.data?.posters;
+                    if (posters != null) {
+                      // Gets the first poster in the array of posters for that movie
+                      return posters[0];
+                    }
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+            ),
+            Container(
+              width: 200,
+              margin: const EdgeInsets.only(
+                  left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
+              child: FutureBuilder<String?>(
+                future: getTitle(index, "Top Rated Movies"), // a previously-obtained Future<String> or null
+                builder:
+                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  return Text('${snapshot.data}',
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0));
+                },
+              ),
+            ),
+            Container(
+              width: 200,
+              margin: const EdgeInsets.only(
+                  left: 0.0, top: 0.0, bottom: 0.0, right: 0.0),
+              child: FutureBuilder<num>(
+                future: getVoteAverage(index, "Top Rated Movies"),
+                builder: (BuildContext context, AsyncSnapshot<num> snapshot) {
+                  return Text('Rating: ${snapshot.data?.toInt()}%',
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0));
+                },
+              ),
+            ),
+            Container(
+              width: 200,
+              margin: const EdgeInsets.only(
+                  left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
+              child: FutureBuilder<String?>(
+                future: getReleaseDate(index, "Top Rated Movies"), // a previously-obtained Future<String> or null
+                builder:
+                    (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                  return Text('Released: ${snapshot.data}',
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0));
                 },
               ),
             ),
@@ -193,6 +423,6 @@ class _ExploreTabState extends State<ExploreTab> {
         height: 25,
         width: 200,
         child: Text(category,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
       );
 }
