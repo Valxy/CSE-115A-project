@@ -119,6 +119,8 @@ class SearchItem extends SearchDelegate<String> {
             int resultId = 0; // id of the show/tv
             String posterPath = ""; // path of the poster
             String title = "no title";
+            String year = "";
+            String type = "none";
             Widget noPoster = const Icon(
               Icons.local_movies_outlined,
               size: 40,
@@ -127,13 +129,20 @@ class SearchItem extends SearchDelegate<String> {
             if (results[index] is MinimizedMovie) {
               movieResult = resultItem;
               resultId = movieResult.id;
-              posterPath = movieResult?.posterPath ?? "";
-              title = movieResult?.title ?? "";
+              posterPath = movieResult.posterPath;
+              title = movieResult.title;
+              type = "movie";
+              if (movieResult.releaseDate.length >= 4) {
+                year = movieResult.releaseDate.substring(0, 4);
+              } else {
+                year = "";
+              }
             } else if (results[index] is MinimizedTvShow) {
               tvResult = resultItem;
               resultId = tvResult.id;
-              posterPath = tvResult?.posterPath ?? "";
+              posterPath = tvResult.posterPath;
               title = tvResult.name;
+              type = "tv";
             } else {
               // if it's a person object, it'll return an empty text box
               return const Text("");
@@ -145,19 +154,55 @@ class SearchItem extends SearchDelegate<String> {
             }
 
             return ListTile(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) => ShowDetails(
-                        showId: resultId.toString(),
-                      ),
-                      fullscreenDialog: true,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (BuildContext context) => ShowDetails(
+                      showId: resultId.toString(),
                     ),
-                  );
-                },
-                leading: noPoster,
-                title: Text(title));
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+              leading: noPoster,
+              title: Container(
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // title container
+                    Container(
+                      padding: const EdgeInsets.only(
+                          left: 0, right: 0, top: 0, bottom: 5),
+                      child: Text(title),
+                    ),
+                    // year container
+                    if (year != "")
+
+                      // some movies/shows doesn't have years, so if that's the case
+                      // don't show the container
+                      Container(
+                        padding: const EdgeInsets.only(
+                            left: 0, right: 0, top: 0, bottom: 5),
+                        child: Text(
+                          year,
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                      ),
+
+                    // actor container
+                    if (type == "movie")
+                      Container(
+                        child: getActors(resultId),
+                      )
+                    else if (type == "tv")
+                      const Text("tv type"),
+                  ],
+                ),
+              ),
+            );
           } else {
             // return Container(
             //   alignment: Alignment.center,
@@ -189,13 +234,44 @@ class SearchItem extends SearchDelegate<String> {
                   ),
                 );
               },
-              leading: Image.network("https://image.tmdb.org/t/p/w500" +
-                  (suggestion.posterPath ?? "")),
-              title: Text(suggestion?.title ?? ""),
+              leading: Image.network(
+                  "https://image.tmdb.org/t/p/w500" + (suggestion.posterPath)),
+              title: Text(suggestion.title),
             );
           } else {
             return const Text("");
           }
         });
+  }
+
+  Widget getActors(int showId) {
+    late Future<Movie> movieObj =
+        TmdbApiWrapper().getDetailsMovie(movieId: showId);
+    return FutureBuilder<Movie>(
+      future: movieObj,
+      builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
+        if (snapshot.hasData && snapshot.data != null) {
+          List<CastMember>? emptyCast = null;
+          return Text(
+            parseCast(snapshot.data?.cast ?? emptyCast),
+            style: const TextStyle(fontSize: 11),
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+  }
+
+  String parseCast(List<CastMember>? temp) {
+    String actorsList = "";
+    if (temp != null) {
+      for (int i = 0; i < temp.length && i < 3; i++) {
+        actorsList += temp[i].originalName.toString();
+        if (i < 2) {
+          actorsList += ", ";
+        }
+      }
+    }
+    return actorsList;
   }
 }
