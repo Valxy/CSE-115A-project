@@ -253,18 +253,22 @@ class Movie extends MinimizedMovie {
     required Map json,
   }) {
     if (json['backdrops'] != null && json['backdrops']!.isNotEmpty) {
-      final List<dynamic> backdrops = json['backdrops'];
+      List<dynamic> backdrops = json['backdrops'];
+      backdrops = backdrops
+          .where((element) =>
+              (element['iso_639_1'] == null || element['iso_639_1'] == 'en'))
+          .toList();
       this.backdrops =
-          backdrops.map((el) => getImage(imagePath: el['file_path'])).toList();
-    } else {
-      backdrops = [];
+          backdrops.map((e) => getImage(imagePath: e['file_path'])).toList();
     }
     if (json['posters'] != null && json['posters']!.isNotEmpty) {
-      final List<dynamic> posters = json['posters'];
+      List<dynamic> posters = json['posters'];
+      posters = posters
+          .where((element) =>
+              (element['iso_639_1'] == null || element['iso_639_1'] == 'en'))
+          .toList();
       this.posters =
           posters.map((el) => getImage(imagePath: el['file_path'])).toList();
-    } else {
-      posters = [];
     }
   }
 
@@ -282,7 +286,7 @@ class Movie extends MinimizedMovie {
     }
   }
 
-  ///can't use Movie.fromJson since these will me minimized movie objects
+  //can't use Movie.fromJson since these will me minimized movie objects
   void _parseRecommendations({
     required Map json,
   }) {

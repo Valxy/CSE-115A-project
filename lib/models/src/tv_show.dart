@@ -282,13 +282,21 @@ class TvShow extends MinimizedTvShow {
   void _parseImages({
     required Map json,
   }) {
-    if (json['backdrops'] != null) {
-      final List<dynamic> backdrops = json['backdrops'];
+    if (json['backdrops'] != null && json['backdrops']!.isNotEmpty) {
+      List<dynamic> backdrops = json['backdrops'];
+      backdrops = backdrops
+          .where((element) =>
+              (element['iso_639_1'] == null || element['iso_639_1'] == 'en'))
+          .toList();
       this.backdrops =
-          backdrops.map((el) => getImage(imagePath: el['file_path'])).toList();
+          backdrops.map((e) => getImage(imagePath: e['file_path'])).toList();
     }
-    if (json['posters'] != null) {
-      final List<dynamic> posters = json['posters'];
+    if (json['posters'] != null && json['posters']!.isNotEmpty) {
+      List<dynamic> posters = json['posters'];
+      posters = posters
+          .where((element) =>
+              (element['iso_639_1'] == null || element['iso_639_1'] == 'en'))
+          .toList();
       this.posters =
           posters.map((el) => getImage(imagePath: el['file_path'])).toList();
     }
