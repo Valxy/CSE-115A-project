@@ -211,8 +211,9 @@ class TmdbApiWrapper {
 
   ///Returns the top 20 most popular movies
   ///as a list of minimized Movie objects.
-  Future<List<MinimizedMovie>> getPopularMovies() async {
-    final responseJson = await _helper.get("movie/popular?api_key=$_apiKey");
+  Future<List<MinimizedMovie>> getPopularMovies(int pageNumber) async {
+    final responseJson = await _helper
+        .get("movie/popular?api_key=$_apiKey&language=en-US&page=$pageNumber");
     final List<dynamic> parsed = responseJson['results'];
     return _getMovieListFromJson(parsedList: parsed);
   }
@@ -320,7 +321,7 @@ class TmdbApiWrapper {
         }
     }
   }
-    
+
   MinimizedTvShow _getTvShowFromJson({
     required Map json,
   }) {

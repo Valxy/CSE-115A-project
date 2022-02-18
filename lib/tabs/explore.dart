@@ -25,34 +25,58 @@ class _ExploreTabState extends State<ExploreTab> {
   static TmdbApiWrapper wrapper = TmdbApiWrapper();
 
   static Future<String?> getTitle(int i, String category) async {
-    if (category == "Popular Movies") { movieList = await wrapper.getPopularMovies(); }
-    if (category == "In Theaters") { movieList = await wrapper.getNowPlayingMovies(); }
-    if (category == "Top Rated Movies") { movieList = await wrapper.getTopRatedMovies(); }
-    //List<MinimizedMovie> movieList = await wrapper.getPopularMovies();
+    if (category == "Popular Movies") {
+      movieList = await wrapper.getPopularMovies(1);
+    }
+    if (category == "In Theaters") {
+      movieList = await wrapper.getNowPlayingMovies();
+    }
+    if (category == "Top Rated Movies") {
+      movieList = await wrapper.getTopRatedMovies();
+    }
+    //List<MinimizedMovie> movieList = await wrapper.getPopularMovies(1);
     title = movieList[i].title;
     return title;
   }
 
   static Future<String?> getReleaseDate(int i, String category) async {
-    if (category == "Popular Movies") { movieList = await wrapper.getPopularMovies(); }
-    if (category == "In Theaters") { movieList = await wrapper.getNowPlayingMovies(); }
-    if (category == "Top Rated Movies") { movieList = await wrapper.getTopRatedMovies(); }
+    if (category == "Popular Movies") {
+      movieList = await wrapper.getPopularMovies(1);
+    }
+    if (category == "In Theaters") {
+      movieList = await wrapper.getNowPlayingMovies();
+    }
+    if (category == "Top Rated Movies") {
+      movieList = await wrapper.getTopRatedMovies();
+    }
     releaseDate = movieList[i].releaseDate;
     return releaseDate;
   }
 
   static Future<num> getVoteAverage(int i, String category) async {
-    if (category == "Popular Movies") { movieList = await wrapper.getPopularMovies(); }
-    if (category == "In Theaters") { movieList = await wrapper.getNowPlayingMovies(); }
-    if (category == "Top Rated Movies") { movieList = await wrapper.getTopRatedMovies(); }
+    if (category == "Popular Movies") {
+      movieList = await wrapper.getPopularMovies(1);
+    }
+    if (category == "In Theaters") {
+      movieList = await wrapper.getNowPlayingMovies();
+    }
+    if (category == "Top Rated Movies") {
+      movieList = await wrapper.getTopRatedMovies();
+    }
     voteAverage = movieList[i].voteAverage;
-    return voteAverage*10;
+    return voteAverage * 10;
   }
 
   static Future<Movie> getPoster(int i, String category) async {
-    if (category == "Popular Movies") { movieList = await wrapper.getPopularMovies(); }
-    if (category == "In Theaters") { movieList = await wrapper.getNowPlayingMovies(); }
-    if (category == "Top Rated Movies") { movieList = await wrapper.getTopRatedMovies(); }
+    if (category == "Popular Movies") {
+      movieList = await wrapper.getPopularMovies(1);
+    }
+    if (category == "In Theaters") {
+      movieList = await wrapper.getNowPlayingMovies();
+    }
+    if (category == "Top Rated Movies") {
+      movieList = await wrapper.getTopRatedMovies();
+    }
     MinimizedMovie movieItem = movieList[i];
     int? useID = movieItem.id;
     Future<Movie> movie = wrapper.getDetailsMovie(movieId: useID);
@@ -65,8 +89,8 @@ class _ExploreTabState extends State<ExploreTab> {
     movieID = useID.toString();
     return movieID;
   }*/
-  static String getMovieID(int i)  {
-    MinimizedMovie movieItem =  movieList[i];
+  static String getMovieID(int i) {
+    MinimizedMovie movieItem = movieList[i];
     int useID = movieItem.id;
     movieID = useID.toString();
     return movieID;
@@ -90,14 +114,13 @@ class _ExploreTabState extends State<ExploreTab> {
           }
 
           return _buildText(category);
-        } 
+        }
         if (i == 1) {
           return _horizontalListViewPopular();
         }
         if (i == 3) {
           return _horizontalListViewInTheaters();
-        }
-        else {
+        } else {
           return _horizontalListViewTopRated();
         }
       },
@@ -115,7 +138,8 @@ class _ExploreTabState extends State<ExploreTab> {
           //controller: _scrollController,
           itemCount: 20,
           scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) => _buildBoxPopular(index),
+          itemBuilder: (BuildContext context, int index) =>
+              _buildBoxPopular(index),
         ),
       ),
     );
@@ -131,7 +155,8 @@ class _ExploreTabState extends State<ExploreTab> {
           //controller: _scrollController,
           itemCount: 20,
           scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) => _buildBoxInTheaters(index),
+          itemBuilder: (BuildContext context, int index) =>
+              _buildBoxInTheaters(index),
         ),
       ),
     );
@@ -147,7 +172,8 @@ class _ExploreTabState extends State<ExploreTab> {
           //controller: _scrollController,
           itemCount: 20,
           scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) => _buildBoxTopRated(index),
+          itemBuilder: (BuildContext context, int index) =>
+              _buildBoxTopRated(index),
         ),
       ),
     );
@@ -195,7 +221,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getTitle(index, "Popular Movies"), // a previously-obtained Future<String> or null
+                future: getTitle(index,
+                    "Popular Movies"), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
@@ -226,7 +253,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getReleaseDate(index, "Popular Movies"), // a previously-obtained Future<String> or null
+                future: getReleaseDate(index,
+                    "Popular Movies"), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Released: ${snapshot.data}',
@@ -251,8 +279,7 @@ class _ExploreTabState extends State<ExploreTab> {
             Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (BuildContext context) =>
-                    ShowDetails(showId: movieID),
+                builder: (BuildContext context) => ShowDetails(showId: movieID),
                 fullscreenDialog: true,
               ),
             );
@@ -283,7 +310,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getTitle(index, "In Theaters"), // a previously-obtained Future<String> or null
+                future: getTitle(index,
+                    "In Theaters"), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
@@ -314,7 +342,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getReleaseDate(index, "In Theaters"), // a previously-obtained Future<String> or null
+                future: getReleaseDate(index,
+                    "In Theaters"), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Released: ${snapshot.data}',
@@ -339,8 +368,7 @@ class _ExploreTabState extends State<ExploreTab> {
             Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (BuildContext context) =>
-                    ShowDetails(showId: movieID),
+                builder: (BuildContext context) => ShowDetails(showId: movieID),
                 fullscreenDialog: true,
               ),
             );
@@ -371,7 +399,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getTitle(index, "Top Rated Movies"), // a previously-obtained Future<String> or null
+                future: getTitle(index,
+                    "Top Rated Movies"), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
@@ -402,7 +431,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getReleaseDate(index, "Top Rated Movies"), // a previously-obtained Future<String> or null
+                future: getReleaseDate(index,
+                    "Top Rated Movies"), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Released: ${snapshot.data}',

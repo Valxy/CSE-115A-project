@@ -38,7 +38,7 @@ class SearchItem extends SearchDelegate<String> {
   late Future<List<MinimizedMovie>> testDetails;
 
   SearchItem() {
-    testDetails = TmdbApiWrapper().getPopularMovies();
+    testDetails = TmdbApiWrapper().getPopularMovies(1);
   }
   @override
   // clear button
