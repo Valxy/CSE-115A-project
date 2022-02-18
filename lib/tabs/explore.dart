@@ -23,10 +23,11 @@ class _ExploreTabState extends State<ExploreTab> {
   static String movieID = "634649";
   static List<MinimizedMovie> movieList = [];
   static TmdbApiWrapper wrapper = TmdbApiWrapper();
+  static int pageNumber = 1;
 
   static Future<String?> getTitle(int i, String category) async {
     if (category == "Popular Movies") {
-      movieList = await wrapper.getPopularMovies(1);
+      movieList = await wrapper.getPopularMovies(pageNumber);
     }
     if (category == "In Theaters") {
       movieList = await wrapper.getNowPlayingMovies();
@@ -34,14 +35,14 @@ class _ExploreTabState extends State<ExploreTab> {
     if (category == "Top Rated Movies") {
       movieList = await wrapper.getTopRatedMovies();
     }
-    //List<MinimizedMovie> movieList = await wrapper.getPopularMovies(1);
+    //List<MinimizedMovie> movieList = await wrapper.getPopularMovies(pageNumber);
     title = movieList[i].title;
     return title;
   }
 
   static Future<String?> getReleaseDate(int i, String category) async {
     if (category == "Popular Movies") {
-      movieList = await wrapper.getPopularMovies(1);
+      movieList = await wrapper.getPopularMovies(pageNumber);
     }
     if (category == "In Theaters") {
       movieList = await wrapper.getNowPlayingMovies();
@@ -55,7 +56,7 @@ class _ExploreTabState extends State<ExploreTab> {
 
   static Future<num> getVoteAverage(int i, String category) async {
     if (category == "Popular Movies") {
-      movieList = await wrapper.getPopularMovies(1);
+      movieList = await wrapper.getPopularMovies(pageNumber);
     }
     if (category == "In Theaters") {
       movieList = await wrapper.getNowPlayingMovies();
@@ -69,7 +70,7 @@ class _ExploreTabState extends State<ExploreTab> {
 
   static Future<Movie> getPoster(int i, String category) async {
     if (category == "Popular Movies") {
-      movieList = await wrapper.getPopularMovies(1);
+      movieList = await wrapper.getPopularMovies(pageNumber);
     }
     if (category == "In Theaters") {
       movieList = await wrapper.getNowPlayingMovies();

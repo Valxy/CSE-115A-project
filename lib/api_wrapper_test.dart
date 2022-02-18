@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 Future<bool> _testGetPopularMovies() async {
   try {
     List<MinimizedMovie> popularMovies =
-        await TmdbApiWrapper().getPopularMovies();
+        await TmdbApiWrapper().getPopularMovies(1);
   } catch (e) {
     print('could not get popularMovies');
     print(e.toString());
@@ -348,7 +348,7 @@ Future<void> testApiWrapper() async {
 }
 
 Future<void> testImageCaching() async {
-  List<MinimizedMovie> movie = await TmdbApiWrapper().getPopularMovies();
+  List<MinimizedMovie> movie = await TmdbApiWrapper().getPopularMovies(1);
   Widget image =
       await TmdbApiWrapper().getImage(imagePath: movie[0].posterPath);
   print('successfully got image: ');
