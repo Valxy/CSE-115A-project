@@ -1,8 +1,9 @@
+import 'dart:math';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import '../models/tmdb_api_wrapper.dart';
-import '../widgets/YoutubePlayer.dart';
 
 class ShowDetails extends StatefulWidget {
   final String showId;
@@ -73,7 +74,7 @@ class _ShowDetailsState extends State<ShowDetails> {
                 ),
                 Card(
                   child: Container(
-                    height: 240,
+                    height: 300,
                     padding: const EdgeInsets.all(0),
                     child: Row(children: [
                       snapshot.data!.posters[0],
@@ -81,7 +82,7 @@ class _ShowDetailsState extends State<ShowDetails> {
                         flex: 1,
                       ),
                       Expanded(
-                        flex: 22,
+                        flex: 26,
                         child: Container(
                           padding: const EdgeInsets.only(top: 5),
                           child: Column(
@@ -93,8 +94,15 @@ class _ShowDetailsState extends State<ShowDetails> {
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold),
                               ),
-                              const Text(
-                                "",
+                              Wrap(
+                                spacing: 4,
+                                children: snapshot.data!.genres
+                                    .map((e) => Chip(label: Text(e.name)))
+                                    .toList()
+                                    .sublist(
+                                      0,
+                                      min(snapshot.data!.genres.length - 1, 3),
+                                    ),
                               ),
                               Wrap(
                                 spacing: 18,
@@ -122,7 +130,7 @@ class _ShowDetailsState extends State<ShowDetails> {
                                   fontSize: 16.0,
                                 ),
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 8,
+                                maxLines: 10,
                               ),
                             ],
                           ),
