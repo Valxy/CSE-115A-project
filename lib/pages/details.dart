@@ -116,10 +116,14 @@ class _ShowDetailsState extends State<ShowDetails> {
                               const Text(
                                 "",
                               ),
-                              Text(snapshot.data?.overview ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 16.0,
-                                  )),
+                              Text(
+                                snapshot.data?.overview ?? "",
+                                style: const TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 8,
+                              ),
                             ],
                           ),
                         ),
