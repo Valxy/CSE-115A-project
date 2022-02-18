@@ -206,9 +206,9 @@ class _ExploreTabState extends State<ExploreTab> {
               child: FutureBuilder<Movie>(
                 future: getPoster(index, "Popular Movies"),
                 builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-                  if (snapshot.hasData && snapshot.data?.posters != null) {
+                  if (snapshot.hasData) {
                     final posters = snapshot.data?.posters;
-                    if (posters != null) {
+                    if (posters != null && posters.isNotEmpty) {
                       // Gets the first poster in the array of posters for that movie
                       return posters[0];
                     }
@@ -295,9 +295,9 @@ class _ExploreTabState extends State<ExploreTab> {
               child: FutureBuilder<Movie>(
                 future: getPoster(index, "In Theaters"),
                 builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-                  if (snapshot.hasData && snapshot.data?.posters != null) {
+                  if (snapshot.hasData) {
                     final posters = snapshot.data?.posters;
-                    if (posters != null) {
+                    if (posters != null && posters.isNotEmpty) {
                       // Gets the first poster in the array of posters for that movie
                       return posters[0];
                     }
@@ -384,9 +384,9 @@ class _ExploreTabState extends State<ExploreTab> {
               child: FutureBuilder<Movie>(
                 future: getPoster(index, "Top Rated Movies"),
                 builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-                  if (snapshot.hasData && snapshot.data?.posters != null) {
+                  if (snapshot.hasData) {
                     final posters = snapshot.data?.posters;
-                    if (posters != null) {
+                    if (posters != null && posters.isNotEmpty) {
                       // Gets the first poster in the array of posters for that movie
                       return posters[0];
                     }
