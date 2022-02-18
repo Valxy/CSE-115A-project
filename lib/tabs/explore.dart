@@ -17,17 +17,16 @@ class _ExploreTabState extends State<ExploreTab> {
 
   String category = "";
 
-  static String? title;
-  static String? releaseDate;
-  static num voteAverage = 0;
-  static String movieID = "634649";
-  static List<MinimizedMovie> movieList = [];
+  static List<MinimizedMovie> tmp = [];
   static TmdbApiWrapper wrapper = TmdbApiWrapper();
   static int pageNumber = 1;
 
   static Future<String?> getTitle(int i, String category) async {
+    List<MinimizedMovie> movieList = [];
+
     if (category == "Popular Movies") {
       movieList = await wrapper.getPopularMovies(pageNumber);
+      tmp = movieList;
     }
     if (category == "In Theaters") {
       movieList = await wrapper.getNowPlayingMovies();
@@ -35,12 +34,13 @@ class _ExploreTabState extends State<ExploreTab> {
     if (category == "Top Rated Movies") {
       movieList = await wrapper.getTopRatedMovies();
     }
-    //List<MinimizedMovie> movieList = await wrapper.getPopularMovies(pageNumber);
-    title = movieList[i].title;
-    return title;
+
+    return movieList[i].title;
   }
 
   static Future<String?> getReleaseDate(int i, String category) async {
+    List<MinimizedMovie> movieList = [];
+
     if (category == "Popular Movies") {
       movieList = await wrapper.getPopularMovies(pageNumber);
     }
@@ -50,11 +50,13 @@ class _ExploreTabState extends State<ExploreTab> {
     if (category == "Top Rated Movies") {
       movieList = await wrapper.getTopRatedMovies();
     }
-    releaseDate = movieList[i].releaseDate;
-    return releaseDate;
+
+    return movieList[i].releaseDate;
   }
 
   static Future<num> getVoteAverage(int i, String category) async {
+    List<MinimizedMovie> movieList = [];
+
     if (category == "Popular Movies") {
       movieList = await wrapper.getPopularMovies(pageNumber);
     }
@@ -64,11 +66,13 @@ class _ExploreTabState extends State<ExploreTab> {
     if (category == "Top Rated Movies") {
       movieList = await wrapper.getTopRatedMovies();
     }
-    voteAverage = movieList[i].voteAverage;
-    return voteAverage * 10;
+
+    return movieList[i].voteAverage * 10;
   }
 
   static Future<Movie> getPoster(int i, String category) async {
+    List<MinimizedMovie> movieList = [];
+
     if (category == "Popular Movies") {
       movieList = await wrapper.getPopularMovies(pageNumber);
     }
@@ -82,19 +86,6 @@ class _ExploreTabState extends State<ExploreTab> {
     int? useID = movieItem.id;
     Future<Movie> movie = wrapper.getDetailsMovie(movieId: useID);
     return movie;
-  }
-
-  /*static Future<String> getMovieID(int i) async {
-    MinimizedMovie movieItem = await movieList[i];
-    int? useID = movieItem.id;
-    movieID = useID.toString();
-    return movieID;
-  }*/
-  static String getMovieID(int i) {
-    MinimizedMovie movieItem = movieList[i];
-    int useID = movieItem.id;
-    movieID = useID.toString();
-    return movieID;
   }
 
   @override
@@ -191,7 +182,7 @@ class _ExploreTabState extends State<ExploreTab> {
               context,
               MaterialPageRoute<void>(
                 builder: (BuildContext context) =>
-                    ShowDetails(showId: "634649"),
+                    ShowDetails(showId: "${tmp[index].id}"),
                 fullscreenDialog: true,
               ),
             );
@@ -279,7 +270,8 @@ class _ExploreTabState extends State<ExploreTab> {
             Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (BuildContext context) => ShowDetails(showId: movieID),
+                builder: (BuildContext context) =>
+                    const ShowDetails(showId: "634649"),
                 fullscreenDialog: true,
               ),
             );
@@ -367,7 +359,8 @@ class _ExploreTabState extends State<ExploreTab> {
             Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (BuildContext context) => ShowDetails(showId: movieID),
+                builder: (BuildContext context) =>
+                    const ShowDetails(showId: "634649"),
                 fullscreenDialog: true,
               ),
             );
