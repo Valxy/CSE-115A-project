@@ -252,24 +252,35 @@ class Movie extends MinimizedMovie {
   void _parseImages({
     required Map json,
   }) {
+    const int maxPosterCapacity = 1;
+    const int maxPicCapacity = 6;
+
     if (json['backdrops'] != null && json['backdrops']!.isNotEmpty) {
       List<dynamic> backdrops = json['backdrops'];
-      backdrops = backdrops
-          .where((element) =>
-              (element['iso_639_1'] == null || element['iso_639_1'] == 'en'))
-          .toList();
+      backdrops = _imageToList(backdrops, maxPicCapacity);
+
       this.backdrops =
           backdrops.map((e) => getImage(imagePath: e['file_path'])).toList();
     }
     if (json['posters'] != null && json['posters']!.isNotEmpty) {
       List<dynamic> posters = json['posters'];
-      posters = posters
-          .where((element) =>
-              (element['iso_639_1'] == null || element['iso_639_1'] == 'en'))
-          .toList();
+      posters = _imageToList(posters, maxPosterCapacity);
       this.posters =
           posters.map((el) => getImage(imagePath: el['file_path'])).toList();
     }
+  }
+
+  List<dynamic> _imageToList(List<dynamic> imageList, int maxSize) {
+    int count = 0;
+    List<dynamic> temp = [];
+    while (imageList.length > count && maxSize > count) {
+      if (imageList[count]['iso_639_1'] == null ||
+          imageList[count]['iso_639_1'] == 'en') {
+        temp.add(imageList[count]);
+      }
+      count++;
+    }
+    return temp;
   }
 
   void _parseCredits({
