@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
-// ignore: must_be_immutable
 class YoutubeTrailer extends StatefulWidget {
-  String urlLink;
+  final String urlLink;
 
-  YoutubeTrailer(this.urlLink, {Key? key}) : super(key: key);
+  const YoutubeTrailer(this.urlLink, {Key? key}) : super(key: key);
 
   @override
   _YoutubeTrailerState createState() => _YoutubeTrailerState();

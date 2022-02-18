@@ -196,8 +196,7 @@ class _ExploreTabState extends State<ExploreTab> {
               ),
             );
           },
-          // ignore: unnecessary_new
-          child: new Column(children: <Widget>[
+          child: Column(children: <Widget>[
             Container(
               width: 200,
               height: 250,
@@ -285,8 +284,7 @@ class _ExploreTabState extends State<ExploreTab> {
               ),
             );
           },
-          // ignore: unnecessary_new
-          child: new Column(children: <Widget>[
+          child: Column(children: <Widget>[
             Container(
               width: 200,
               height: 250,
@@ -374,8 +372,7 @@ class _ExploreTabState extends State<ExploreTab> {
               ),
             );
           },
-          // ignore: unnecessary_new
-          child: new Column(children: <Widget>[
+          child: Column(children: <Widget>[
             Container(
               width: 200,
               height: 250,
