@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tmdb/pages/filter.dart';
 
 class BrowseTab extends StatefulWidget {
   const BrowseTab({Key? key}) : super(key: key);
@@ -51,12 +52,22 @@ class _BrowseTabState extends State<BrowseTab> {
                           const BorderRadius.all(Radius.circular(4.0)),
                       color: Colors.blue,
                       border: Border.all(color: Colors.red, width: 0.3)),
-                  child: Center(
-                    child: Text(e,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 30,
-                        )),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => filterResults(),
+                        ),
+                      );
+                    },
+                    child: Center(
+                      child: Text(e,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 30,
+                          )),
+                    ),
                   ),
                 ),
               )
