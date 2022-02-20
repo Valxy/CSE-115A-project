@@ -203,7 +203,7 @@ class _ExploreTabState extends State<ExploreTab> {
                       return posters[0];
                     }
                   }
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 },
               ),
             ),
@@ -292,7 +292,7 @@ class _ExploreTabState extends State<ExploreTab> {
                       return posters[0];
                     }
                   }
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 },
               ),
             ),
@@ -381,7 +381,7 @@ class _ExploreTabState extends State<ExploreTab> {
                       return posters[0];
                     }
                   }
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 },
               ),
             ),
