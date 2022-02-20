@@ -11,7 +11,6 @@ class ExploreTab extends StatefulWidget {
 }
 
 class _ExploreTabState extends State<ExploreTab> {
-
   String category = "";
 
   // Tags used in conditional statements to check which category the item belongs to (movie or tv show)
@@ -35,68 +34,114 @@ class _ExploreTabState extends State<ExploreTab> {
   // Returns the title of the movie or tv show as a String
   static Future<String?> getTitle(int i, String category, bool isMovie) async {
     if (isMovie == true) {
-        if (category == popularMoviesTag) { movieList = await wrapper.getPopularMovies(1); }
-      if (category == inTheatersTag) { movieList = await wrapper.getNowPlayingMovies(); }
-      if (category == topRatedMoviesTag) { movieList = await wrapper.getTopRatedMovies(); }
+      if (category == popularMoviesTag) {
+        movieList = await wrapper.getPopularMovies(1);
+      }
+      if (category == inTheatersTag) {
+        movieList = await wrapper.getNowPlayingMovies();
+      }
+      if (category == topRatedMoviesTag) {
+        movieList = await wrapper.getTopRatedMovies();
+      }
       title = movieList[i].title;
-    }
-    else {
-      if (category == popularShowsTag) { showList = await wrapper.getPopularTvShows(); }
-      if (category == nowAiringShowsTag) { showList = await wrapper.getNowAiringTvShows(); }
-      if (category == topRatedShowsTag) { showList = await wrapper.getTopRatedTvShows(); }
+    } else {
+      if (category == popularShowsTag) {
+        showList = await wrapper.getPopularTvShows();
+      }
+      if (category == nowAiringShowsTag) {
+        showList = await wrapper.getNowAiringTvShows();
+      }
+      if (category == topRatedShowsTag) {
+        showList = await wrapper.getTopRatedTvShows();
+      }
       title = showList[i].name;
     }
     return title;
   }
 
   // Returns the release date for the movie, or the first air date for the tv show, as a String
-  static Future<String?> getReleaseDate(int i, String category, bool isMovie) async {
+  static Future<String?> getReleaseDate(
+      int i, String category, bool isMovie) async {
     if (isMovie == true) {
-      if (category == popularMoviesTag) { movieList = await wrapper.getPopularMovies(1); }
-      if (category == inTheatersTag) { movieList = await wrapper.getNowPlayingMovies(); }
-      if (category == topRatedMoviesTag) { movieList = await wrapper.getTopRatedMovies(); }
+      if (category == popularMoviesTag) {
+        movieList = await wrapper.getPopularMovies(1);
+      }
+      if (category == inTheatersTag) {
+        movieList = await wrapper.getNowPlayingMovies();
+      }
+      if (category == topRatedMoviesTag) {
+        movieList = await wrapper.getTopRatedMovies();
+      }
       releaseDate = movieList[i].releaseDate;
-    }
-    else {
-      if (category == popularShowsTag) { showList = await wrapper.getPopularTvShows(); }
-      if (category == nowAiringShowsTag) { showList = await wrapper.getNowAiringTvShows(); }
-      if (category == topRatedShowsTag) { showList = await wrapper.getTopRatedTvShows(); }
+    } else {
+      if (category == popularShowsTag) {
+        showList = await wrapper.getPopularTvShows();
+      }
+      if (category == nowAiringShowsTag) {
+        showList = await wrapper.getNowAiringTvShows();
+      }
+      if (category == topRatedShowsTag) {
+        showList = await wrapper.getTopRatedTvShows();
+      }
       releaseDate = showList[i].firstAirDate;
     }
     return releaseDate;
   }
 
   // Returns the (popularity) rating of the movie or tv show as a num
-  static Future<num> getVoteAverage(int i, String category, bool isMovie) async {
+  static Future<num> getVoteAverage(
+      int i, String category, bool isMovie) async {
     if (isMovie == true) {
-      if (category == popularMoviesTag) { movieList = await wrapper.getPopularMovies(1); }
-      if (category == inTheatersTag) { movieList = await wrapper.getNowPlayingMovies(); }
-      if (category == topRatedMoviesTag) { movieList = await wrapper.getTopRatedMovies(); }
+      if (category == popularMoviesTag) {
+        movieList = await wrapper.getPopularMovies(1);
+      }
+      if (category == inTheatersTag) {
+        movieList = await wrapper.getNowPlayingMovies();
+      }
+      if (category == topRatedMoviesTag) {
+        movieList = await wrapper.getTopRatedMovies();
+      }
       voteAverage = movieList[i].voteAverage;
-    }
-    else {
-      if (category == popularShowsTag) { showList = await wrapper.getPopularTvShows(); }
-      if (category == nowAiringShowsTag) { showList = await wrapper.getNowAiringTvShows(); }
-      if (category == topRatedShowsTag) { showList = await wrapper.getTopRatedTvShows(); }
+    } else {
+      if (category == popularShowsTag) {
+        showList = await wrapper.getPopularTvShows();
+      }
+      if (category == nowAiringShowsTag) {
+        showList = await wrapper.getNowAiringTvShows();
+      }
+      if (category == topRatedShowsTag) {
+        showList = await wrapper.getTopRatedTvShows();
+      }
       voteAverage = showList[i].voteAverage;
     }
-    return voteAverage*10;
+    return voteAverage * 10;
   }
 
   // Returns the poster of the movie or the backdrop of the tv show as a Widget
   static Future<Widget> getPoster(int i, String category, bool isMovie) async {
     Widget poster;
     if (isMovie == true) {
-      if (category == popularMoviesTag) { movieList = await wrapper.getPopularMovies(1); }
-      if (category == inTheatersTag) { movieList = await wrapper.getNowPlayingMovies(); }
-      if (category == topRatedMoviesTag) { movieList = await wrapper.getTopRatedMovies(); }
+      if (category == popularMoviesTag) {
+        movieList = await wrapper.getPopularMovies(1);
+      }
+      if (category == inTheatersTag) {
+        movieList = await wrapper.getNowPlayingMovies();
+      }
+      if (category == topRatedMoviesTag) {
+        movieList = await wrapper.getTopRatedMovies();
+      }
       MinimizedMovie movieItem = movieList[i];
       poster = movieItem.getPoster();
-    }
-    else {
-      if (category == popularShowsTag) { showList = await wrapper.getPopularTvShows(); }
-      if (category == nowAiringShowsTag) { showList = await wrapper.getNowAiringTvShows(); }
-      if (category == topRatedShowsTag) { showList = await wrapper.getTopRatedTvShows(); }
+    } else {
+      if (category == popularShowsTag) {
+        showList = await wrapper.getPopularTvShows();
+      }
+      if (category == nowAiringShowsTag) {
+        showList = await wrapper.getNowAiringTvShows();
+      }
+      if (category == topRatedShowsTag) {
+        showList = await wrapper.getTopRatedTvShows();
+      }
       MinimizedTvShow showItem = showList[i];
       poster = showItem.getBackdrop();
     }
@@ -112,23 +157,42 @@ class _ExploreTabState extends State<ExploreTab> {
       itemCount: 12,
       itemBuilder: (_, i) {
         if (i % 2 != 1) {
-          if (i == 0) { category = popularMoviesTag; }
-          if (i == 2) { category = popularShowsTag; }
-          if (i == 4) { category = inTheatersTag; }
-          if (i == 6) { category = nowAiringShowsTag; }
-          if (i == 8) { category = topRatedMoviesTag; }
-          if (i == 10) { category = topRatedShowsTag; } 
-          
-          return _buildText(category);
-        } 
-        if (i == 1) { return _horizontalListViewMovies(popularMoviesTag, true); }
-        else if (i == 3) { return _horizontalListViewShows(popularShowsTag, false); }
-        else if (i == 5) { return _horizontalListViewMovies(inTheatersTag, true); }
-        else if (i == 7) { return _horizontalListViewShows(nowAiringShowsTag, false); }
-        else if (i == 9) { return _horizontalListViewMovies(topRatedMoviesTag, true); }
-        else if (i == 11) { return _horizontalListViewShows(topRatedShowsTag, false); }
+          if (i == 0) {
+            category = popularMoviesTag;
+          }
+          if (i == 2) {
+            category = popularShowsTag;
+          }
+          if (i == 4) {
+            category = inTheatersTag;
+          }
+          if (i == 6) {
+            category = nowAiringShowsTag;
+          }
+          if (i == 8) {
+            category = topRatedMoviesTag;
+          }
+          if (i == 10) {
+            category = topRatedShowsTag;
+          }
 
-        throw("Error: One or more elements were not able to be built successfully!");
+          return _buildText(category);
+        }
+        if (i == 1) {
+          return _horizontalListViewMovies(popularMoviesTag, true);
+        } else if (i == 3) {
+          return _horizontalListViewShows(popularShowsTag, false);
+        } else if (i == 5) {
+          return _horizontalListViewMovies(inTheatersTag, true);
+        } else if (i == 7) {
+          return _horizontalListViewShows(nowAiringShowsTag, false);
+        } else if (i == 9) {
+          return _horizontalListViewMovies(topRatedMoviesTag, true);
+        } else if (i == 11) {
+          return _horizontalListViewShows(topRatedShowsTag, false);
+        }
+
+        throw ("Error: One or more elements were not able to be built successfully!");
       },
     ));
   }
@@ -141,7 +205,8 @@ class _ExploreTabState extends State<ExploreTab> {
         child: ListView.builder(
           itemCount: 20,
           scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) => _buildBoxMovies(index, type, isMovie),
+          itemBuilder: (BuildContext context, int index) =>
+              _buildBoxMovies(index, type, isMovie),
         ),
       ),
     );
@@ -155,7 +220,8 @@ class _ExploreTabState extends State<ExploreTab> {
         child: ListView.builder(
           itemCount: 20,
           scrollDirection: Axis.horizontal,
-          itemBuilder: (BuildContext context, int index) => _buildBoxShows(index, type, isMovie),
+          itemBuilder: (BuildContext context, int index) =>
+              _buildBoxShows(index, type, isMovie),
         ),
       ),
     );
@@ -186,13 +252,14 @@ class _ExploreTabState extends State<ExploreTab> {
               child: FutureBuilder<Widget>(
                 future: getPoster(index, type, isMovie),
                 builder: (BuildContext ctx, AsyncSnapshot<Widget> snapshot) {
-                  if (snapshot.hasData && snapshot.data != null) {
+                  if (snapshot.hasData) {
                     final poster = snapshot.data;
                     if (poster != null) {
                       return poster;
                     }
                   }
-                  return const CircularProgressIndicator();
+
+                  return const Center(child: CircularProgressIndicator());
                 },
               ),
             ),
@@ -201,7 +268,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getTitle(index, type, isMovie), // a previously-obtained Future<String> or null
+                future: getTitle(index, type,
+                    isMovie), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
@@ -232,7 +300,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getReleaseDate(index, type, isMovie), // a previously-obtained Future<String> or null
+                future: getReleaseDate(index, type,
+                    isMovie), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Released: ${snapshot.data}',
@@ -272,13 +341,14 @@ class _ExploreTabState extends State<ExploreTab> {
               child: FutureBuilder<Widget>(
                 future: getPoster(index, type, isMovie),
                 builder: (BuildContext ctx, AsyncSnapshot<Widget> snapshot) {
-                  if (snapshot.hasData && snapshot.data != null) {
+                  if (snapshot.hasData) {
                     final poster = snapshot.data;
                     if (poster != null) {
                       return poster;
                     }
                   }
-                  return const CircularProgressIndicator();
+
+                  return const Center(child: CircularProgressIndicator());
                 },
               ),
             ),
@@ -287,7 +357,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getTitle(index, type, isMovie), // a previously-obtained Future<String> or null
+                future: getTitle(index, type,
+                    isMovie), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
@@ -318,7 +389,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getReleaseDate(index, type, isMovie), // a previously-obtained Future<String> or null
+                future: getReleaseDate(index, type,
+                    isMovie), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Date First Aired: ${snapshot.data}',
@@ -340,5 +412,5 @@ class _ExploreTabState extends State<ExploreTab> {
         width: 200,
         child: Text(category,
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-  );
+      );
 }
