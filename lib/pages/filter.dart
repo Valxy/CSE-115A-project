@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 final List<String> movieTitle = <String>['1', '2', '3'];
 
-class filterResults extends StatelessWidget {
+class FilterResults extends StatelessWidget {
+  const FilterResults({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
