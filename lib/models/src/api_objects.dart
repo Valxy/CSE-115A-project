@@ -246,8 +246,8 @@ class Person {
     required this.popularity,
     required this.adult,
   });
-  
-    Person.fromJson({
+
+  Person.fromJson({
     required Map json,
   }) {
     if (json['credit_id'] != null) {
