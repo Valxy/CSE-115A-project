@@ -27,6 +27,8 @@ class _ExploreTabState extends State<ExploreTab> {
   static String movieID = "634649";
   static List<MinimizedMovie> movieList = [];
   static List<MinimizedTvShow> showList = [];
+  static List<MinimizedMovie> tempMovieList = [];
+  static List<MinimizedTvShow> tempShowList = [];
   static TmdbApiWrapper wrapper = TmdbApiWrapper();
 
   /* Helper functions for getting movie and tv show details. */
@@ -48,6 +50,7 @@ class _ExploreTabState extends State<ExploreTab> {
           movieList.addAll(await wrapper.getTopRatedMovies(repeat));
         }
       }
+      tempMovieList = movieList;
       title = movieList[i].title;
     } else {
       for (int repeat = 1; repeat < numItems + 1; repeat++) {
@@ -61,6 +64,7 @@ class _ExploreTabState extends State<ExploreTab> {
           showList.addAll(await wrapper.getTopRatedTvShows(repeat));
         }
       }
+      tempShowList = showList;
       title = showList[i].name;
     }
     return title;
@@ -83,6 +87,7 @@ class _ExploreTabState extends State<ExploreTab> {
           movieList.addAll(await wrapper.getTopRatedMovies(repeat));
         }
       }
+      tempMovieList = movieList;
       releaseDate = movieList[i].releaseDate;
     } else {
       for (int repeat = 1; repeat < numItems + 1; repeat++) {
@@ -96,6 +101,7 @@ class _ExploreTabState extends State<ExploreTab> {
           showList.addAll(await wrapper.getTopRatedTvShows(repeat));
         }
       }
+      tempShowList = showList;
       releaseDate = showList[i].firstAirDate;
     }
     return releaseDate;
@@ -118,6 +124,7 @@ class _ExploreTabState extends State<ExploreTab> {
           movieList.addAll(await wrapper.getTopRatedMovies(repeat));
         }
       }
+      tempMovieList = movieList;
       voteAverage = movieList[i].voteAverage;
     } else {
       for (int repeat = 1; repeat < numItems + 1; repeat++) {
@@ -131,6 +138,7 @@ class _ExploreTabState extends State<ExploreTab> {
           showList.addAll(await wrapper.getTopRatedTvShows(repeat));
         }
       }
+      tempShowList = showList;
       voteAverage = showList[i].voteAverage;
     }
     return voteAverage * 10;
@@ -154,6 +162,7 @@ class _ExploreTabState extends State<ExploreTab> {
           movieList.addAll(await wrapper.getTopRatedMovies(repeat));
         }
       }
+      tempMovieList = movieList;
       MinimizedMovie movieItem = movieList[i];
       poster = movieItem.getPoster();
     } else {
@@ -168,6 +177,7 @@ class _ExploreTabState extends State<ExploreTab> {
           showList.addAll(await wrapper.getTopRatedTvShows(repeat));
         }
       }
+      tempShowList = showList;
       MinimizedTvShow showItem = showList[i];
       poster = showItem.getBackdrop();
     }
@@ -226,7 +236,7 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for the different scrolling lists
   Widget _horizontalListViewMovies(String type, bool isMovie) {
     return SizedBox(
-      height: 360,
+      height: 380,
       child: Scrollbar(
         child: ListView.builder(
           itemCount: 100,
@@ -241,7 +251,7 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for the different scrolling lists
   Widget _horizontalListViewShows(String type, bool isMovie) {
     return SizedBox(
-      height: 360,
+      height: 380,
       child: Scrollbar(
         child: ListView.builder(
           itemCount: 100,
@@ -256,7 +266,7 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for each individual movie
   Widget _buildBoxMovies(int index, String type, bool isMovie) => Container(
         margin: const EdgeInsets.all(8),
-        height: 360,
+        height: 380,
         width: 200,
         child: OutlinedButton(
           /*style: OutlinedButton.styleFrom(
@@ -267,7 +277,7 @@ class _ExploreTabState extends State<ExploreTab> {
               context,
               MaterialPageRoute<void>(
                 builder: (BuildContext context) =>
-                    ShowDetails(showId: "${movieList[index].id}"),
+                    ShowDetails(showId: "${tempMovieList[index].id}"),
                 fullscreenDialog: true,
               ),
             );
@@ -348,15 +358,14 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for each individual movie
   Widget _buildBoxShows(int index, String type, bool isMovie) => Container(
         margin: const EdgeInsets.all(8),
-        height: 360,
+        height: 380,
         width: 200,
         child: OutlinedButton(
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (BuildContext context) =>
-                    ShowDetails(showId: "${showList[index].id}"),
+                builder: (BuildContext context) => ShowDetails(showId: movieID),
                 fullscreenDialog: true,
               ),
             );
