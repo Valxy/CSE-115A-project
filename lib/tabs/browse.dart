@@ -57,7 +57,7 @@ class _BrowseTabState extends State<BrowseTab> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const FilterResults(),
+                          builder: (context) => const filterResults(),
                         ),
                       );
                     },
