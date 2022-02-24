@@ -1,9 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:filter_list/filter_list.dart';
+
+class filterResults extends StatefulWidget {
+  const filterResults({Key? key}) : super(key: key);
+  @override
+  _filterResultsState createState() => _filterResultsState();
+}
 
 final List<String> movieTitle = <String>['1', '2', '3'];
 
-class FilterResults extends StatelessWidget {
-  const FilterResults({Key? key}) : super(key: key);
+class _filterResultsState extends State<filterResults> {
+  void openFilterDialog() async {
+    await FilterListDialog.display<GenreFilter>(
+      context,
+      listData: genreList,
+      selectedListData: selectedList,
+      choiceChipLabel: (filter) => filter!.name,
+      validateSelectedItem: (list, val) => list!.contains(val),
+      onItemSearch: (user, query) {
+        return user.name!.toLowerCase().contains(query.toLowerCase());
+      },
+      onApplyButtonClick: (list) {
+        setState(() {
+          selectedList = List.from(list!);
+        });
+        Navigator.pop(context);
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +61,30 @@ class FilterResults extends StatelessWidget {
               separatorBuilder: (BuildContext context, int index) =>
                   const Divider(),
               itemCount: movieTitle.length)),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          openFilterDialog();
+        },
+        label: const Text(''),
+        icon: const Icon(Icons.filter_list),
+        backgroundColor: Colors.pink,
+      ),
     );
   }
 }
+
+class GenreFilter {
+  final String? name;
+  GenreFilter(this.name);
+}
+
+List<GenreFilter>? selectedList = [];
+final List<GenreFilter> genreList = [
+  GenreFilter("70s"),
+  GenreFilter("80s"),
+  GenreFilter("90s"),
+  GenreFilter("1"),
+  GenreFilter("2"),
+  GenreFilter("3"),
+];
+

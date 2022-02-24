@@ -27,33 +27,44 @@ class _ExploreTabState extends State<ExploreTab> {
   static String movieID = "634649";
   static List<MinimizedMovie> movieList = [];
   static List<MinimizedTvShow> showList = [];
+  static List<MinimizedMovie> tempMovieList = [];
+  static List<MinimizedTvShow> tempShowList = [];
   static TmdbApiWrapper wrapper = TmdbApiWrapper();
 
   /* Helper functions for getting movie and tv show details. */
 
   // Returns the title of the movie or tv show as a String
-  static Future<String?> getTitle(int i, String category, bool isMovie) async {
+  static Future<String?> getTitle(
+      int i, String category, bool isMovie, int numItems) async {
+    List<MinimizedMovie> movieList = [];
+    List<MinimizedTvShow> showList = [];
     if (isMovie == true) {
-      if (category == popularMoviesTag) {
-        movieList = await wrapper.getPopularMovies(1);
+      for (int repeat = 1; repeat < numItems + 1; repeat++) {
+        if (category == popularMoviesTag) {
+          movieList.addAll(await wrapper.getPopularMovies(repeat));
+        }
+        if (category == inTheatersTag) {
+          movieList.addAll(await wrapper.getNowPlayingMovies(repeat));
+        }
+        if (category == topRatedMoviesTag) {
+          movieList.addAll(await wrapper.getTopRatedMovies(repeat));
+        }
       }
-      if (category == inTheatersTag) {
-        movieList = await wrapper.getNowPlayingMovies();
-      }
-      if (category == topRatedMoviesTag) {
-        movieList = await wrapper.getTopRatedMovies();
-      }
+      tempMovieList = movieList;
       title = movieList[i].title;
     } else {
-      if (category == popularShowsTag) {
-        showList = await wrapper.getPopularTvShows();
+      for (int repeat = 1; repeat < numItems + 1; repeat++) {
+        if (category == popularShowsTag) {
+          showList.addAll(await wrapper.getPopularTvShows(repeat));
+        }
+        if (category == nowAiringShowsTag) {
+          showList.addAll(await wrapper.getNowAiringTvShows(repeat));
+        }
+        if (category == topRatedShowsTag) {
+          showList.addAll(await wrapper.getTopRatedTvShows(repeat));
+        }
       }
-      if (category == nowAiringShowsTag) {
-        showList = await wrapper.getNowAiringTvShows();
-      }
-      if (category == topRatedShowsTag) {
-        showList = await wrapper.getTopRatedTvShows();
-      }
+      tempShowList = showList;
       title = showList[i].name;
     }
     return title;
@@ -61,28 +72,36 @@ class _ExploreTabState extends State<ExploreTab> {
 
   // Returns the release date for the movie, or the first air date for the tv show, as a String
   static Future<String?> getReleaseDate(
-      int i, String category, bool isMovie) async {
+      int i, String category, bool isMovie, int numItems) async {
+    List<MinimizedMovie> movieList = [];
+    List<MinimizedTvShow> showList = [];
     if (isMovie == true) {
-      if (category == popularMoviesTag) {
-        movieList = await wrapper.getPopularMovies(1);
+      for (int repeat = 1; repeat < numItems + 1; repeat++) {
+        if (category == popularMoviesTag) {
+          movieList.addAll(await wrapper.getPopularMovies(repeat));
+        }
+        if (category == inTheatersTag) {
+          movieList.addAll(await wrapper.getNowPlayingMovies(repeat));
+        }
+        if (category == topRatedMoviesTag) {
+          movieList.addAll(await wrapper.getTopRatedMovies(repeat));
+        }
       }
-      if (category == inTheatersTag) {
-        movieList = await wrapper.getNowPlayingMovies();
-      }
-      if (category == topRatedMoviesTag) {
-        movieList = await wrapper.getTopRatedMovies();
-      }
+      tempMovieList = movieList;
       releaseDate = movieList[i].releaseDate;
     } else {
-      if (category == popularShowsTag) {
-        showList = await wrapper.getPopularTvShows();
+      for (int repeat = 1; repeat < numItems + 1; repeat++) {
+        if (category == popularShowsTag) {
+          showList.addAll(await wrapper.getPopularTvShows(repeat));
+        }
+        if (category == nowAiringShowsTag) {
+          showList.addAll(await wrapper.getNowAiringTvShows(repeat));
+        }
+        if (category == topRatedShowsTag) {
+          showList.addAll(await wrapper.getTopRatedTvShows(repeat));
+        }
       }
-      if (category == nowAiringShowsTag) {
-        showList = await wrapper.getNowAiringTvShows();
-      }
-      if (category == topRatedShowsTag) {
-        showList = await wrapper.getTopRatedTvShows();
-      }
+      tempShowList = showList;
       releaseDate = showList[i].firstAirDate;
     }
     return releaseDate;
@@ -90,58 +109,75 @@ class _ExploreTabState extends State<ExploreTab> {
 
   // Returns the (popularity) rating of the movie or tv show as a num
   static Future<num> getVoteAverage(
-      int i, String category, bool isMovie) async {
+      int i, String category, bool isMovie, int numItems) async {
+    List<MinimizedMovie> movieList = [];
+    List<MinimizedTvShow> showList = [];
     if (isMovie == true) {
-      if (category == popularMoviesTag) {
-        movieList = await wrapper.getPopularMovies(1);
+      for (int repeat = 1; repeat < numItems + 1; repeat++) {
+        if (category == popularMoviesTag) {
+          movieList.addAll(await wrapper.getPopularMovies(repeat));
+        }
+        if (category == inTheatersTag) {
+          movieList.addAll(await wrapper.getNowPlayingMovies(repeat));
+        }
+        if (category == topRatedMoviesTag) {
+          movieList.addAll(await wrapper.getTopRatedMovies(repeat));
+        }
       }
-      if (category == inTheatersTag) {
-        movieList = await wrapper.getNowPlayingMovies();
-      }
-      if (category == topRatedMoviesTag) {
-        movieList = await wrapper.getTopRatedMovies();
-      }
+      tempMovieList = movieList;
       voteAverage = movieList[i].voteAverage;
     } else {
-      if (category == popularShowsTag) {
-        showList = await wrapper.getPopularTvShows();
+      for (int repeat = 1; repeat < numItems + 1; repeat++) {
+        if (category == popularShowsTag) {
+          showList.addAll(await wrapper.getPopularTvShows(repeat));
+        }
+        if (category == nowAiringShowsTag) {
+          showList.addAll(await wrapper.getNowAiringTvShows(repeat));
+        }
+        if (category == topRatedShowsTag) {
+          showList.addAll(await wrapper.getTopRatedTvShows(repeat));
+        }
       }
-      if (category == nowAiringShowsTag) {
-        showList = await wrapper.getNowAiringTvShows();
-      }
-      if (category == topRatedShowsTag) {
-        showList = await wrapper.getTopRatedTvShows();
-      }
+      tempShowList = showList;
       voteAverage = showList[i].voteAverage;
     }
     return voteAverage * 10;
   }
 
   // Returns the poster of the movie or the backdrop of the tv show as a Widget
-  static Future<Widget> getPoster(int i, String category, bool isMovie) async {
+  static Future<Widget> getPoster(
+      int i, String category, bool isMovie, int numItems) async {
     Widget poster;
+    List<MinimizedMovie> movieList = [];
+    List<MinimizedTvShow> showList = [];
     if (isMovie == true) {
-      if (category == popularMoviesTag) {
-        movieList = await wrapper.getPopularMovies(1);
+      for (int repeat = 1; repeat < numItems + 1; repeat++) {
+        if (category == popularMoviesTag) {
+          movieList.addAll(await wrapper.getPopularMovies(repeat));
+        }
+        if (category == inTheatersTag) {
+          movieList.addAll(await wrapper.getNowPlayingMovies(repeat));
+        }
+        if (category == topRatedMoviesTag) {
+          movieList.addAll(await wrapper.getTopRatedMovies(repeat));
+        }
       }
-      if (category == inTheatersTag) {
-        movieList = await wrapper.getNowPlayingMovies();
-      }
-      if (category == topRatedMoviesTag) {
-        movieList = await wrapper.getTopRatedMovies();
-      }
+      tempMovieList = movieList;
       MinimizedMovie movieItem = movieList[i];
       poster = movieItem.getPoster();
     } else {
-      if (category == popularShowsTag) {
-        showList = await wrapper.getPopularTvShows();
+      for (int repeat = 1; repeat < numItems + 1; repeat++) {
+        if (category == popularShowsTag) {
+          showList.addAll(await wrapper.getPopularTvShows(repeat));
+        }
+        if (category == nowAiringShowsTag) {
+          showList.addAll(await wrapper.getNowAiringTvShows(repeat));
+        }
+        if (category == topRatedShowsTag) {
+          showList.addAll(await wrapper.getTopRatedTvShows(repeat));
+        }
       }
-      if (category == nowAiringShowsTag) {
-        showList = await wrapper.getNowAiringTvShows();
-      }
-      if (category == topRatedShowsTag) {
-        showList = await wrapper.getTopRatedTvShows();
-      }
+      tempShowList = showList;
       MinimizedTvShow showItem = showList[i];
       poster = showItem.getBackdrop();
     }
@@ -200,10 +236,10 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for the different scrolling lists
   Widget _horizontalListViewMovies(String type, bool isMovie) {
     return SizedBox(
-      height: 360,
+      height: 380,
       child: Scrollbar(
         child: ListView.builder(
-          itemCount: 20,
+          itemCount: 100,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) =>
               _buildBoxMovies(index, type, isMovie),
@@ -215,10 +251,10 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for the different scrolling lists
   Widget _horizontalListViewShows(String type, bool isMovie) {
     return SizedBox(
-      height: 360,
+      height: 380,
       child: Scrollbar(
         child: ListView.builder(
-          itemCount: 20,
+          itemCount: 100,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) =>
               _buildBoxShows(index, type, isMovie),
@@ -230,15 +266,18 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for each individual movie
   Widget _buildBoxMovies(int index, String type, bool isMovie) => Container(
         margin: const EdgeInsets.all(8),
-        height: 360,
+        height: 380,
         width: 200,
         child: OutlinedButton(
+          /*style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.all(0) 
+          ),*/
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute<void>(
                 builder: (BuildContext context) =>
-                    ShowDetails(showId: "${movieList[index].id}"),
+                    ShowDetails(showId: "${tempMovieList[index].id}"),
                 fullscreenDialog: true,
               ),
             );
@@ -250,7 +289,7 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<Widget>(
-                future: getPoster(index, type, isMovie),
+                future: getPoster(index, type, isMovie, 5),
                 builder: (BuildContext ctx, AsyncSnapshot<Widget> snapshot) {
                   if (snapshot.hasData) {
                     final poster = snapshot.data;
@@ -268,8 +307,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getTitle(index, type,
-                    isMovie), // a previously-obtained Future<String> or null
+                future: getTitle(index, type, isMovie,
+                    5), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
@@ -285,7 +324,7 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 0.0, right: 0.0),
               child: FutureBuilder<num>(
-                future: getVoteAverage(index, type, isMovie),
+                future: getVoteAverage(index, type, isMovie, 5),
                 builder: (BuildContext context, AsyncSnapshot<num> snapshot) {
                   return Text('Rating: ${snapshot.data?.toInt()}%',
                       style: const TextStyle(
@@ -300,8 +339,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getReleaseDate(index, type,
-                    isMovie), // a previously-obtained Future<String> or null
+                future: getReleaseDate(index, type, isMovie,
+                    5), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Released: ${snapshot.data}',
@@ -319,15 +358,14 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for each individual movie
   Widget _buildBoxShows(int index, String type, bool isMovie) => Container(
         margin: const EdgeInsets.all(8),
-        height: 360,
+        height: 380,
         width: 200,
         child: OutlinedButton(
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (BuildContext context) =>
-                    ShowDetails(showId: "${showList[index].id}"),
+                builder: (BuildContext context) => ShowDetails(showId: movieID),
                 fullscreenDialog: true,
               ),
             );
@@ -339,7 +377,7 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<Widget>(
-                future: getPoster(index, type, isMovie),
+                future: getPoster(index, type, isMovie, 5),
                 builder: (BuildContext ctx, AsyncSnapshot<Widget> snapshot) {
                   if (snapshot.hasData) {
                     final poster = snapshot.data;
@@ -357,8 +395,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 5.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getTitle(index, type,
-                    isMovie), // a previously-obtained Future<String> or null
+                future: getTitle(index, type, isMovie,
+                    5), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
@@ -374,7 +412,7 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 0.0, right: 0.0),
               child: FutureBuilder<num>(
-                future: getVoteAverage(index, type, isMovie),
+                future: getVoteAverage(index, type, isMovie, 5),
                 builder: (BuildContext context, AsyncSnapshot<num> snapshot) {
                   return Text('Rating: ${snapshot.data?.toInt()}%',
                       style: const TextStyle(
@@ -389,8 +427,8 @@ class _ExploreTabState extends State<ExploreTab> {
               margin: const EdgeInsets.only(
                   left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
               child: FutureBuilder<String?>(
-                future: getReleaseDate(index, type,
-                    isMovie), // a previously-obtained Future<String> or null
+                future: getReleaseDate(index, type, isMovie,
+                    5), // a previously-obtained Future<String> or null
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Date First Aired: ${snapshot.data}',

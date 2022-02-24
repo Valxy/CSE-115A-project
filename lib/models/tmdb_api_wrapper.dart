@@ -232,17 +232,18 @@ class TmdbApiWrapper {
 
   ///Returns a list of minimized Movie objects representing
   ///movies currently playing in theaters
-  Future<List<MinimizedMovie>> getNowPlayingMovies() async {
-    final responseJson =
-        await _helper.get("movie/now_playing?api_key=$_apiKey");
+  Future<List<MinimizedMovie>> getNowPlayingMovies(int pageNumber) async {
+    final responseJson = await _helper.get(
+        "movie/now_playing?api_key=$_apiKey&language=en-US&page=$pageNumber");
     final List<dynamic> parsed = responseJson['results'];
     return _getMovieListFromJson(parsedList: parsed);
   }
 
   ///Returns the 20 top rated movies
   ///as a list of minimized Movie objects.
-  Future<List<MinimizedMovie>> getTopRatedMovies() async {
-    final responseJson = await _helper.get("movie/top_rated?api_key=$_apiKey");
+  Future<List<MinimizedMovie>> getTopRatedMovies(int pageNumber) async {
+    final responseJson = await _helper.get(
+        "movie/top_rated?api_key=$_apiKey&language=en-US&page=$pageNumber");
     final List<dynamic> parsed = responseJson['results'];
     return _getMovieListFromJson(parsedList: parsed);
   }
@@ -277,32 +278,36 @@ class TmdbApiWrapper {
 
   ///Returns a list of MinimizedTvShow objects representing shows
   ///that are airing today.
-  Future<List<MinimizedTvShow>> getNowAiringTvShows() async {
-    final response = await _helper.get("tv/airing_today?api_key=$_apiKey");
+  Future<List<MinimizedTvShow>> getNowAiringTvShows(int pageNumber) async {
+    final response = await _helper.get(
+        "tv/airing_today?api_key=$_apiKey&language=en-US&page=$pageNumber");
     final List<dynamic> parsed = response['results'];
     return _getTvShowListFromJson(parsedList: parsed);
   }
 
   ///Returns a list of MinimizedTvShow objects representing
   ///tv shows that will air within the next 7 days
-  Future<List<MinimizedTvShow>> getOnTheAirTvShows() async {
-    final response = await _helper.get("tv/on_the_air?api_key=$_apiKey");
+  Future<List<MinimizedTvShow>> getOnTheAirTvShows(int pageNumber) async {
+    final response = await _helper
+        .get("tv/on_the_air?api_key=$_apiKey&language=en-US&page=$pageNumber");
     final List<dynamic> parsed = response['results'];
     return _getTvShowListFromJson(parsedList: parsed);
   }
 
   ///Returns a list of MinimizedTvShow objects representing
   ///popular tv shows
-  Future<List<MinimizedTvShow>> getPopularTvShows() async {
-    final response = await _helper.get("tv/popular?api_key=$_apiKey");
+  Future<List<MinimizedTvShow>> getPopularTvShows(int pageNumber) async {
+    final response = await _helper
+        .get("tv/popular?api_key=$_apiKey&language=en-US&page=$pageNumber");
     final List<dynamic> parsed = response['results'];
     return _getTvShowListFromJson(parsedList: parsed);
   }
 
   ///Returns a list of MinimizedTvShow objects representing
   ///the top rated tv shows.
-  Future<List<MinimizedTvShow>> getTopRatedTvShows() async {
-    final response = await _helper.get("tv/top_rated?api_key=$_apiKey");
+  Future<List<MinimizedTvShow>> getTopRatedTvShows(int pageNumber) async {
+    final response = await _helper
+        .get("tv/top_rated?api_key=$_apiKey&language=en-US&page=$pageNumber");
     final List<dynamic> parsed = response['results'];
     return _getTvShowListFromJson(parsedList: parsed);
   }
