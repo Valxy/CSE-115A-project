@@ -123,7 +123,7 @@ class SearchItem extends SearchDelegate<String> {
         builder: (BuildContext ctx, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             // return buildResults(snapshot?.data ?? []);
-            return buildLiveResults(snapshot?.data ?? []);
+            return buildLiveResults(snapshot.data ?? []);
           }
           return const Center(child: CircularProgressIndicator());
         },
