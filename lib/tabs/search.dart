@@ -35,11 +35,20 @@ class _SearchTabState extends State<SearchTab> {
 }
 
 class SearchItem extends SearchDelegate<String> {
-  late Future<List<MinimizedMovie>> testDetails;
-
+  final ScrollController _scrollController = ScrollController();
+  List<dynamic> resultList = [];
+  ValueNotifier<int> resultSize = ValueNotifier<int>(0);
+  int nextPage = 1;
   SearchItem() {
-    testDetails = TmdbApiWrapper().getPopularMovies(1);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        nextPage += 1;
+        updateResultList();
+      }
+    });
   }
+
   @override
   // clear button
   // this function handles the X button on the top right corner
@@ -74,30 +83,47 @@ class SearchItem extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    late Future<List<dynamic>> results = TmdbApiWrapper().search(query: query);
+    resultList = [];
+    nextPage = 1;
+    late Future<List<dynamic>> results = makeQuery(pageNumber: 1);
     return FutureBuilder<List<dynamic>>(
       future: results,
       builder: (BuildContext ctx, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
-          return resultFetching(snapshot.data);
+          resultList.addAll(snapshot.data ?? []);
+          resultSize.value = resultList.length;
+          return resultFetching(resultList);
         }
         return const Center(child: CircularProgressIndicator());
       },
     );
   }
 
-  // the plan for this function is to show some suggested movies when
-  // the serach bar is open, this will be implemented later
+  Widget buildLiveResults(List<dynamic> results) {
+    return buildListView(results);
+  }
+
+  Future<void> updateResultList() async {
+    List<dynamic> results = await makeQuery(pageNumber: nextPage);
+    resultList.addAll(results);
+    resultSize.value = resultList.length;
+  }
+
+  // live serach result update
+  // no longer needed
   @override
   Widget buildSuggestions(BuildContext context) {
+    resultList = [];
+    nextPage = 1;
     if (query.isNotEmpty) {
-      late Future<List<dynamic>> results =
-          TmdbApiWrapper().search(query: query);
+      late Future<List<dynamic>> results = makeQuery(pageNumber: 1);
+
       return FutureBuilder<List<dynamic>>(
         future: results,
         builder: (BuildContext ctx, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
-            return resultFetching(snapshot.data);
+            // return buildResults(snapshot?.data ?? []);
+            return buildLiveResults(snapshot?.data ?? []);
           }
           return const Center(child: CircularProgressIndicator());
         },
@@ -106,14 +132,31 @@ class SearchItem extends SearchDelegate<String> {
     return const Text("");
   }
 
-  Widget resultFetching(List<dynamic>? results) {
-    int resultSize = results?.length ?? 0;
+  Future<List<dynamic>> makeQuery({int pageNumber = 1}) async {
+    if (query.isNotEmpty) {
+      return TmdbApiWrapper().search(query: query, pageNumber: pageNumber);
+    }
+    return [];
+  }
 
+  // main helper method for fetching results
+  // used by live result and result
+  Widget resultFetching(List<dynamic> someList) {
+    return ValueListenableBuilder(
+        valueListenable: resultSize,
+        builder: (BuildContext ctx, int sizeValue, Widget? child) =>
+            buildListView(someList));
+  }
+
+  // this method builds the layout of the list and where each result goes
+  // it also parse the type of tv, movie or person object
+  Widget buildListView(List<dynamic> someList) {
     return ListView.builder(
-        itemCount: results?.length ?? 0,
+        controller: _scrollController,
+        itemCount: someList.length,
         itemBuilder: (context, index) {
-          if (results != null && results.isNotEmpty && resultSize > 0) {
-            final resultItem = results[index];
+          if (someList.isNotEmpty && index < someList.length) {
+            final resultItem = someList[index];
             MinimizedMovie movieResult; // movie object
             MinimizedTvShow tvResult; // tv object
             int resultId = 0; // id of the show/tv
@@ -126,7 +169,7 @@ class SearchItem extends SearchDelegate<String> {
               size: 40,
             );
 
-            if (results[index] is MinimizedMovie) {
+            if (someList[index] is MinimizedMovie) {
               movieResult = resultItem;
               resultId = movieResult.id;
               posterPath = movieResult.posterPath;
@@ -137,7 +180,7 @@ class SearchItem extends SearchDelegate<String> {
               } else {
                 year = "";
               }
-            } else if (results[index] is MinimizedTvShow) {
+            } else if (someList[index] is MinimizedTvShow) {
               tvResult = resultItem;
               resultId = tvResult.id;
               posterPath = tvResult.posterPath;
@@ -153,62 +196,9 @@ class SearchItem extends SearchDelegate<String> {
                   "https://image.tmdb.org/t/p/w500" + (posterPath));
             }
 
-            return ListTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (BuildContext context) => ShowDetails(
-                      showId: resultId.toString(),
-                    ),
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
-              leading: noPoster,
-              title: Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // title container
-                    Container(
-                      padding: const EdgeInsets.only(
-                          left: 0, right: 0, top: 0, bottom: 5),
-                      child: Text(title),
-                    ),
-                    // year container
-                    if (year != "")
-
-                      // some movies/shows doesn't have years, so if that's the case
-                      // don't show the container
-                      Container(
-                        padding: const EdgeInsets.only(
-                            left: 0, right: 0, top: 0, bottom: 5),
-                        child: Text(
-                          year,
-                          style: const TextStyle(fontSize: 11),
-                        ),
-                      ),
-
-                    // actor container
-                    if (type == "movie")
-                      Container(
-                        child: getActors(resultId),
-                      )
-                    else if (type == "tv")
-                      const Text("tv type"),
-                  ],
-                ),
-              ),
-            );
+            return buildListTile(
+                year, resultId, title, type, context, noPoster);
           } else {
-            // return Container(
-            //   alignment: Alignment.center,
-            //   child: const Text("No result"),
-            // );
-            print("I am here");
             return Text("no data");
           }
         });
@@ -273,5 +263,61 @@ class SearchItem extends SearchDelegate<String> {
       }
     }
     return actorsList;
+  }
+
+  // this method makes the result tile (rectangluar tile)
+  Widget buildListTile(String year, resultId, title, type, BuildContext context,
+      Widget noPoster) {
+    Widget tile = ListTile(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => ShowDetails(
+              showId: resultId.toString(),
+            ),
+            fullscreenDialog: true,
+          ),
+        );
+      },
+      leading: noPoster,
+      title: Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // title container
+            Container(
+              padding:
+                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 5),
+              child: Text(title),
+            ),
+            // year container
+            if (year != "")
+
+              // some movies/shows doesn't have years, so if that's the case
+              // don't show the container
+              Container(
+                padding:
+                    const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 5),
+                child: Text(
+                  year,
+                  style: const TextStyle(fontSize: 11),
+                ),
+              ),
+
+            // actor container
+            if (type == "movie")
+              Container(
+                child: getActors(resultId),
+              )
+            else if (type == "tv")
+              const Text("tv type"),
+          ],
+        ),
+      ),
+    );
+    return tile;
   }
 }

@@ -55,10 +55,10 @@ class Movie extends MinimizedMovie {
   late List<Review> reviews;
 
   ///A list of Widgets that are the backdrops for the movie.
-  late List<Widget> backdrops;
+  List<Widget> backdrops = [];
 
   ///A list of Widgets that are the posters for the movie.
-  late List<Widget> posters;
+  List<Widget> posters = [];
 
   ///A list of MinimizedMovie objects representing a list
   ///of recommendations based off of this movie.

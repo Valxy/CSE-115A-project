@@ -253,11 +253,10 @@ class TmdbApiWrapper {
 
   ///Allows searching TMDB for movies,
   ///tv shows and people in a single request.
-  Future<List<dynamic>> search({
-    required String query,
-  }) async {
-    final responseJson =
-        await _helper.get("search/multi?api_key=$_apiKey&query=$query&page=1");
+  Future<List<dynamic>> search(
+      {required String query, int pageNumber = 1}) async {
+    final responseJson = await _helper
+        .get("search/multi?api_key=$_apiKey&query=$query&page=$pageNumber");
     final List<dynamic> parsed = responseJson['results'];
     List<dynamic> someThing =
         parsed.map((e) => _parseSearchResult(searchResult: e)).toList();
