@@ -53,24 +53,22 @@ class _ShowDetailsState extends State<ShowDetails> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      disableCenter: true,
-                      viewportFraction: 1,
-                    ),
-                    items: snapshot.data!.backdrops
-                        .map(
-                          (e) => Container(
-                            width: 384.0,
-                            child: FittedBox(
-                              child: e,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        )
-                        .toList(),
+                CarouselSlider(
+                  options: CarouselOptions(
+                    disableCenter: true,
+                    viewportFraction: 1,
                   ),
+                  items: snapshot.data!.backdrops
+                      .map(
+                        (e) => SizedBox(
+                          width: 384.0,
+                          child: FittedBox(
+                            child: e,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
                 Card(
                   child: Container(
@@ -154,17 +152,12 @@ class _ShowDetailsState extends State<ShowDetails> {
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: e.profilePath != null
-                                      ? CircleAvatar(
-                                          radius: 50.0,
-                                          foregroundImage: NetworkImage(
-                                              "https://image.tmdb.org/t/p/w500" +
-                                                  e.profilePath),
-                                        )
-                                      : CircleAvatar(
-                                          radius: 50.0,
-                                          child: Text(e.name.split(" ")[0][0]),
-                                        ),
+                                  child: CircleAvatar(
+                                    radius: 50.0,
+                                    foregroundImage: NetworkImage(
+                                        "https://image.tmdb.org/t/p/w500" +
+                                            e.profilePath),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 100,

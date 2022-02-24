@@ -199,7 +199,7 @@ class SearchItem extends SearchDelegate<String> {
             return buildListTile(
                 year, resultId, title, type, context, noPoster);
           } else {
-            return Text("no data");
+            return const Text("no data");
           }
         });
   }
@@ -241,7 +241,7 @@ class SearchItem extends SearchDelegate<String> {
       future: movieObj,
       builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
-          List<CastMember>? emptyCast = null;
+          List<CastMember>? emptyCast;
           return Text(
             parseCast(snapshot.data?.cast ?? emptyCast),
             style: const TextStyle(fontSize: 11),

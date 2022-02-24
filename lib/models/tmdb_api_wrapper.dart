@@ -81,11 +81,9 @@
 
 library tmdb_api_wrapper;
 
-// import 'package:fk_user_agent/fk_user_agent.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:tmdb/models/src/errors.dart';
 import 'package:tmdb/models/src/minimized_movie.dart';
@@ -347,23 +345,23 @@ class TmdbApiWrapper {
     return list;
   }
 
-  ///recieves access denied error
-  ///possibly to do with authentication
-  ///(the 'header' argument to http.get)
-  ///
-  ///Attempted to use fk_user_agent package to get
-  ///device userAgent, but recieved an 'Unexpected Null Value'
-  ///error on FkUserAgent.init(). Only tested on Chrome, should
-  ///check if FkUserAgent works on phone emulator.
-  Future<void> getDailyExports() async {
-    const String url =
-        "http://files.tmdb.org/p/exports/movie_ids_01_01_2022.json.gz/";
-    http.Response response = await http.get(
-      Uri.parse(url),
-      headers: {'User-Agent': 'Chrome/97.0.4692.71'},
-    );
-    //print(response.body);
-  }
+  // ///recieves access denied error
+  // ///possibly to do with authentication
+  // ///(the 'header' argument to http.get)
+  // ///
+  // ///Attempted to use fk_user_agent package to get
+  // ///device userAgent, but recieved an 'Unexpected Null Value'
+  // ///error on FkUserAgent.init(). Only tested on Chrome, should
+  // ///check if FkUserAgent works on phone emulator.
+  // Future<void> getDailyExports() async {
+  //   const String url =
+  //       "http://files.tmdb.org/p/exports/movie_ids_01_01_2022.json.gz/";
+  //   http.Response response = await http.get(
+  //     Uri.parse(url),
+  //     headers: {'User-Agent': 'Chrome/97.0.4692.71'},
+  //   );
+  //   //print(response.body);
+  // }
 }
 
 class _ApiBaseHelper {

@@ -147,13 +147,13 @@ Future<bool> _testSearch(String query) async {
   return true;
 }
 
-Future<void> _testImageCaching() async {
-  List<MinimizedMovie> movie = await TmdbApiWrapper().getPopularMovies(1);
-  Widget image =
-      await TmdbApiWrapper().getImage(imagePath: movie[0].posterPath);
+// Future<void> _testImageCaching() async {
+//   List<MinimizedMovie> movie = await TmdbApiWrapper().getPopularMovies(1);
+//   Widget image =
+//       await TmdbApiWrapper().getImage(imagePath: movie[0].posterPath);
 
-  expect(image, isNotEmpty);
-}
+//   expect(image, isNotEmpty);
+// }
 
 void main() {
   test('Get popular movies', _testGetPopularMovies);

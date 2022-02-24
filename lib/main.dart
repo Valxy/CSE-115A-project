@@ -7,7 +7,7 @@ import 'tabs/search.dart';
 void main() async {
   ///Need this for apps running asynchronous functions
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(TMDBApp());
+  runApp(const TMDBApp());
 }
 
 const List<List<Widget>> _tabs = [
@@ -35,6 +35,8 @@ const List<List<Widget>> _tabs = [
 ];
 
 class TMDBApp extends StatefulWidget {
+  const TMDBApp({Key? key}) : super(key: key);
+
   @override
   _TMDBAppState createState() => _TMDBAppState();
 }

@@ -25,9 +25,10 @@ class _ExploreTabState extends State<ExploreTab> {
   static String? releaseDate;
   static num voteAverage = 0;
   static String movieID = "634649";
-  static List<MinimizedMovie> movieList = [];
-  static List<MinimizedTvShow> showList = [];
+  // static List<MinimizedMovie> movieList = [];
+  // static List<MinimizedTvShow> showList = [];
   static List<MinimizedMovie> tempMovieList = [];
+  // ignore: unused_field
   static List<MinimizedTvShow> tempShowList = [];
   static TmdbApiWrapper wrapper = TmdbApiWrapper();
 

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:filter_list/filter_list.dart';
 
-class filterResults extends StatefulWidget {
-  const filterResults({Key? key}) : super(key: key);
+class FilterResults extends StatefulWidget {
+  const FilterResults({Key? key}) : super(key: key);
   @override
-  _filterResultsState createState() => _filterResultsState();
+  _FilterResultsState createState() => _FilterResultsState();
 }
 
 final List<String> movieTitle = <String>['1', '2', '3'];
 
-class _filterResultsState extends State<filterResults> {
+class _FilterResultsState extends State<FilterResults> {
   void openFilterDialog() async {
     await FilterListDialog.display<GenreFilter>(
       context,
@@ -28,7 +28,6 @@ class _filterResultsState extends State<filterResults> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -87,4 +86,3 @@ final List<GenreFilter> genreList = [
   GenreFilter("2"),
   GenreFilter("3"),
 ];
-
