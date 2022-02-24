@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-
+import '../pages/person_details.dart';
 import '../models/tmdb_api_wrapper.dart';
 
 class ShowDetails extends StatefulWidget {
@@ -100,9 +100,9 @@ class _ShowDetailsState extends State<ShowDetails> {
                                     .map((e) => Chip(label: Text(e.name)))
                                     .toList()
                                     .sublist(
-                                      0,
-                                      min(snapshot.data!.genres.length - 1, 3),
-                                    ),
+                                        0,
+                                        min(snapshot.data!.genres.length - 1,
+                                            3)),
                               ),
                               Wrap(
                                 spacing: 18,
@@ -154,17 +154,31 @@ class _ShowDetailsState extends State<ShowDetails> {
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.all(10.0),
-                                  child: e.profilePath != null
-                                      ? CircleAvatar(
-                                          radius: 50.0,
-                                          foregroundImage: NetworkImage(
-                                              "https://image.tmdb.org/t/p/w500" +
-                                                  e.profilePath),
-                                        )
-                                      : CircleAvatar(
-                                          radius: 50.0,
-                                          child: Text(e.name.split(" ")[0][0]),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute<void>(
+                                          builder: (BuildContext context) =>
+                                              ShowPersonDetails(
+                                                  personId: e.id.toString()),
+                                          fullscreenDialog: true,
                                         ),
+                                      );
+                                    },
+                                    child: e.profilePath != null
+                                        ? CircleAvatar(
+                                            radius: 50.0,
+                                            foregroundImage: NetworkImage(
+                                                "https://image.tmdb.org/t/p/w500" +
+                                                    e.profilePath),
+                                          )
+                                        : CircleAvatar(
+                                            radius: 50.0,
+                                            child:
+                                                Text(e.name.split(" ")[0][0]),
+                                          ),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 100,

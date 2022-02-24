@@ -102,6 +102,7 @@ export 'src/api_objects.dart'
         Genre,
         Video,
         Review,
+        Person,
         CastMember,
         CrewMember,
         Language;
@@ -163,6 +164,17 @@ class TmdbApiWrapper {
         "movie/$movieId?api_key=$_apiKey&append_to_response=credits,images,recommendations,reviews,videos,release_dates";
     final responseJson = await _helper.get(endpoint);
     return Movie.fromJson(json: responseJson);
+  }
+
+  Future<Person> getDetailsPerson({
+    required personId,
+  }) async {
+    final String endpoint =
+        "/person/$personId?api_key=$_apiKey&append_to_response=combined_credits,images";
+    final responseJson = await _helper.get(endpoint);
+    Person person = Person.fromJson(json: responseJson);
+    print(person);
+    return person;
   }
 
   Future<List<MinimizedMovie>> getHorrorMovies() async {

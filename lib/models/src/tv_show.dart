@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import './api_objects.dart';
 import './minimized_tv_show.dart';
 
+///The TvShow class extends the MinimizedTvShow,
+///adding several more data members including episode
+///and season information, cast and crew, recommendations
+///and more.
 class TvShow extends MinimizedTvShow {
   ///A list of Person objects representing the creators of the TV Show
   late List<Person> creators;

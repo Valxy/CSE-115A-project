@@ -235,6 +235,22 @@ class Person {
   ///method if [profilePath] is valid, but [profilePicture] is empty.
   late Widget profilePicture;
 
+  ///The person's Birthday
+  late String birthday;
+
+  ///Date of the person's passing
+  late String deathday;
+
+  ///The person's biography
+  late String biography;
+
+  ///Where the person was born
+  late String birthPlace;
+
+  ///A list of image paths for pictures
+  ///of the person
+  late List<Widget> profiles;
+
   Person();
 
   Person.fromArguments({
@@ -285,6 +301,28 @@ class Person {
     } else {
       popularity = 0;
     }
+    if (json['birthday'] != null) {
+      birthday = json['birthday'];
+    } else {
+      birthday = "";
+    }
+    if (json['deathday'] != null) {
+      deathday = json['deathday'];
+    } else {
+      deathday = "";
+    }
+    if (json['biography'] != null) {
+      biography = json['biography'];
+    } else {
+      biography = "";
+    }
+    if (json['place_of_birth'] != null) {
+      birthPlace = json['place_of_birth'];
+    } else {
+      birthPlace = "";
+    }
+    profilePicture = getImage(imagePath: profilePath, size: "w500");
+    _parseImages(json: json['profiles']);
   }
 
   ///A method to get an image from TMDB. Pass the person's
@@ -300,9 +338,25 @@ class Person {
     return const SizedBox.shrink();
   }
 
+  void _parseImages({
+    required List<dynamic>? json,
+  }) {
+    if (json == null) {
+      profiles = [];
+      return;
+    }
+    // fun little op, maybe the user will notice :3
+    json.shuffle();
+
+    profiles = json
+        .sublist(0, (json.length > 6 ? 6 : json.length))
+        .map((e) => getImage(imagePath: e, size: "w500"))
+        .toList();
+  }
+
   @override
   String toString() {
-    return "Person: {name: $name, id: $id, creditId: $creditId,  gender: $gender, profile_path: $profilePath, popularity: $popularity, adult: $adult}";
+    return "Person: {name: $name, id: $id, creditId: $creditId,  gender: $gender, profile_path: $profilePath, popularity: $popularity, adult: $adult, birthday: $birthday, deathday: $deathday, place_of_birth: $birthPlace, biography: $biography, profile_picture: $profilePicture}";
   }
 }
 

@@ -4,6 +4,9 @@ import './minimized_movie.dart';
 
 ///The "completed" Movie class. A Movie object
 ///is an object that represents a movie on the tmdb database.
+///The Movie class extends the MinimizedMovie class adding
+///several more data members including runtime, revenue,
+///cast and crew, recommendations, and more.
 class Movie extends MinimizedMovie {
   //minLength: 9, maxLength: 9,
   //pattern: ^tt[0-9]{7}
