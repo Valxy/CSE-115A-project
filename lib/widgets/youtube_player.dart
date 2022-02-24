@@ -31,8 +31,8 @@ class _YoutubeTrailerState extends State<YoutubeTrailer> {
     return Container(
       width: double.infinity,
       height: 300,
-      padding: const EdgeInsets.all(5.0),
-      margin: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.all(0),
+      margin: const EdgeInsets.all(0),
       alignment: Alignment.centerRight,
       child: SizedBox(
         height: screenSize.width,

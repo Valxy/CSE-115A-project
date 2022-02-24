@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import '../models/tmdb_api_wrapper.dart';
+import '../widgets/youtube_player.dart';
 
 class ShowDetails extends StatefulWidget {
   final String showId;
@@ -39,7 +40,9 @@ class _ShowDetailsState extends State<ShowDetails> {
       body: FutureBuilder(
         future: movieDetails,
         builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-          if (!snapshot.hasData) {
+          final Movie? movie = snapshot.data;
+
+          if (!snapshot.hasData || movie == null) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -50,6 +53,19 @@ class _ShowDetailsState extends State<ShowDetails> {
             );
           }
 
+          var seen = <String>{};
+
+          for (var cast in movie.cast) {
+            seen.add(cast.originalName);
+          }
+
+          List<CrewMember> uniqueCrew = movie.crew
+              .where((crew) =>
+                  seen.add(crew.originalName) && crew.profilePath != "")
+              .toList();
+
+          uniqueCrew.sort((a, b) => (b.popularity - a.popularity).ceil());
+
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -58,29 +74,34 @@ class _ShowDetailsState extends State<ShowDetails> {
                     disableCenter: true,
                     viewportFraction: 1,
                   ),
-                  items: snapshot.data!.backdrops
-                      .map(
-                        (e) => SizedBox(
-                          width: 384.0,
-                          child: FittedBox(
-                            child: e,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      )
-                      .toList(),
+                  items: <Widget>[
+                        YoutubeTrailer(
+                            "https://www.youtube.com/watch?v=${movie.videos.where((video) => video.site == "YouTube").first.key}"),
+                      ] +
+                      movie.backdrops
+                          .map(
+                            (e) => SizedBox(
+                              width: 384.0,
+                              child: FittedBox(
+                                child: e,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                          )
+                          .toList(),
                 ),
                 Card(
                   child: Container(
-                    height: 300,
+                    height: 280,
                     padding: const EdgeInsets.all(0),
                     child: Row(children: [
-                      snapshot.data!.posters[0],
-                      const Spacer(
-                        flex: 1,
+                      SizedBox(
+                        child: movie.posters[0],
+                      ),
+                      const SizedBox(
+                        width: 10,
                       ),
                       Expanded(
-                        flex: 26,
                         child: Container(
                           padding: const EdgeInsets.only(top: 5),
                           child: Column(
@@ -88,91 +109,175 @@ class _ShowDetailsState extends State<ShowDetails> {
                             children: <Widget>[
                               Text(
                                 snapshot.data?.title ?? "",
-                                style: const TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(
+                                height: 5,
                               ),
                               Wrap(
-                                spacing: 4,
-                                children: snapshot.data!.genres
-                                    .map((e) => Chip(label: Text(e.name)))
-                                    .toList()
-                                    .sublist(
-                                      0,
-                                      min(snapshot.data!.genres.length - 1, 3),
-                                    ),
-                              ),
-                              Wrap(
-                                spacing: 18,
+                                spacing: 14,
                                 children: [
                                   Text(
-                                    snapshot.data?.releaseDate != null
-                                        ? snapshot.data!.releaseDate
-                                            .split("-")[0]
-                                        : "",
-                                  ),
-                                  const Text(
-                                    "PG-13",
+                                    movie.releaseDate.split("-")[0],
+                                    style: Theme.of(context).textTheme.caption,
                                   ),
                                   Text(
-                                    "${snapshot.data!.runtime ~/ 60}h",
+                                    movie.releases.first.certification,
+                                    style: Theme.of(context).textTheme.caption,
+                                  ),
+                                  Text(
+                                    "${movie.runtime ~/ 60}h",
+                                    style: Theme.of(context).textTheme.caption,
                                   )
                                 ],
                               ),
-                              const Text(
-                                "",
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Wrap(
+                                  spacing: 4,
+                                  children: movie.genres
+                                      .sublist(
+                                        0,
+                                        min(movie.genres.length, 3),
+                                      )
+                                      .map(
+                                        (e) => SizedBox(
+                                          child: Chip(
+                                            label: Text(
+                                              e.name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .labelSmall,
+                                            ),
+                                            visualDensity: const VisualDensity(
+                                                horizontal: -4.0,
+                                                vertical: -4.0),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
                               ),
                               Text(
                                 snapshot.data?.overview ?? "",
-                                style: const TextStyle(
-                                  fontSize: 16.0,
-                                ),
+                                style: Theme.of(context).textTheme.bodyMedium,
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 10,
+                                maxLines: 9,
+                              ),
+                              const SizedBox(
+                                height: 5,
                               ),
                             ],
                           ),
                         ),
                       ),
-                      const Spacer(
-                        flex: 1,
+                      const SizedBox(
+                        width: 10,
                       ),
                     ]),
                   ),
                 ),
                 Card(
-                  child: Container(
-                    height: 150,
-                    padding: const EdgeInsets.all(0),
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: snapshot.data!.cast
-                          .map(
-                            (e) => Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: CircleAvatar(
-                                    radius: 50.0,
-                                    foregroundImage: NetworkImage(
-                                        "https://image.tmdb.org/t/p/w500" +
-                                            e.profilePath),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 100,
-                                  child: Center(
-                                    child: Text(
-                                      e.name,
-                                      overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, top: 6),
+                        child: Text(
+                          'Cast',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                      Container(
+                        height: 150,
+                        padding: const EdgeInsets.all(0),
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: movie.cast
+                              .where((cast) => cast.profilePath != "")
+                              .map(
+                                (e) => Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: CircleAvatar(
+                                        radius: 50.0,
+                                        foregroundImage: NetworkImage(
+                                            "https://image.tmdb.org/t/p/w500" +
+                                                e.profilePath),
+                                      ),
                                     ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                          .toList(),
-                    ),
+                                    SizedBox(
+                                      width: 100,
+                                      child: Center(
+                                        child: Text(
+                                          e.name,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Card(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12, top: 6),
+                        child: Text(
+                          'Crew',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ),
+                      Container(
+                        height: 150,
+                        padding: const EdgeInsets.all(0),
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: uniqueCrew
+                              .map(
+                                (e) => Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: CircleAvatar(
+                                        radius: 50.0,
+                                        foregroundImage: NetworkImage(
+                                            "https://image.tmdb.org/t/p/w500" +
+                                                e.profilePath),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 100,
+                                      child: Center(
+                                        child: Text(
+                                          e.name,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ],
