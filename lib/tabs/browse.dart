@@ -40,24 +40,24 @@ class _BrowseTabState extends State<BrowseTab> {
             "Western",
           ]
               .map(
-                (e) => Container(
-                  margin: const EdgeInsets.all(5.0),
-                  height: 100.0,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(4.0)),
-                      color: Colors.blue,
-                      border: Border.all(color: Colors.red, width: 0.3)),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FilterResults(),
-                        ),
-                      );
-                    },
+                (e) => GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FilterResults(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(5.0),
+                    height: 100.0,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(4.0)),
+                        color: Colors.blue,
+                        border: Border.all(color: Colors.red, width: 0.3)),
                     child: Center(
                       child: Text(e,
                           textAlign: TextAlign.center,
