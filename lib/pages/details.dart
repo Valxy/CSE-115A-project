@@ -168,7 +168,7 @@ class _ShowDetailsState extends State<ShowDetails> {
                                 snapshot.data?.overview ?? "",
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 9,
+                                maxLines: 8,
                               ),
                               const SizedBox(
                                 height: 5,
@@ -232,54 +232,56 @@ class _ShowDetailsState extends State<ShowDetails> {
                     ],
                   ),
                 ),
-                Card(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12, top: 6),
-                        child: Text(
-                          'Crew',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                      ),
-                      Container(
-                        height: 150,
-                        padding: const EdgeInsets.all(0),
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: uniqueCrew
-                              .map(
-                                (e) => Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: CircleAvatar(
-                                        radius: 50.0,
-                                        foregroundImage: NetworkImage(
-                                            "https://image.tmdb.org/t/p/w500" +
-                                                e.profilePath),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 100,
-                                      child: Center(
-                                        child: Text(
-                                          e.name,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                uniqueCrew.isNotEmpty
+                    ? Card(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12, top: 6),
+                              child: Text(
+                                'Crew',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ),
+                            Container(
+                              height: 150,
+                              padding: const EdgeInsets.all(0),
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: uniqueCrew
+                                    .map(
+                                      (e) => Column(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CircleAvatar(
+                                              radius: 50.0,
+                                              foregroundImage: NetworkImage(
+                                                  "https://image.tmdb.org/t/p/w500" +
+                                                      e.profilePath),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 100,
+                                            child: Center(
+                                              child: Text(
+                                                e.name,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     )
-                                  ],
-                                ),
-                              )
-                              .toList(),
+                                    .toList(),
+                              ),
+                            )
+                          ],
                         ),
                       )
-                    ],
-                  ),
-                ),
+                    : const SizedBox.shrink(),
               ],
             ),
           );
