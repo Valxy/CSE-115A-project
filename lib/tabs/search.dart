@@ -12,25 +12,38 @@ class SearchTab extends StatefulWidget {
 class _SearchTabState extends State<SearchTab> {
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: GestureDetector(
+        appBar: PreferredSize(
+          preferredSize: AppBar().preferredSize,
+          child: SafeArea(
+            child: GestureDetector(
               onTap: () {
                 showSearch(context: context, delegate: SearchItem());
               },
               child: Container(
-                height: 50,
-                color: Colors.white,
-                child: Row(
-                  children: const [
-                    Text(
-                      "Search",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ],
+                margin:
+                    const EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
+                child: AppBar(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                  elevation: 6,
+                  backgroundColor: Theme.of(context).bottomAppBarColor,
+                  centerTitle: true,
+                  leading: Icon(
+                    Icons.search,
+                    color: Theme.of(context).hintColor,
+                  ),
+                  title: Text(
+                    "Search Movies & TV",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(color: Theme.of(context).hintColor),
+                  ),
                 ),
               ),
-            )),
+            ),
+          ),
+        ),
       );
 }
 
