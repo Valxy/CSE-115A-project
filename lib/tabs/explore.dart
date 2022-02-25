@@ -211,7 +211,7 @@ class _ExploreTabState extends State<ExploreTab> {
                     height: 250,
                     margin: const EdgeInsets.only(
                         left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
-                    child: snapshot.data![index].getBackdrop(),
+                    child: snapshot.data![index].getPoster(),
                   ),
                   Container(
                     width: 200,

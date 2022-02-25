@@ -131,6 +131,12 @@ class MinimizedTvShow {
     return getImage(imagePath: backdropPath);
   }
 
+  Widget getPoster({
+    size = "w500",
+  }) {
+    return getImage(imagePath: posterPath);
+  }
+
   void _parseCountries({
     required List<dynamic> json,
   }) {
