@@ -72,7 +72,8 @@ class _TMDBAppState extends State<TMDBApp> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'The Movie Database',
-      theme: ThemeData.light(),
+      theme: ThemeData(brightness: Brightness.light, useMaterial3: true),
+      darkTheme: ThemeData(brightness: Brightness.dark, useMaterial3: true),
       home: Scaffold(
         body: AnimatedBuilder(
           animation: _animationController,
