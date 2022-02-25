@@ -14,9 +14,6 @@ class _BrowseTabState extends State<BrowseTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(""),
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
