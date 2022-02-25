@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import '../models/tmdb_api_wrapper.dart';
 import '../widgets/youtube_player.dart';
 
+import './person_details.dart';
+
 class ShowDetails extends StatefulWidget {
   final String showId;
 
@@ -203,27 +205,40 @@ class _ShowDetailsState extends State<ShowDetails> {
                           children: movie.cast
                               .where((cast) => cast.profilePath != "")
                               .map(
-                                (e) => Column(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: CircleAvatar(
-                                        radius: 50.0,
-                                        foregroundImage: NetworkImage(
-                                            "https://image.tmdb.org/t/p/w500" +
-                                                e.profilePath),
+                                (e) => GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute<void>(
+                                        builder: (BuildContext context) =>
+                                            ShowPersonDetails(
+                                                personId: "${e.id}"),
+                                        fullscreenDialog: true,
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: 100,
-                                      child: Center(
-                                        child: Text(
-                                          e.name,
-                                          overflow: TextOverflow.ellipsis,
+                                    );
+                                  },
+                                  child: Column(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CircleAvatar(
+                                          radius: 50.0,
+                                          foregroundImage: NetworkImage(
+                                              "https://image.tmdb.org/t/p/w500" +
+                                                  e.profilePath),
                                         ),
                                       ),
-                                    )
-                                  ],
+                                      SizedBox(
+                                        width: 100,
+                                        child: Center(
+                                          child: Text(
+                                            e.name,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
                               .toList(),
@@ -252,27 +267,42 @@ class _ShowDetailsState extends State<ShowDetails> {
                                 scrollDirection: Axis.horizontal,
                                 children: uniqueCrew
                                     .map(
-                                      (e) => Column(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CircleAvatar(
-                                              radius: 50.0,
-                                              foregroundImage: NetworkImage(
-                                                  "https://image.tmdb.org/t/p/w500" +
-                                                      e.profilePath),
+                                      (e) => GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute<void>(
+                                              builder: (BuildContext context) =>
+                                                  ShowPersonDetails(
+                                                      personId: "${e.id}"),
+                                              fullscreenDialog: true,
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: 100,
-                                            child: Center(
-                                              child: Text(
-                                                e.name,
-                                                overflow: TextOverflow.ellipsis,
+                                          );
+                                        },
+                                        child: Column(
+                                          children: <Widget>[
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(10.0),
+                                              child: CircleAvatar(
+                                                radius: 50.0,
+                                                foregroundImage: NetworkImage(
+                                                    "https://image.tmdb.org/t/p/w500" +
+                                                        e.profilePath),
                                               ),
                                             ),
-                                          )
-                                        ],
+                                            SizedBox(
+                                              width: 100,
+                                              child: Center(
+                                                child: Text(
+                                                  e.name,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     )
                                     .toList(),
