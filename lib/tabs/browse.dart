@@ -61,9 +61,7 @@ class _BrowseTabState extends State<BrowseTab> {
                     child: Center(
                       child: Text(e,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 30,
-                          )),
+                          style: Theme.of(context).textTheme.headline5),
                     ),
                   ),
                 ),

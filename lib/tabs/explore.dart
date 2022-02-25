@@ -270,9 +270,6 @@ class _ExploreTabState extends State<ExploreTab> {
         height: 380,
         width: 200,
         child: OutlinedButton(
-          /*style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.all(0) 
-          ),*/
           onPressed: () {
             Navigator.push(
               context,
@@ -313,10 +310,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0));
+                      style: Theme.of(context).textTheme.titleMedium);
                 },
               ),
             ),
@@ -328,10 +322,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 future: getVoteAverage(index, type, isMovie, 5),
                 builder: (BuildContext context, AsyncSnapshot<num> snapshot) {
                   return Text('Rating: ${snapshot.data?.toInt()}%',
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12.0));
+                      style: Theme.of(context).textTheme.caption);
                 },
               ),
             ),
@@ -345,10 +336,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Released: ${snapshot.data}',
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12.0));
+                      style: Theme.of(context).textTheme.caption);
                 },
               ),
             ),
@@ -401,10 +389,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('${snapshot.data}',
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.0));
+                      style: Theme.of(context).textTheme.titleMedium);
                 },
               ),
             ),
@@ -416,10 +401,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 future: getVoteAverage(index, type, isMovie, 5),
                 builder: (BuildContext context, AsyncSnapshot<num> snapshot) {
                   return Text('Rating: ${snapshot.data?.toInt()}%',
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12.0));
+                      style: Theme.of(context).textTheme.caption);
                 },
               ),
             ),
@@ -433,10 +415,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 builder:
                     (BuildContext context, AsyncSnapshot<String?> snapshot) {
                   return Text('Date First Aired: ${snapshot.data}',
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12.0));
+                      style: Theme.of(context).textTheme.caption);
                 },
               ),
             ),
@@ -447,9 +426,7 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for creating the different scrolling list titles
   Widget _buildText(String category) => Container(
         margin: const EdgeInsets.all(12),
-        height: 25,
         width: 200,
-        child: Text(category,
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+        child: Text(category, style: Theme.of(context).textTheme.headline5),
       );
 }
