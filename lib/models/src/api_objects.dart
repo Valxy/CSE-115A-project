@@ -322,7 +322,7 @@ class Person {
       birthPlace = "";
     }
     profilePicture = getImage(imagePath: profilePath, size: "w500");
-    _parseImages(json: json['profiles']);
+    _parseImages(json: json['images']['profiles']);
   }
 
   ///A method to get an image from TMDB. Pass the person's
@@ -345,18 +345,17 @@ class Person {
       profiles = [];
       return;
     }
-    // fun little op, maybe the user will notice :3
+    // maybe the user will notice it's random :3
     json.shuffle();
-
     profiles = json
         .sublist(0, (json.length > 6 ? 6 : json.length))
-        .map((e) => getImage(imagePath: e, size: "w500"))
+        .map((e) => getImage(imagePath: e['file_path'], size: "w300"))
         .toList();
   }
 
   @override
   String toString() {
-    return "Person: {name: $name, id: $id, creditId: $creditId,  gender: $gender, profile_path: $profilePath, popularity: $popularity, adult: $adult, birthday: $birthday, deathday: $deathday, place_of_birth: $birthPlace, biography: $biography, profile_picture: $profilePicture}";
+    return "Person: {name: $name, id: $id, creditId: $creditId,  gender: $gender, profile_path: $profilePath, popularity: $popularity, adult: $adult, birthday: $birthday, deathday: $deathday, place_of_birth: $birthPlace, biography: $biography, posters: $profiles, profile_picture: $profilePicture}";
   }
 }
 

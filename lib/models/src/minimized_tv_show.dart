@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart';
 import './api_objects.dart';
 
 class MinimizedTvShow {
@@ -129,6 +130,23 @@ class MinimizedTvShow {
     size = "w500",
   }) {
     return getImage(imagePath: backdropPath);
+  }
+
+  //added for polymorphism
+  String getReleaseDate() {
+    return firstAirDate;
+  }
+
+  //added for polymorphism
+  Widget getPoster({
+    size = "w500",
+  }) {
+    return getImage(imagePath: posterPath);
+  }
+
+  //added for polymorphism
+  String getTitle() {
+    return name;
   }
 
   void _parseCountries({

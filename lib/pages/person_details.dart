@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../models/tmdb_api_wrapper.dart';
@@ -15,7 +14,6 @@ class ShowPersonDetails extends StatefulWidget {
 
 class _ShowPersonDetailsState extends State<ShowPersonDetails> {
   late Future<Person> personDetails;
-  static const _imageBaseUrl = "https://image.tmdb.org/t/p/w500";
 
   @override
   void initState() {
@@ -23,9 +21,11 @@ class _ShowPersonDetailsState extends State<ShowPersonDetails> {
 
     personDetails =
         TmdbApiWrapper().getDetailsPerson(personId: widget.personId);
-    print(personDetails);
+    //print(personDetails);
   }
 
+  // basically just copy and pasted the details page
+  //
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,18 +65,17 @@ class _ShowPersonDetailsState extends State<ShowPersonDetails> {
                   ),
                   items: snapshot.data?.profiles
                       .map(
-                        (e) => Container(
+                        (e) => SizedBox(
                           width: 384.0,
                           child: FittedBox(
                             child: e,
-                            fit: BoxFit.fill,
                           ),
                         ),
                       )
                       .toList(),
                 ),
 
-                //title, genre, description
+                //previously title, genre, description
                 Card(
                   child: Container(
                     height: 300,
@@ -94,7 +93,7 @@ class _ShowPersonDetailsState extends State<ShowPersonDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                snapshot.data?.name ?? "",
+                                snapshot.data!.name,
                                 style: const TextStyle(
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold),
@@ -147,49 +146,6 @@ class _ShowPersonDetailsState extends State<ShowPersonDetails> {
                     ]),
                   ),
                 ),
-
-                //bottom scroll list for actors
-                /*
-                Card(
-                  child: Container(
-                    height: 150,
-                    padding: const EdgeInsets.all(0),
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: snapshot.data!.cast
-                          .map(
-                            (e) => Column(
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: e.profilePath != null
-                                      ? CircleAvatar(
-                                          radius: 50.0,
-                                          foregroundImage: NetworkImage(
-                                              "https://image.tmdb.org/t/p/w500" +
-                                                  e.profilePath),
-                                        )
-                                      : CircleAvatar(
-                                          radius: 50.0,
-                                          child: Text(e.name.split(" ")[0][0]),
-                                        ),
-                                ),
-                                SizedBox(
-                                  width: 100,
-                                  child: Center(
-                                    child: Text(
-                                      e.name,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ),
-                ),*/
               ],
             ),
           );

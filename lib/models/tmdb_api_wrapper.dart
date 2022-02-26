@@ -170,11 +170,9 @@ class TmdbApiWrapper {
     required personId,
   }) async {
     final String endpoint =
-        "/person/$personId?api_key=$_apiKey&append_to_response=combined_credits,images";
+        "person/$personId?api_key=$_apiKey&append_to_response=images";
     final responseJson = await _helper.get(endpoint);
-    Person person = Person.fromJson(json: responseJson);
-    print(person);
-    return person;
+    return Person.fromJson(json: responseJson);
   }
 
   Future<List<MinimizedMovie>> getHorrorMovies() async {

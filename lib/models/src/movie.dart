@@ -74,6 +74,9 @@ class Movie extends MinimizedMovie {
   ///This release objects hold the rating ('G', 'PG', 'R', etc).
   late List<Release> releases;
 
+  // limit for number of images fetched for the details page
+  static const _maxBackdrops = 6;
+
   Movie.fromJson({
     required Map json,
   }) {
@@ -255,27 +258,41 @@ class Movie extends MinimizedMovie {
   void _parseImages({
     required Map json,
   }) {
-    const int maxPosterCapacity = 1;
-    const int maxPicCapacity = 6;
-
     if (json['backdrops'] != null && json['backdrops']!.isNotEmpty) {
       List<dynamic> backdrops = json['backdrops'];
-      backdrops = _imageToList(backdrops, maxPicCapacity);
-
+      backdrops = backdrops
+          .where((e) => ((e['iso_631_1'] == null || e['iso_631_1'])))
+          .toList()
+          .sublist(
+              0,
+              (backdrops.length > _maxBackdrops
+                  ? _maxBackdrops
+                  : backdrops.length));
       this.backdrops =
           backdrops.map((e) => getImage(imagePath: e['file_path'])).toList();
     }
+
+    // this entire block is pointless, since posters goes unused.
+    // only poster and backdrops are used.
+    /*
     if (json['posters'] != null && json['posters']!.isNotEmpty) {
       List<dynamic> posters = json['posters'];
-      posters = _imageToList(posters, maxPosterCapacity);
-      this.posters =
+      posters = posters
+          .where(
+            (e) => (e['iso_631_1'] == null || e['iso_631_1'] == 'en'),
+          )
+          .toList();
+      this.posters.add(value)
           posters.map((el) => getImage(imagePath: el['file_path'])).toList();
-    }
+    }*/
   }
 
-  List<dynamic> _imageToList(List<dynamic> imageList, int maxSize) {
+  // if first image is not null or in english, then
+  // poster is not set, since max poster size is 1
+  /*List<dynamic> _imageToList(List<dynamic> imageList, int maxSize) {
     int count = 0;
     List<dynamic> temp = [];
+
     while (imageList.length > count && maxSize > count) {
       if (imageList[count]['iso_639_1'] == null ||
           imageList[count]['iso_639_1'] == 'en') {
@@ -284,7 +301,7 @@ class Movie extends MinimizedMovie {
       count++;
     }
     return temp;
-  }
+  }*/
 
   void _parseCredits({
     required Map json,

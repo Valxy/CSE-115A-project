@@ -152,6 +152,15 @@ class MinimizedMovie {
     return const SizedBox.shrink();
   }
 
+  //added for polymorphism
+  String getTitle() {
+    return title;
+  }
+
+  String getReleaseDate() {
+    return releaseDate;
+  }
+
   @override
   String toString() {
     return "Movie: $title id: $id";
