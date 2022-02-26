@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tmdb/pages/filter.dart';
+import '../models/tmdb_api_wrapper.dart';
 
 class BrowseTab extends StatefulWidget {
   const BrowseTab({Key? key}) : super(key: key);
@@ -8,37 +9,22 @@ class BrowseTab extends StatefulWidget {
   _BrowseTabState createState() => _BrowseTabState();
 }
 
+Map genreList = TmdbApiWrapper.genreDictionary;
+List<Genre> genreName =
+    genreList.entries.map((e) => Genre(name: e.key, id: e.value)).toList();
+
 class _BrowseTabState extends State<BrowseTab> {
   get title => null;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+      //   title: const Text(""),
+      // ),
       body: SingleChildScrollView(
         child: Column(
-          children: [
-            "Action & Adventure",
-            "Animation",
-            "Comedy",
-            "Crime",
-            "Documentary",
-            "Drama",
-            "Family",
-            "Kids",
-            "Fantasy",
-            "History",
-            "Horror",
-            "Music",
-            "Mystery",
-            "News",
-            "Romance",
-            "Science Fiction",
-            "Talk",
-            "TV Movie",
-            "Thriller",
-            "War & Politics",
-            "Western",
-          ]
+          children: genreName
               .map(
                 (e) => GestureDetector(
                   onTap: () {
@@ -50,19 +36,23 @@ class _BrowseTabState extends State<BrowseTab> {
                     );
                   },
                   child: Container(
-                    margin: const EdgeInsets.all(5.0),
-                    height: 100.0,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(4.0)),
-                        color: Colors.blue,
-                        border: Border.all(color: Colors.red, width: 0.3)),
+                    margin: const EdgeInsets.all(5),
+                    height: 80,
+                    width: MediaQuery.of(context).size.width - 15,
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Colors.purple, Colors.orange])),
                     child: Center(
-                      child: Text(e,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline5),
-                    ),
+                        child: Text(
+                      e.name,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 30,
+                      ),
+                    )),
                   ),
                 ),
               )
