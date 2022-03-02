@@ -199,6 +199,7 @@ class SearchItem extends SearchDelegate<String> {
               posterPath = tvResult.posterPath;
               title = tvResult.name;
               type = "tv";
+              year = tvResult.firstAirDate;
             } else {
               // if it's a person object, it'll return an empty text box
               return const Text("");
@@ -209,8 +210,12 @@ class SearchItem extends SearchDelegate<String> {
                   "https://image.tmdb.org/t/p/w500" + (posterPath));
             }
 
-            return buildListTile(
-                year, resultId, title, type, context, noPoster);
+            if (type == "movie") {
+              return buildListTile(
+                  year, resultId, title, type, context, noPoster);
+            } else {
+              return buildTVListTile(year, resultId, title, context, noPoster);
+            }
           } else {
             return const Text("no data");
           }
@@ -279,8 +284,8 @@ class SearchItem extends SearchDelegate<String> {
   }
 
   // this method makes the result tile (rectangluar tile)
-  Widget buildListTile(String year, resultId, title, type, BuildContext context,
-      Widget noPoster) {
+  Widget buildListTile(String year, int resultId, String title, String type,
+      BuildContext context, Widget noPoster) {
     Widget tile = ListTile(
       onTap: () {
         Navigator.push(
@@ -321,12 +326,53 @@ class SearchItem extends SearchDelegate<String> {
               ),
 
             // actor container
-            if (type == "movie")
+            Container(
+              child: getActors(resultId),
+            )
+          ],
+        ),
+      ),
+    );
+    return tile;
+  }
+
+  Widget buildTVListTile(String year, int resultId, String title,
+      BuildContext context, Widget noPoster) {
+    Widget tile = ListTile(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => ShowDetails(
+              showId: resultId.toString(),
+            ),
+            fullscreenDialog: true,
+          ),
+        );
+      },
+      leading: noPoster,
+      title: Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // title container
+            Container(
+              padding:
+                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 5),
+              child: Text(title),
+            ),
+            // year container
+            if (year != "")
               Container(
-                child: getActors(resultId),
-              )
-            else if (type == "tv")
-              const Text("tv type"),
+                padding:
+                    const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 5),
+                child: Text(
+                  "aired-date: " + year,
+                  style: const TextStyle(fontSize: 11),
+                ),
+              ),
           ],
         ),
       ),
