@@ -68,6 +68,11 @@ class _MoviePageState extends State<MoviePage> {
 
           uniqueCrew.sort((a, b) => (b.popularity - a.popularity).ceil());
 
+          List<Video> youtubeVideos =
+              movie.videos.where((video) => video.site == "YouTube").toList();
+
+          youtubeVideos.shuffle();
+
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -76,10 +81,12 @@ class _MoviePageState extends State<MoviePage> {
                     disableCenter: true,
                     viewportFraction: 1,
                   ),
-                  items: <Widget>[
-                        YoutubeTrailer(
-                            "https://www.youtube.com/watch?v=${movie.videos.where((video) => video.site == "YouTube").first.key}"),
-                      ] +
+                  items: (youtubeVideos.isNotEmpty
+                          ? <Widget>[
+                              YoutubeTrailer(
+                                  "https://www.youtube.com/watch?v=${youtubeVideos.first.key}"),
+                            ]
+                          : <Widget>[]) +
                       movie.backdrops
                           .map(
                             (e) => SizedBox(

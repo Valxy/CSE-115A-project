@@ -71,6 +71,8 @@ class _TVShowPageState extends State<TVShowPage> {
           List<Video> youtubeVideos =
               tvShow.videos.where((video) => video.site == "YouTube").toList();
 
+          youtubeVideos.shuffle();
+
           return SingleChildScrollView(
             child: Column(
               children: [
