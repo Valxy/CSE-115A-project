@@ -98,7 +98,7 @@ class _ShowDetailsState extends State<ShowDetails> {
                     padding: const EdgeInsets.all(0),
                     child: Row(children: [
                       SizedBox(
-                        child: movie.posters[0],
+                        child: movie.poster,
                       ),
                       const SizedBox(
                         width: 10,

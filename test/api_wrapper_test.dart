@@ -260,7 +260,7 @@ Future<void> testApiWrapper() async {
     print(dumpString);
     dumpString = 'crew : ${topRatedMovie.crew}\n';
     print(dumpString);
-    dumpString = 'posters  ${topRatedMovie.posters}\n';
+    dumpString = 'poster  ${topRatedMovie.poster}\n';
     print(dumpString);
     dumpString = 'reviews  ${topRatedMovie.reviews}\n';
     print(dumpString);
@@ -348,7 +348,7 @@ Future<void> testApiWrapper() async {
     print(dumpString);
     dumpString = 'backdrops: ${topRatedShow.backdrops}\n';
     print(dumpString);
-    dumpString = 'posters: ${topRatedShow.posters}\n';
+    dumpString = 'poster: ${topRatedShow.poster}\n';
     print(dumpString);
   }
   /*
