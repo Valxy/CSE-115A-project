@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'dart:async';
@@ -150,81 +152,12 @@ class _ExploreTabState extends State<ExploreTab> {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (BuildContext context) =>
-                        ShowDetails(showId: "${snapshot.data![index].id}"),
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
-              child: Column(
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                          width: 200,
-                          height: 300,
-                          margin: const EdgeInsets.only(
-                              left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(8.0),
-                            ),
-                            child: snapshot.data![index].getPoster(),
-                          )),
-                      Container(
-                        height: 300,
-                        alignment: const Alignment(-0.85, 1.13),
-                        child: Container(
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.black),
-                            child: CircularPercentIndicator(
-                              radius: 20,
-                              percent:
-                                  snapshot.data![index].voteAverage * (0.1),
-                              lineWidth: 4,
-                              backgroundColor: Colors.yellow,
-                              center: Text(
-                                (snapshot.data![index].voteAverage *
-                                            (0.1) *
-                                            100)
-                                        .round()
-                                        .toString() +
-                                    "%",
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              progressColor: Colors.green,
-                            )),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: 200,
-                    margin: const EdgeInsets.only(
-                        left: 10.0, top: 15.0, bottom: 5.0, right: 10.0),
-                    child: Text(snapshot.data![index].title,
-                        style: Theme.of(context).textTheme.titleMedium),
-                  ),
-                  Container(
-                    width: 200,
-                    margin: const EdgeInsets.only(
-                        left: 10.0, top: 0.0, bottom: 10.0, right: 10.0),
-                    child: Text(
-                        '${months[DateTime.parse(snapshot.data![index].releaseDate).month - 1]} '
-                        '${DateTime.parse(snapshot.data![index].releaseDate).day}, '
-                        '${DateTime.parse(snapshot.data![index].releaseDate).year}',
-                        style: Theme.of(context).textTheme.caption),
-                  ),
-                ],
-              ),
-            );
+            return _buildBox(
+                poster: snapshot.data![index].getPoster(),
+                voteAverage: snapshot.data![index].voteAverage,
+                name: snapshot.data![index].title,
+                date: snapshot.data![index].releaseDate,
+                dest: ShowDetails(showId: "${snapshot.data![index].id}"));
           },
         ),
       );
@@ -253,83 +186,52 @@ class _ExploreTabState extends State<ExploreTab> {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (BuildContext context) =>
-                        ShowDetails(showId: "${snapshot.data![index].id}"),
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
-              child: Column(
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                        width: 200,
-                        height: 300,
-                        margin: const EdgeInsets.only(
-                            left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(8.0),
-                          ),
-                          child: snapshot.data![index].getPoster(),
-                        ),
-                      ),
-                      Container(
-                        height: 300,
-                        alignment: const Alignment(-0.85, 1.13),
-                        child: Container(
-                            decoration: const BoxDecoration(
-                                shape: BoxShape.circle, color: Colors.black),
-                            child: CircularPercentIndicator(
-                              radius: 20,
-                              percent:
-                                  snapshot.data![index].voteAverage * (0.1),
-                              lineWidth: 4,
-                              backgroundColor: Colors.yellow,
-                              center: Text(
-                                (snapshot.data![index].voteAverage *
-                                            (0.1) *
-                                            100)
-                                        .round()
-                                        .toString() +
-                                    "%",
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              progressColor: Colors.green,
-                            )),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: 200,
-                    margin: const EdgeInsets.only(
-                        left: 10.0, top: 15.0, bottom: 5.0, right: 10.0),
-                    child: Text(snapshot.data![index].name,
-                        style: Theme.of(context).textTheme.titleMedium),
-                  ),
-                  Container(
-                    width: 200,
-                    margin: const EdgeInsets.only(
-                        left: 10.0, top: 0.0, bottom: 10.0, right: 10.0),
-                    child: Text(
-                        '${months[DateTime.parse(snapshot.data![index].firstAirDate).month - 1]} '
-                        '${DateTime.parse(snapshot.data![index].firstAirDate).day}, '
-                        '${DateTime.parse(snapshot.data![index].firstAirDate).year}',
-                        style: Theme.of(context).textTheme.caption),
-                  ),
-                ],
-              ),
-            );
+            return _buildBox(
+                poster: snapshot.data![index].getPoster(),
+                voteAverage: snapshot.data![index].voteAverage,
+                name: snapshot.data![index].name,
+                date: snapshot.data![index].firstAirDate,
+                dest: ShowDetails(showId: "${snapshot.data![index].id}"));
           },
+        ),
+      );
+
+  Widget _buildBox(
+          {required Widget poster,
+          required num voteAverage,
+          required String name,
+          required String date,
+          required Widget dest}) =>
+      InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) => dest,
+              fullscreenDialog: true,
+            ),
+          );
+        },
+        child: Column(
+          children: <Widget>[
+            _buildPoster(poster, voteAverage),
+            Container(
+              width: 200,
+              margin: const EdgeInsets.only(
+                  left: 10.0, top: 15.0, bottom: 5.0, right: 10.0),
+              child: Text(name, style: Theme.of(context).textTheme.titleMedium),
+            ),
+            Container(
+              width: 200,
+              margin: const EdgeInsets.only(
+                  left: 10.0, top: 0.0, bottom: 10.0, right: 10.0),
+              child: Text(
+                  '${months[DateTime.parse(date).month - 1]} '
+                  '${DateTime.parse(date).day}, '
+                  '${DateTime.parse(date).year}',
+                  style: Theme.of(context).textTheme.caption),
+            ),
+          ],
         ),
       );
 
@@ -338,5 +240,71 @@ class _ExploreTabState extends State<ExploreTab> {
         margin: const EdgeInsets.all(12),
         width: 200,
         child: Text(category, style: Theme.of(context).textTheme.headline5),
+      );
+
+  Widget _buildPoster(Widget poster, num voteAverage) => Stack(
+        children: <Widget>[
+          Container(
+            width: 200,
+            height: 300,
+            margin: const EdgeInsets.only(
+                left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(8.0),
+              ),
+              child: poster,
+            ),
+          ),
+          Container(
+            height: 300,
+            alignment: const Alignment(-0.85, 1.13),
+            child: Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xff081c22),
+              ),
+              child: CircularPercentIndicator(
+                radius: 20,
+                percent: voteAverage * (0.1),
+                lineWidth: 4,
+                backgroundColor: const Color(0xff1b3c27),
+                center: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: " " +
+                            (voteAverage * (0.1) * 100).round().toString(),
+                        style:
+                            Theme.of(context).textTheme.labelMedium!.copyWith(
+                          color: Colors.white,
+                          fontFeatures: [const FontFeature.superscripts()],
+                        ),
+                      ),
+                      WidgetSpan(
+                        child: Transform.translate(
+                          offset: const Offset(0, -6),
+                          child: Text(
+                            '%',
+                            textScaleFactor: 0.5,
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelMedium!
+                                .copyWith(
+                              color: Colors.white,
+                              fontFeatures: [const FontFeature.superscripts()],
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                progressColor: const Color(0xff21d07a),
+              ),
+            ),
+          ),
+        ],
       );
 }
