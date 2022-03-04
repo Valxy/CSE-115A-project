@@ -161,7 +161,7 @@ class TvShow extends MinimizedTvShow {
     }
 
     if (json['episode_run_time'] != null) {
-      episodeRunTimes = json['episode_run_time'];
+      episodeRunTimes = List<int>.from(json['episode_run_time']);
     } else {
       episodeRunTimes = [0];
     }
@@ -253,7 +253,7 @@ class TvShow extends MinimizedTvShow {
             gender: el['gender'],
             popularity: 0,
             adult: true,
-            profilePath: el['profile_path']))
+            profilePath: el['profile_path'] ?? ""))
         .toList();
   }
 

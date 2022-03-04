@@ -9,22 +9,22 @@ import '../widgets/youtube_player.dart';
 import './person_details.dart';
 
 class TVShowPage extends StatefulWidget {
-  final String showId;
+  final num id;
 
-  const TVShowPage({Key? key, required this.showId}) : super(key: key);
+  const TVShowPage({Key? key, required this.id}) : super(key: key);
 
   @override
   _TVShowPageState createState() => _TVShowPageState();
 }
 
 class _TVShowPageState extends State<TVShowPage> {
-  late Future<Movie> movieDetails;
+  late Future<TvShow> tvShowDetails;
 
   @override
   void initState() {
     super.initState();
 
-    movieDetails = TmdbApiWrapper().getDetailsMovie(movieId: widget.showId);
+    tvShowDetails = TmdbApiWrapper().getDetailsTvShow(tvId: widget.id);
   }
 
   @override
@@ -33,18 +33,18 @@ class _TVShowPageState extends State<TVShowPage> {
       appBar: AppBar(
         centerTitle: true,
         title: FutureBuilder(
-          future: movieDetails,
-          builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-            return Text(snapshot.data?.title ?? "");
+          future: tvShowDetails,
+          builder: (BuildContext ctx, AsyncSnapshot<TvShow> snapshot) {
+            return Text(snapshot.data?.name ?? "");
           },
         ),
       ),
       body: FutureBuilder(
-        future: movieDetails,
-        builder: (BuildContext ctx, AsyncSnapshot<Movie> snapshot) {
-          final Movie? movie = snapshot.data;
+        future: tvShowDetails,
+        builder: (BuildContext ctx, AsyncSnapshot<TvShow> snapshot) {
+          final TvShow? tvShow = snapshot.data;
 
-          if (!snapshot.hasData || movie == null) {
+          if (!snapshot.hasData || tvShow == null) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -57,16 +57,19 @@ class _TVShowPageState extends State<TVShowPage> {
 
           var seen = <String>{};
 
-          for (var cast in movie.cast) {
+          for (var cast in tvShow.cast) {
             seen.add(cast.originalName);
           }
 
-          List<CrewMember> uniqueCrew = movie.crew
+          List<CrewMember> uniqueCrew = tvShow.crew
               .where((crew) =>
                   seen.add(crew.originalName) && crew.profilePath != "")
               .toList();
 
           uniqueCrew.sort((a, b) => (b.popularity - a.popularity).ceil());
+
+          List<Video> youtubeVideos =
+              tvShow.videos.where((video) => video.site == "YouTube").toList();
 
           return SingleChildScrollView(
             child: Column(
@@ -76,11 +79,13 @@ class _TVShowPageState extends State<TVShowPage> {
                     disableCenter: true,
                     viewportFraction: 1,
                   ),
-                  items: <Widget>[
-                        YoutubeTrailer(
-                            "https://www.youtube.com/watch?v=${movie.videos.where((video) => video.site == "YouTube").first.key}"),
-                      ] +
-                      movie.backdrops
+                  items: (youtubeVideos.isNotEmpty
+                          ? <Widget>[
+                              YoutubeTrailer(
+                                  "https://www.youtube.com/watch?v=${youtubeVideos.first.key}"),
+                            ]
+                          : <Widget>[]) +
+                      tvShow.backdrops
                           .map(
                             (e) => SizedBox(
                               width: 384.0,
@@ -98,7 +103,7 @@ class _TVShowPageState extends State<TVShowPage> {
                     padding: const EdgeInsets.all(0),
                     child: Row(children: [
                       SizedBox(
-                        child: movie.poster,
+                        child: tvShow.poster,
                       ),
                       const SizedBox(
                         width: 10,
@@ -110,7 +115,7 @@ class _TVShowPageState extends State<TVShowPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                snapshot.data?.title ?? "",
+                                snapshot.data?.name ?? "",
                                 style: Theme.of(context).textTheme.titleLarge,
                               ),
                               const SizedBox(
@@ -120,15 +125,11 @@ class _TVShowPageState extends State<TVShowPage> {
                                 spacing: 14,
                                 children: [
                                   Text(
-                                    movie.releaseDate.split("-")[0],
+                                    tvShow.firstAirDate.split("-")[0],
                                     style: Theme.of(context).textTheme.caption,
                                   ),
                                   Text(
-                                    movie.releases.first.certification,
-                                    style: Theme.of(context).textTheme.caption,
-                                  ),
-                                  Text(
-                                    "${movie.runtime ~/ 60}h",
+                                    tvShow.lastAirDate.split("-")[0],
                                     style: Theme.of(context).textTheme.caption,
                                   )
                                 ],
@@ -140,10 +141,10 @@ class _TVShowPageState extends State<TVShowPage> {
                                 scrollDirection: Axis.horizontal,
                                 child: Wrap(
                                   spacing: 4,
-                                  children: movie.genres
+                                  children: tvShow.genres
                                       .sublist(
                                         0,
-                                        min(movie.genres.length, 3),
+                                        min(tvShow.genres.length, 3),
                                       )
                                       .map(
                                         (e) => SizedBox(
@@ -202,7 +203,7 @@ class _TVShowPageState extends State<TVShowPage> {
                         padding: const EdgeInsets.all(0),
                         child: ListView(
                           scrollDirection: Axis.horizontal,
-                          children: movie.cast
+                          children: tvShow.cast
                               .where((cast) => cast.profilePath != "")
                               .map(
                                 (e) => GestureDetector(
