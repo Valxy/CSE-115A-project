@@ -103,8 +103,9 @@ class _ExploreTabState extends State<ExploreTab> {
     return SizedBox(
       height: 435,
       child: Scrollbar(
+        thickness: 0,
         child: ListView.builder(
-          itemCount: 100,
+          itemCount: 20,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) =>
               _buildBoxMovies(movies, index),
@@ -118,8 +119,9 @@ class _ExploreTabState extends State<ExploreTab> {
     return SizedBox(
       height: 435,
       child: Scrollbar(
+        thickness: 0,
         child: ListView.builder(
-          itemCount: 100,
+          itemCount: 20,
           scrollDirection: Axis.horizontal,
           itemBuilder: (BuildContext context, int index) =>
               _buildBoxShows(shows, index),
