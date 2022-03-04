@@ -103,7 +103,7 @@ class _ExploreTabState extends State<ExploreTab> {
   // build method for the different scrolling lists
   Widget _horizontalListViewShows(Future<List<MinimizedTvShow>> shows) {
     return SizedBox(
-      height: 430,
+      height: 435,
       child: Scrollbar(
         child: ListView.builder(
           itemCount: 100,
@@ -216,7 +216,7 @@ class _ExploreTabState extends State<ExploreTab> {
   Widget _buildBoxShows(Future<List<MinimizedTvShow>> shows, int index) =>
       Container(
         margin: const EdgeInsets.all(10),
-        height: 430,
+        height: 435,
         width: 200,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -249,32 +249,48 @@ class _ExploreTabState extends State<ExploreTab> {
               },
               child: Column(
                 children: <Widget>[
-                  Container(
-                    width: 200,
-                    height: 300,
-                    margin: const EdgeInsets.only(
-                        left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(8.0),
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        width: 200,
+                        height: 300,
+                        margin: const EdgeInsets.only(
+                            left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(8.0),
+                          ),
+                          child: snapshot.data![index].getPoster(),
+                        ),
                       ),
-                      child: snapshot.data![index].getPoster(),
-                    ),
+                      Container(
+                        height: 300,
+                        alignment: const Alignment(-0.85, 1.13),
+                        child: Container(
+                          decoration:
+                              const BoxDecoration(shape: BoxShape.circle, color: Colors.black),
+                          child: CircularPercentIndicator(
+                            radius: 20,
+                            percent: snapshot.data![index].voteAverage*(0.1),
+                            lineWidth: 4,
+                            backgroundColor: Colors.yellow,
+                            center: Text(
+                              (snapshot.data![index].voteAverage*(0.1) * 100).round().toString() + "%",
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                            progressColor: Colors.green,
+                          )
+                        ),
+                      ),
+                    ],
                   ),
                   Container(
                     width: 200,
                     margin: const EdgeInsets.only(
-                        left: 10.0, top: 0.0, bottom: 5.0, right: 10.0),
+                        left: 10.0, top: 15.0, bottom: 5.0, right: 10.0),
                     child: Text(snapshot.data![index].name,
                         style: Theme.of(context).textTheme.titleMedium),
-                  ),
-                  Container(
-                    width: 200,
-                    margin: const EdgeInsets.only(
-                        left: 10.0, top: 0.0, bottom: 0.0, right: 10.0),
-                    child: Text(
-                        '${snapshot.data![index].voteAverage*10}%',
-                        style: Theme.of(context).textTheme.caption),
                   ),
                   Container(
                     width: 200,
