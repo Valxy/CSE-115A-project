@@ -186,7 +186,7 @@ class _TVShowPageState extends State<TVShowPage> {
                   ),
                 ),
                 Persons(title: "Cast", persons: tvShow.cast),
-                Persons(title: "Crew", persons: tvShow.crew),
+                Persons(title: "Crew", persons: uniqueCrew),
               ],
             ),
           );

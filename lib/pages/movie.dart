@@ -192,7 +192,7 @@ class _MoviePageState extends State<MoviePage> {
                   ),
                 ),
                 Persons(title: "Cast", persons: movie.cast),
-                Persons(title: "Crew", persons: movie.crew),
+                Persons(title: "Crew", persons: uniqueCrew),
               ],
             ),
           );
