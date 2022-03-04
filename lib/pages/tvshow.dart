@@ -8,16 +8,16 @@ import '../widgets/youtube_player.dart';
 
 import './person_details.dart';
 
-class ShowDetails extends StatefulWidget {
+class TVShowPage extends StatefulWidget {
   final String showId;
 
-  const ShowDetails({Key? key, required this.showId}) : super(key: key);
+  const TVShowPage({Key? key, required this.showId}) : super(key: key);
 
   @override
-  _ShowDetailsState createState() => _ShowDetailsState();
+  _TVShowPageState createState() => _TVShowPageState();
 }
 
-class _ShowDetailsState extends State<ShowDetails> {
+class _TVShowPageState extends State<TVShowPage> {
   late Future<Movie> movieDetails;
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/tmdb_api_wrapper.dart';
-import '../pages/details.dart';
+import '../pages/movie.dart';
 
 class SearchTab extends StatefulWidget {
   const SearchTab({Key? key}) : super(key: key);
@@ -234,8 +234,8 @@ class SearchItem extends SearchDelegate<String> {
                   context,
                   MaterialPageRoute<void>(
                     builder: (BuildContext context) {
-                      return ShowDetails(
-                        showId: suggestion.id.toString(),
+                      return MoviePage(
+                        id: suggestion.id,
                       );
                     },
                     fullscreenDialog: true,
@@ -291,8 +291,8 @@ class SearchItem extends SearchDelegate<String> {
         Navigator.push(
           context,
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => ShowDetails(
-              showId: resultId.toString(),
+            builder: (BuildContext context) => MoviePage(
+              id: resultId,
             ),
             fullscreenDialog: true,
           ),
@@ -343,8 +343,8 @@ class SearchItem extends SearchDelegate<String> {
         Navigator.push(
           context,
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => ShowDetails(
-              showId: resultId.toString(),
+            builder: (BuildContext context) => MoviePage(
+              id: resultId,
             ),
             fullscreenDialog: true,
           ),
