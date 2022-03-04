@@ -4,9 +4,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import '../models/tmdb_api_wrapper.dart';
+import '../widgets/persons.dart';
 import '../widgets/youtube_player.dart';
-
-import './person_details.dart';
 
 class TVShowPage extends StatefulWidget {
   final num id;
@@ -188,133 +187,8 @@ class _TVShowPageState extends State<TVShowPage> {
                     ]),
                   ),
                 ),
-                Card(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12, top: 6),
-                        child: Text(
-                          'Cast',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                      ),
-                      Container(
-                        height: 150,
-                        padding: const EdgeInsets.all(0),
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: tvShow.cast
-                              .where((cast) => cast.profilePath != "")
-                              .map(
-                                (e) => GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute<void>(
-                                        builder: (BuildContext context) =>
-                                            ShowPersonDetails(
-                                                personId: "${e.id}"),
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
-                                  },
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CircleAvatar(
-                                          radius: 50.0,
-                                          foregroundImage: NetworkImage(
-                                              "https://image.tmdb.org/t/p/w500" +
-                                                  e.profilePath),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 100,
-                                        child: Center(
-                                          child: Text(
-                                            e.name,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                uniqueCrew.isNotEmpty
-                    ? Card(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(left: 12, top: 6),
-                              child: Text(
-                                'Crew',
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            ),
-                            Container(
-                              height: 150,
-                              padding: const EdgeInsets.all(0),
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: uniqueCrew
-                                    .map(
-                                      (e) => GestureDetector(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute<void>(
-                                              builder: (BuildContext context) =>
-                                                  ShowPersonDetails(
-                                                      personId: "${e.id}"),
-                                              fullscreenDialog: true,
-                                            ),
-                                          );
-                                        },
-                                        child: Column(
-                                          children: <Widget>[
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
-                                              child: CircleAvatar(
-                                                radius: 50.0,
-                                                foregroundImage: NetworkImage(
-                                                    "https://image.tmdb.org/t/p/w500" +
-                                                        e.profilePath),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 100,
-                                              child: Center(
-                                                child: Text(
-                                                  e.name,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    : const SizedBox.shrink(),
+                Persons(title: "Cast", persons: tvShow.cast),
+                Persons(title: "Crew", persons: tvShow.crew),
               ],
             ),
           );
