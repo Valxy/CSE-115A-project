@@ -39,7 +39,7 @@ class Persons extends StatelessWidget {
                                 context,
                                 MaterialPageRoute<void>(
                                   builder: (BuildContext context) =>
-                                      ShowPersonDetails(personId: "${e.id}"),
+                                      PersonDetails(personId: "${e.id}"),
                                   fullscreenDialog: true,
                                 ),
                               );
