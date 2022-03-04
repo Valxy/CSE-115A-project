@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'dart:async';
+
 import '../models/tmdb_api_wrapper.dart';
-import '../pages/details.dart';
+import '../pages/movie.dart';
+import '../pages/tvshow.dart';
 
 class ExploreTab extends StatefulWidget {
   const ExploreTab({Key? key}) : super(key: key);
@@ -159,7 +161,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 voteAverage: snapshot.data![index].voteAverage,
                 name: snapshot.data![index].title,
                 date: snapshot.data![index].releaseDate,
-                dest: ShowDetails(showId: "${snapshot.data![index].id}"));
+                dest: MoviePage(id: snapshot.data![index].id));
           },
         ),
       );
@@ -193,7 +195,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 voteAverage: snapshot.data![index].voteAverage,
                 name: snapshot.data![index].name,
                 date: snapshot.data![index].firstAirDate,
-                dest: ShowDetails(showId: "${snapshot.data![index].id}"));
+                dest: TVShowPage(id: snapshot.data![index].id));
           },
         ),
       );

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../models/tmdb_api_wrapper.dart';
 
-class ShowPersonDetails extends StatefulWidget {
+class PersonDetails extends StatefulWidget {
   final String personId;
 
-  const ShowPersonDetails({Key? key, required this.personId}) : super(key: key);
+  const PersonDetails({Key? key, required this.personId}) : super(key: key);
 
   @override
-  _ShowPersonDetailsState createState() => _ShowPersonDetailsState();
+  _PersonDetailsState createState() => _PersonDetailsState();
 }
 
-class _ShowPersonDetailsState extends State<ShowPersonDetails> {
+class _PersonDetailsState extends State<PersonDetails> {
   late Future<Person> personDetails;
 
   @override
