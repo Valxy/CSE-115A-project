@@ -221,7 +221,8 @@ class _ExploreTabState extends State<ExploreTab> {
               width: 200,
               margin: const EdgeInsets.only(
                   left: 10.0, top: 15.0, bottom: 5.0, right: 10.0),
-              child: Text(name, style: Theme.of(context).textTheme.titleMedium),
+              child: Text(name + '\n',
+                  maxLines: 2, style: Theme.of(context).textTheme.titleMedium),
             ),
             Container(
               width: 200,
