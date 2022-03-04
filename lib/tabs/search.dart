@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../models/tmdb_api_wrapper.dart';
 import '../pages/movie.dart';
+import '../pages/tvshow.dart';
 
 class SearchTab extends StatefulWidget {
   const SearchTab({Key? key}) : super(key: key);
@@ -343,7 +345,7 @@ class SearchItem extends SearchDelegate<String> {
         Navigator.push(
           context,
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => MoviePage(
+            builder: (BuildContext context) => TVShowPage(
               id: resultId,
             ),
             fullscreenDialog: true,
