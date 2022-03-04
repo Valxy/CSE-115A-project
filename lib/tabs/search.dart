@@ -190,11 +190,7 @@ class SearchItem extends SearchDelegate<String> {
               posterPath = movieResult.posterPath;
               title = movieResult.title;
               type = "movie";
-              if (movieResult.releaseDate.length >= 4) {
-                year = movieResult.releaseDate.substring(0, 4);
-              } else {
-                year = "";
-              }
+              year = movieResult.releaseDate;
             } else if (someList[index] is MinimizedTvShow) {
               tvResult = resultItem;
               resultId = tvResult.id;
@@ -210,6 +206,12 @@ class SearchItem extends SearchDelegate<String> {
             if (posterPath != "") {
               noPoster = Image.network(
                   "https://image.tmdb.org/t/p/w500" + (posterPath));
+            }
+
+            if (year.length >= 4) {
+              year = year.substring(0, 4);
+            } else {
+              year = "";
             }
 
             if (type == "movie") {
@@ -264,7 +266,7 @@ class SearchItem extends SearchDelegate<String> {
           List<CastMember>? emptyCast;
           return Text(
             parseCast(snapshot.data?.cast ?? emptyCast),
-            style: const TextStyle(fontSize: 11),
+            style: Theme.of(ctx).textTheme.caption,
           );
         }
         return const Center(child: CircularProgressIndicator());
@@ -308,23 +310,15 @@ class SearchItem extends SearchDelegate<String> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // title container
-            Container(
-              padding:
-                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 5),
-              child: Text(title),
-            ),
+            Text(title),
             // year container
             if (year != "")
 
               // some movies/shows doesn't have years, so if that's the case
               // don't show the container
-              Container(
-                padding:
-                    const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 5),
-                child: Text(
-                  year,
-                  style: const TextStyle(fontSize: 11),
-                ),
+              Text(
+                year,
+                style: Theme.of(context).textTheme.caption,
               ),
 
             // actor container
@@ -360,20 +354,12 @@ class SearchItem extends SearchDelegate<String> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // title container
-            Container(
-              padding:
-                  const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 5),
-              child: Text(title),
-            ),
+            Text(title),
             // year container
             if (year != "")
-              Container(
-                padding:
-                    const EdgeInsets.only(left: 0, right: 0, top: 0, bottom: 5),
-                child: Text(
-                  "aired-date: " + year,
-                  style: const TextStyle(fontSize: 11),
-                ),
+              Text(
+                year,
+                style: Theme.of(context).textTheme.caption,
               ),
           ],
         ),
