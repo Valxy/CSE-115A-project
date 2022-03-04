@@ -57,8 +57,11 @@ class Movie extends MinimizedMovie {
   ///A list of Widgets that are the backdrops for the movie.
   List<Widget> backdrops = [];
 
+  ///An image widget for the poster of the movie
+  late Widget poster;
+
   ///A list of Widgets that are the posters for the movie.
-  List<Widget> posters = [];
+  //List<Widget> posters = [];
 
   ///A list of MinimizedMovie objects representing a list
   ///of recommendations based off of this movie.
@@ -252,35 +255,27 @@ class Movie extends MinimizedMovie {
   void _parseImages({
     required Map json,
   }) {
-    const int maxPosterCapacity = 1;
     const int maxPicCapacity = 6;
 
     if (json['backdrops'] != null && json['backdrops']!.isNotEmpty) {
       List<dynamic> backdrops = json['backdrops'];
-      backdrops = _imageToList(backdrops, maxPicCapacity);
-
-      this.backdrops =
-          backdrops.map((e) => getImage(imagePath: e['file_path'])).toList();
+      this.backdrops = backdrops
+          .sublist(
+              0, (backdrops.length > maxPicCapacity ? 6 : backdrops.length))
+          .map((e) => getImage(imagePath: e['file_path']))
+          .toList();
     }
-    if (json['posters'] != null && json['posters']!.isNotEmpty) {
+
+    // Only the first poster in the list is ever used, but
+    // [poster] data member was never called.
+    if (posterPath != "") {
+      poster = getImage(imagePath: posterPath);
+    } else if (json['posters'] != null && json['posters']!.isNotEmpty) {
       List<dynamic> posters = json['posters'];
-      posters = _imageToList(posters, maxPosterCapacity);
-      this.posters =
-          posters.map((el) => getImage(imagePath: el['file_path'])).toList();
+      poster = getImage(imagePath: posters[0]['file_path']);
+    } else {
+      poster = const SizedBox.shrink();
     }
-  }
-
-  List<dynamic> _imageToList(List<dynamic> imageList, int maxSize) {
-    int count = 0;
-    List<dynamic> temp = [];
-    while (imageList.length > count && maxSize > count) {
-      if (imageList[count]['iso_639_1'] == null ||
-          imageList[count]['iso_639_1'] == 'en') {
-        temp.add(imageList[count]);
-      }
-      count++;
-    }
-    return temp;
   }
 
   void _parseCredits({
