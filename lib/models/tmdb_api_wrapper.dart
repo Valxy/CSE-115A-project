@@ -85,13 +85,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'dart:async';
-import 'package:tmdb/models/src/errors.dart';
-import 'package:tmdb/models/src/minimized_movie.dart';
-import 'package:tmdb/models/src/minimized_tv_show.dart';
-import 'package:tmdb/models/src/movie.dart';
-import 'package:tmdb/models/src/tv_show.dart';
-import 'package:tmdb/models/src/api_objects.dart';
 import 'package:flutter/cupertino.dart';
+
+import 'src/errors.dart';
+import 'src/minimized_movie.dart';
+import 'src/minimized_tv_show.dart';
+import 'src/movie.dart';
+import 'src/tv_show.dart';
+import 'src/api_objects.dart';
 
 export 'src/api_objects.dart'
     show
@@ -205,6 +206,41 @@ class TmdbApiWrapper {
     final responseJson = await _helper.get(endPoint);
     final List<dynamic> parsed = responseJson['results'];
     return _getMovieListFromJson(parsedList: parsed);
+  }
+
+  Future<List<MinimizedTvShow>> getAnimatedTvShows() async {
+    return getTvListFromGenreId(genreId: genreDictionary['Animation']);
+  }
+
+  Future<List<MinimizedTvShow>> getNewsTvShows() async {
+    return getTvListFromGenreId(genreId: genreDictionary['News']);
+  }
+
+  Future<List<MinimizedTvShow>> getKidsTvShows() async {
+    return getTvListFromGenreId(genreId: genreDictionary['Kids']);
+  }
+
+  Future<List<MinimizedTvShow>> getActionAndAdventureTvShows() async {
+    return getTvListFromGenreId(genreId: genreDictionary['Action & Adventure']);
+  }
+
+  Future<List<MinimizedTvShow>> getComedyTvShows() async {
+    return getTvListFromGenreId(genreId: genreDictionary['Comedy']);
+  }
+
+  Future<List<MinimizedTvShow>> getDramaTvShows() async {
+    return getTvListFromGenreId(genreId: genreDictionary['Drama']);
+  }
+
+  Future<List<MinimizedTvShow>> getFamilyTvShows() async {
+    return getTvListFromGenreId(genreId: genreDictionary['Family']);
+  }
+
+  Future<List<MinimizedTvShow>> getTvListFromGenreId({required genreId}) async {
+    final String endPoint = "discover/tv?api_key=$_apiKey&with_genres=$genreId";
+    final responseJson = await _helper.get(endPoint);
+    final List<dynamic> parsed = responseJson['results'];
+    return _getTvShowListFromJson(parsedList: parsed);
   }
 
   ///returns a completed tv show object. [tvId] can be found as
