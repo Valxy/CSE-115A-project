@@ -134,14 +134,14 @@ class _ExploreTabState extends State<ExploreTab> {
         margin: const EdgeInsets.all(10),
         height: 435,
         width: 200,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Colors.white,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          color: Theme.of(context).bottomAppBarColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey,
+              color: Theme.of(context).shadowColor.withOpacity(0.5),
               blurRadius: 4,
-              offset: Offset(4, 8), // Shadow position
+              offset: const Offset(2, 4), // Shadow position
             ),
           ],
         ),
@@ -168,14 +168,14 @@ class _ExploreTabState extends State<ExploreTab> {
         margin: const EdgeInsets.all(10),
         height: 435,
         width: 200,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Colors.white,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          color: Theme.of(context).bottomAppBarColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey,
+              color: Theme.of(context).shadowColor.withOpacity(0.5),
               blurRadius: 4,
-              offset: Offset(4, 8), // Shadow position
+              offset: const Offset(2, 4), // Shadow position
             ),
           ],
         ),
