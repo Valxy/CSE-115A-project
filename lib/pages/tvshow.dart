@@ -126,13 +126,11 @@ class _TVShowPageState extends State<TVShowPage> {
                                 spacing: 14,
                                 children: [
                                   Text(
-                                    tvShow.firstAirDate.split("-")[0],
+                                    tvShow.firstAirDate.split("-")[0] +
+                                        " - " +
+                                        tvShow.lastAirDate.split("-")[0],
                                     style: Theme.of(context).textTheme.caption,
                                   ),
-                                  Text(
-                                    tvShow.lastAirDate.split("-")[0],
-                                    style: Theme.of(context).textTheme.caption,
-                                  )
                                 ],
                               ),
                               const SizedBox(
