@@ -262,7 +262,7 @@ class Movie extends MinimizedMovie {
       this.backdrops = backdrops
           .sublist(
               0, (backdrops.length > maxPicCapacity ? 6 : backdrops.length))
-          .map((e) => getImage(imagePath: e['file_path']))
+          .map((e) => getImage(imagePath: e['file_path'], size: "w1280"))
           .toList();
     }
 
