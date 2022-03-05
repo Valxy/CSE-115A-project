@@ -16,6 +16,9 @@ class ExploreTab extends StatefulWidget {
 }
 
 class _ExploreTabState extends State<ExploreTab> {
+  // Future lists are lists which contain items which will receive data / information
+  // later on in their lifespan and use (thus they are called "Future")
+  // Each list is for a specific and unique movie or tv show category
   late Future<List<MinimizedMovie>> popularMovies;
   late Future<List<MinimizedMovie>> inTheaters;
   late Future<List<MinimizedMovie>> topRatedMovies;
@@ -45,6 +48,10 @@ class _ExploreTabState extends State<ExploreTab> {
 
     TmdbApiWrapper wrapper = TmdbApiWrapper();
 
+    // The parameter inside each movie / tv show get method represents the "page"
+    // which will be returned when getting the movies / tv shows
+    // Each page represents a chunk of 20 items from that respective list returned
+    // by the get functions
     popularMovies = wrapper.getPopularMovies(1);
     inTheaters = wrapper.getNowPlayingMovies(1);
     topRatedMovies = wrapper.getTopRatedMovies(1);
@@ -54,12 +61,16 @@ class _ExploreTabState extends State<ExploreTab> {
     topRatedShows = wrapper.getTopRatedTvShows(1);
   }
 
+  // Build function for creating all the elements displayed on the screen (titles and scrolling lists)
+  // Calls other build functions to create the actual elements
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: ListView.builder(
       itemCount: 12,
       itemBuilder: (_, i) {
+        // If statements for distinguishing which title has which title name depending on the
+        // number of the item being built
         if (i % 2 != 1) {
           if (i == 0) {
             return _buildText("Popular Movies");
@@ -81,6 +92,8 @@ class _ExploreTabState extends State<ExploreTab> {
           }
         }
 
+        // If statements for distinguishing which get function (what type of content) to utilize
+        // depending on the number of the scrolling list being built
         if (i == 1) {
           return _horizontalListViewMovies(popularMovies);
         } else if (i == 3) {
@@ -100,7 +113,8 @@ class _ExploreTabState extends State<ExploreTab> {
     ));
   }
 
-  // build method for the different scrolling lists
+  // Build method for the different scrolling lists for movies, which further calls the build method
+  // for the individual movie items inside each list
   Widget _horizontalListViewMovies(Future<List<MinimizedMovie>> movies) {
     return SizedBox(
       height: 435,
@@ -116,7 +130,8 @@ class _ExploreTabState extends State<ExploreTab> {
     );
   }
 
-  // build method for the different scrolling lists
+  // Build method for the different scrolling lists for tv shows, which further calls the build method
+  // for the individual tv show items inside each list
   Widget _horizontalListViewShows(Future<List<MinimizedTvShow>> shows) {
     return SizedBox(
       height: 435,
@@ -132,7 +147,8 @@ class _ExploreTabState extends State<ExploreTab> {
     );
   }
 
-  // build method for each individual movie
+  // Build method for each individual movie item in a scrolling list
+  // Calls other methods such as _buildBox() and _buildPoster() to build elements inside each item
   Widget _buildBoxMovies(Future<List<MinimizedMovie>> movies, int index) =>
       Container(
         margin: const EdgeInsets.all(10),
@@ -166,7 +182,8 @@ class _ExploreTabState extends State<ExploreTab> {
         ),
       );
 
-  // build method for each individual movie
+  // Build method for each individual tv show item in a scrolling list
+  // Calls other methods such as _buildBox() and _buildPoster() to build elements inside each item
   Widget _buildBoxShows(Future<List<MinimizedTvShow>> shows, int index) =>
       Container(
         margin: const EdgeInsets.all(10),
@@ -200,6 +217,11 @@ class _ExploreTabState extends State<ExploreTab> {
         ),
       );
 
+  // Build method which implements the information and functionality for each movie
+  // or tv show item in the scrolling list
+  // The method takes in information for each specific movie or tv show which it will
+  // use in displaying that information
+  // Calls _buildPoster() to create the poster elements for each item
   Widget _buildBox(
           {required Widget poster,
           required num voteAverage,
@@ -244,13 +266,15 @@ class _ExploreTabState extends State<ExploreTab> {
         ),
       );
 
-  // build method for creating the different scrolling list titles
+  // Build method for creating the different scrolling list titles (found above each scrolling list)
   Widget _buildText(String category) => Container(
         margin: const EdgeInsets.all(12),
         width: 200,
         child: Text(category, style: Theme.of(context).textTheme.headline5),
       );
 
+  // Build method for creating and implementing the poster for each item, as well as
+  // the circular rating visual
   Widget _buildPoster(Widget poster, num voteAverage) => Stack(
         children: <Widget>[
           Container(
