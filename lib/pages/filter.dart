@@ -79,7 +79,7 @@ class _FilterResultsState extends State<FilterResults> {
     movieList = TmdbApiWrapper().getMovieListFromGenreId(genreId: widget.genre);
     tvList1 = await TmdbApiWrapper().getPopularTvShows(1);
     tvList = TmdbApiWrapper().getPopularTvShows(1);
-    resultList.add(movieList);
+    //resultList.add(movieList);
     setState(() {
       //var temp = movieList1.length;
       //print(temp);
@@ -118,94 +118,89 @@ class _FilterResultsState extends State<FilterResults> {
   //filter
   Widget drawerSystem() {
     return Drawer(
-      child: Container(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                Container(
-                  width: double.maxFinite,
-                  padding: EdgeInsets.fromLTRB(
-                      10,
-                      MediaQueryData.fromWindow(window).padding.top + 10,
-                      0,
-                      10),
-                  decoration: const BoxDecoration(color: Colors.blue),
-                  child: const Text(
-                    'Filter',
-                    style: TextStyle(
-                        color: Colors.black87, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Expanded(
-                    child: Container(
-                  width: double.maxFinite,
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 80),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: const Text('Years'),
-                        ),
-                        Wrap(
-                          spacing: 2,
-                          runSpacing: 5,
-                          children: FilterItems(movieYear),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: const Text('Genre'),
-                        ),
-                        Wrap(
-                          spacing: 2,
-                          runSpacing: 5,
-                          children: FilterItems(movieGenre),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: const Text('Type'),
-                        ),
-                        Wrap(
-                          spacing: 2,
-                          runSpacing: 5,
-                          children: FilterItems(movieType),
-                        ),
-                      ],
-                    ),
-                  ),
-                )),
-              ],
-            ),
-            Positioned(
-              bottom: 20,
-              child: Container(
-                padding: const EdgeInsets.fromLTRB(60, 0, 0, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    FlatButton(
-                        color: Colors.blue,
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Reset')),
-                    Container(
-                      width: 20,
-                    ),
-                    FlatButton(
-                        color: Colors.blue,
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Apply'))
-                  ],
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              Container(
+                width: double.maxFinite,
+                padding: EdgeInsets.fromLTRB(10,
+                    MediaQueryData.fromWindow(window).padding.top + 10, 0, 10),
+                decoration: const BoxDecoration(color: Colors.blue),
+                child: const Text(
+                  'Filter',
+                  style: TextStyle(
+                      color: Colors.black87, fontWeight: FontWeight.bold),
                 ),
               ),
-            )
-          ],
-        ),
+              Expanded(
+                  child: Container(
+                width: double.maxFinite,
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 80),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: const Text('Years'),
+                      ),
+                      Wrap(
+                        spacing: 2,
+                        runSpacing: 5,
+                        children: FilterItems(movieYear),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: const Text('Genre'),
+                      ),
+                      Wrap(
+                        spacing: 2,
+                        runSpacing: 5,
+                        children: FilterItems(movieGenre),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: const Text('Type'),
+                      ),
+                      Wrap(
+                        spacing: 2,
+                        runSpacing: 5,
+                        children: FilterItems(movieType),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
+            ],
+          ),
+          Positioned(
+            bottom: 20,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(60, 0, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  FlatButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Reset')),
+                  Container(
+                    width: 20,
+                  ),
+                  FlatButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Apply'))
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
