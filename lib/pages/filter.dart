@@ -148,7 +148,7 @@ class _FilterResultsState extends State<FilterResults> {
                       Wrap(
                         spacing: 2,
                         runSpacing: 5,
-                        children: FilterItems(movieYear),
+                        children: filterItems(movieYear),
                       ),
                       Container(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -157,7 +157,7 @@ class _FilterResultsState extends State<FilterResults> {
                       Wrap(
                         spacing: 2,
                         runSpacing: 5,
-                        children: FilterItems(movieGenre),
+                        children: filterItems(movieGenre),
                       ),
                       Container(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -166,7 +166,7 @@ class _FilterResultsState extends State<FilterResults> {
                       Wrap(
                         spacing: 2,
                         runSpacing: 5,
-                        children: FilterItems(movieType),
+                        children: filterItems(movieType),
                       ),
                     ],
                   ),
@@ -206,7 +206,7 @@ class _FilterResultsState extends State<FilterResults> {
   }
 
   // build method for each individual tag in filter
-  List<Widget> FilterItems(List<FilterModel> filters) {
+  List<Widget> filterItems(List<FilterModel> filters) {
     // print(filters);
     return List.generate(filters.length, (index) {
       var item = filters[index];
