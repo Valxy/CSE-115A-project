@@ -15,50 +15,71 @@ List<Genre> genreName =
 
 class _BrowseTabState extends State<BrowseTab> {
   get title => null;
-
+  List<String> months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text(""),
-      // ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: genreName
-              .map(
-                (e) => GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const FilterResults(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(5),
-                    height: 80,
-                    width: MediaQuery.of(context).size.width - 15,
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [Colors.purple, Colors.orange])),
-                    child: Center(
-                        child: Text(
-                      e.name,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 30,
-                      ),
-                    )),
+        // appBar: AppBar(
+        //   title: const Text(""),
+        // ),
+        body: GridView.builder(
+      itemCount: genreName.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10.0,
+          childAspectRatio: 3),
+      itemBuilder: (BuildContext context, int index) {
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      FilterResults(genre: genreName[index].id),
+                ));
+          },
+          child: Container(
+              height: 20,
+              width: MediaQuery.of(context).size.width / 2 - 15,
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Colors.blueGrey),
+              child: Row(
+                children: <Widget>[
+                  const SizedBox(width: 8),
+                  const Icon(
+                    Icons.favorite,
+                    color: Colors.pink,
+                    size: 15,
                   ),
-                ),
-              )
-              .toList(),
-        ),
-      ),
-    );
+                  const SizedBox(width: 10),
+                  Text(
+                    genreName[index].name,
+
+                    /// index
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 17,
+                    ),
+                  ),
+                ],
+              )),
+        );
+      },
+    ));
   }
 }
