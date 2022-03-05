@@ -79,7 +79,7 @@ class _FilterResultsState extends State<FilterResults> {
     movieList = TmdbApiWrapper().getMovieListFromGenreId(genreId: widget.genre);
     tvList1 = await TmdbApiWrapper().getPopularTvShows(1);
     tvList = TmdbApiWrapper().getPopularTvShows(1);
-
+    resultList.add(movieList);
     setState(() {
       //var temp = movieList1.length;
       //print(temp);
