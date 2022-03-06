@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tmdb/pages/filter.dart';
+
 import '../models/tmdb_api_wrapper.dart';
 
 class BrowseTab extends StatefulWidget {
@@ -29,6 +31,35 @@ class _BrowseTabState extends State<BrowseTab> {
     "Nov",
     "Dec"
   ];
+
+  List<IconData> icons = [
+    FontAwesomeIcons.running, // Action
+    FontAwesomeIcons.mountain, // Action & Adventure
+    FontAwesomeIcons.hiking, // Adventure
+    FontAwesomeIcons.pencilRuler, // Animation
+    FontAwesomeIcons.microphone, // Comedy
+    FontAwesomeIcons.skull, // Crime
+    FontAwesomeIcons.camera, // Documentary
+    FontAwesomeIcons.theaterMasks, // Drama
+    FontAwesomeIcons.home, // Family
+    FontAwesomeIcons.child, // Kids
+    FontAwesomeIcons.dragon, // Fantasy
+    FontAwesomeIcons.scroll, // History
+    FontAwesomeIcons.ghost, // Horror
+    FontAwesomeIcons.music, // Music
+    FontAwesomeIcons.userSecret, // Mystery
+    FontAwesomeIcons.globe, // News
+    FontAwesomeIcons.solidHeart, // Romance
+    FontAwesomeIcons.spaceShuttle, // Science Fiction
+    FontAwesomeIcons.satellite, // Sci-Fi & Fantasy
+    FontAwesomeIcons.userFriends, // Talk
+    FontAwesomeIcons.tv, // TV Movie
+    FontAwesomeIcons.laugh, // Thriller
+    FontAwesomeIcons.fighterJet, // War
+    FontAwesomeIcons.fistRaised, // War & Politics
+    FontAwesomeIcons.hatCowboy, // Western
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,10 +92,9 @@ class _BrowseTabState extends State<BrowseTab> {
               child: Row(
                 children: <Widget>[
                   const SizedBox(width: 8),
-                  const Icon(
-                    Icons.favorite,
-                    color: Colors.pink,
-                    size: 15,
+                  FaIcon(
+                    icons[index],
+                    size: 40,
                   ),
                   const SizedBox(width: 10),
                   Text(
