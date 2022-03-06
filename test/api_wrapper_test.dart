@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:tmdb/models/src/errors.dart';
 import 'package:tmdb/models/tmdb_api_wrapper.dart';
 
 Future<bool> _testGetPopularMovies() async {
@@ -147,212 +147,211 @@ Future<bool> _testSearch(String query) async {
   return true;
 }
 
-// Future<void> _testImageCaching() async {
-//   List<MinimizedMovie> movie = await TmdbApiWrapper().getPopularMovies(1);
-//   Widget image =
-//       await TmdbApiWrapper().getImage(imagePath: movie[0].posterPath);
-
-//   expect(image, isNotEmpty);
-// }
-
-void main() {
-  test('Get popular movies', _testGetPopularMovies);
-  test('Now playing movies', _testNowPlayingMovies);
-  test('Top rated movies', _testGetTopRatedMovies);
+Future<bool> _testGenreGetters() async {
+  for (var k in TmdbApiWrapper.genreDictionary.keys) {
+    try {
+      TmdbApiWrapper()
+          .getMovieListFromGenreId(genreId: TmdbApiWrapper.genreDictionary[k]);
+    } on PageNotFoundException {
+      // expect a page not found exception for genres
+      // that are specific to tv or movie. Simply continue
+      continue;
+    } catch (e) {
+      return false;
+    }
+    try {
+      TmdbApiWrapper()
+          .getTvListFromGenreId(genreId: TmdbApiWrapper.genreDictionary[k]);
+    } on PageNotFoundException {
+      // expect a page not found exception for genres
+      // that are specific to tv or movie. Simply continue
+      continue;
+    } catch (e) {
+      return false;
+    }
+  }
+  return true;
 }
 
-Future<void> testApiWrapper() async {
-  late Movie topRatedMovie;
-  late TvShow topRatedShow;
-  late List<MinimizedMovie> topRatedMovies;
-  late List<MinimizedTvShow> topRatedShows;
+void main() async {
+  test('Get popular movies',
+      () async => expect(await _testGetPopularMovies(), true));
+  test('Now playing movies',
+      () async => expect(await _testNowPlayingMovies(), true));
+  test('Top rated movies',
+      () async => expect(await _testGetTopRatedMovies(), true));
+  test('Latest movie', () async => expect(await _testGetLatestMovie(), true));
 
-  if (!(await _testGetTopRatedMovies())) {
-    return;
-  } else {
-    topRatedMovies = await TmdbApiWrapper().getTopRatedMovies(1);
-  }
-  if (!(await _testGetLatestMovie())) {
-    return;
-  }
-  if (!(await _testGetTopRatedTvShows())) {
-    return;
-  } else {
-    topRatedShows = await TmdbApiWrapper().getTopRatedTvShows(1);
-  }
-  if (!(await _testGetNowAiringTvShows())) {
-    return;
-  }
-  if (!(await _testGetOnTheAirTvShows())) {
-    return;
-  }
-  if (!(await _testGetPopularTvShows())) {
-    return;
-  }
-  if (!(await testGetImageTvAndMovie(topRatedMovies[0], topRatedShows[0]))) {
-    return;
-  }
-  if (!(await _testGetDetailsMovie(topRatedMovies[0]))) {
-    return;
-  } else {
-    topRatedMovie =
-        await TmdbApiWrapper().getDetailsMovie(movieId: topRatedMovies[0].id);
-  }
-  if (!(await _testGetDetailsTvShow(topRatedShows[0]))) {
-    return;
-  } else {
-    topRatedShow =
-        await TmdbApiWrapper().getDetailsTvShow(tvId: topRatedShows[0].id);
-  }
-  if (!(await _testSearch("Charles"))) {
-    return;
-  }
+  test('Top rated TV',
+      () async => expect(await _testGetTopRatedTvShows(), true));
+  test('Now airing TV Shows',
+      () async => expect(await _testGetNowAiringTvShows(), true));
+  test('On the air TV Shows',
+      () async => expect(await _testGetOnTheAirTvShows(), true));
+  test('Popular TV Shows',
+      () async => expect(await _testGetPopularTvShows(), true));
 
-  String dumpString;
+  test('Test search', () async => expect(await _testSearch("Charles"), true));
+  test('Test genre getters',
+      () async => expect(await _testGenreGetters(), true));
 
-  if (kDebugMode) {
-    /// Movie test
-    dumpString = 'Movie data members\n';
-    dumpString = 'original language: ${topRatedMovie.originalLanguage}\n';
-    print(dumpString);
-    dumpString = 'id: ${topRatedMovie.id}\n';
-    print(dumpString);
-    dumpString = 'popularity: ${topRatedMovie.popularity}\n';
-    print(dumpString);
-    dumpString = 'posterPath: ${topRatedMovie.posterPath}\n';
-    print(dumpString);
-    dumpString = 'releaseDate: ${topRatedMovie.releaseDate}\n';
-    print(dumpString);
-    dumpString = 'overview: ${topRatedMovie.overview}\n';
-    print(dumpString);
-    dumpString = 'original title: ${topRatedMovie.originalTitle}\n';
-    print(dumpString);
-    dumpString = 'title: ${topRatedMovie.title}\n';
-    print(dumpString);
-    dumpString = 'video: ${topRatedMovie.video}\n';
-    print(dumpString);
-    dumpString = 'voteCount: ${topRatedMovie.voteCount}\n';
-    print(dumpString);
-    dumpString = 'genres: ${topRatedMovie.genres}\n';
-    print(dumpString);
-    dumpString = 'status: ${topRatedMovie.status}\n';
-    print(dumpString);
-    //removed
-    //dumpString = 'belongsToCollection: ${topRatedMovie.belongsToCollection}\n';
-    //print(dumpString);
-    dumpString = 'budget: ${topRatedMovie.budget}\n';
-    print(dumpString);
-    dumpString = 'homepage: ${topRatedMovie.homepage}\n';
-    print(dumpString);
-    dumpString = 'revenue: ${topRatedMovie.revenue}\n';
-    print(dumpString);
-    dumpString = 'runtime  ${topRatedMovie.runtime}\n';
-    print(dumpString);
-    dumpString = 'tagline  ${topRatedMovie.tagline}\n';
-    print(dumpString);
-    dumpString = 'spokenLanguages: ${topRatedMovie.spokenLanguages}\n';
-    print(dumpString);
-    dumpString = 'productionCompanies: ${topRatedMovie.productionCompanies}\n';
-    print(dumpString);
-    dumpString = 'productionCountries: ${topRatedMovie.productionCountries}\n';
-    print(dumpString);
-    dumpString = 'cast: ${topRatedMovie.cast}\n';
-    print(dumpString);
-    dumpString = 'crew : ${topRatedMovie.crew}\n';
-    print(dumpString);
-    dumpString = 'poster  ${topRatedMovie.poster}\n';
-    print(dumpString);
-    dumpString = 'reviews  ${topRatedMovie.reviews}\n';
-    print(dumpString);
-    dumpString = 'backdrops: ${topRatedMovie.backdrops}\n';
-    print(dumpString);
-    dumpString = 'recommendations  ${topRatedMovie.recommendations}\n';
-    print(dumpString);
-    dumpString = 'videos  ${topRatedMovie.videos}\n';
-    print(dumpString);
-    dumpString = 'releases: ${topRatedMovie.releases}\n';
-    print(dumpString);
+  Future<MinimizedMovie> tMovie = TmdbApiWrapper().getLatestMovie();
+  Future<Movie> testMovie = (() async =>
+      TmdbApiWrapper().getDetailsMovie(movieId: (await tMovie).id))();
 
-    /// TvShow test
-    dumpString = '\nTvShow data members\n';
-    print(dumpString);
-    dumpString = 'originalLanguage: ${topRatedShow.originalLanguage}\n';
-    print(dumpString);
-    dumpString = 'originalName: ${topRatedShow.originalName}\n';
-    print(dumpString);
-    dumpString = 'originCountries: ${topRatedShow.originCountries}\n';
-    print(dumpString);
-    dumpString = 'backdropPath: ${topRatedShow.backdropPath}\n';
-    print(dumpString);
-    dumpString = 'id: ${topRatedShow.id}\n';
-    print(dumpString);
-    dumpString = 'overview: ${topRatedShow.overview}\n';
-    print(dumpString);
-    dumpString = 'popularity: ${topRatedShow.popularity}\n';
-    print(dumpString);
-    dumpString = 'posterPath: ${topRatedShow.posterPath}\n';
-    print(dumpString);
-    dumpString = 'firstAirDate: ${topRatedShow.firstAirDate}\n';
-    print(dumpString);
-    dumpString = 'name: ${topRatedShow.name}\n';
-    print(dumpString);
-    dumpString = 'voteAverage: ${topRatedShow.voteAverage}\n';
-    print(dumpString);
-    dumpString = 'voteCount: ${topRatedShow.voteCount}\n';
-    print(dumpString);
-    dumpString = 'genres: ${topRatedShow.genres}\n';
-    print(dumpString);
-    dumpString = 'creators: ${topRatedShow.creators}\n';
-    print(dumpString);
-    dumpString = 'homepage: ${topRatedShow.homepage}\n';
-    print(dumpString);
-    dumpString = 'episodeRunTimes: ${topRatedShow.episodeRunTimes}\n';
-    print(dumpString);
-    dumpString = 'languages: ${topRatedShow.languages}\n';
-    print(dumpString);
-    dumpString = 'isInProduction: ${topRatedShow.isInProduction}\n';
-    print(dumpString);
-    dumpString = 'lastAirDate: ${topRatedShow.lastAirDate}\n';
-    print(dumpString);
-    dumpString = 'lastEpisodeToAir: ${topRatedShow.lastEpisodeToAir}\n';
-    print(dumpString);
-    dumpString = 'nextEpisodeToAir: ${topRatedShow.nextEpisodeToAir}\n';
-    print(dumpString);
-    dumpString = 'networks: ${topRatedShow.networks}\n';
-    print(dumpString);
-    dumpString = 'numberOfEpisodes: ${topRatedShow.numberOfEpisodes}\n';
-    print(dumpString);
-    dumpString = 'numberOfSeasons: ${topRatedShow.numberOfSeasons}\n';
-    print(dumpString);
-    dumpString = 'productionCountries: ${topRatedShow.productionCountries}\n';
-    print(dumpString);
-    dumpString = 'productionCompanies: ${topRatedShow.productionCompanies}\n';
-    print(dumpString);
-    dumpString = 'seasons: ${topRatedShow.seasons}\n';
-    print(dumpString);
-    dumpString = 'spokenLanguages: ${topRatedShow.spokenLanguages}\n';
-    print(dumpString);
-    dumpString = 'status: ${topRatedShow.status}\n';
-    print(dumpString);
-    dumpString = 'type: ${topRatedShow.type}\n';
-    print(dumpString);
-    dumpString = 'crew: ${topRatedShow.crew}\n';
-    print(dumpString);
-    dumpString = 'cast: ${topRatedShow.cast}\n';
-    print(dumpString);
-    dumpString = 'recommendations: ${topRatedShow.recommendations}\n';
-    print(dumpString);
-    dumpString = 'videos: ${topRatedShow.videos}\n';
-    print(dumpString);
-    dumpString = 'reviews: ${topRatedShow.reviews}\n';
-    print(dumpString);
-    dumpString = 'backdrops: ${topRatedShow.backdrops}\n';
-    print(dumpString);
-    dumpString = 'poster: ${topRatedShow.poster}\n';
-    print(dumpString);
-  }
-  /*
-  for (var i = 0; i < something.length; i++) {}
-  for (var i = 0; i < 20; i++) {}
-  */
+  Future<List<MinimizedTvShow>> shows = TmdbApiWrapper().getAnimatedTvShows();
+  Future<TvShow> testShow = (() async =>
+      TmdbApiWrapper().getDetailsTvShow(tvId: (await shows)[0].id))();
+
+  test(
+      'Testing getImage',
+      () async => expect(
+          await testGetImageTvAndMovie(await testMovie, await testShow), true));
+  test('Get details movie',
+      () async => expect(await _testGetDetailsMovie(await testMovie), true));
+  test('Get detail TV Show',
+      () async => expect(await _testGetDetailsTvShow(await testShow), true));
+  test('Movie original language data member',
+      () async => expect((await testMovie).originalLanguage, isNotNull));
+  test('Movie id data member',
+      () async => expect((await testMovie).id, isNotNull));
+  test('Movie popularity data member',
+      () async => expect((await testMovie).popularity, isNotNull));
+  test('Movie posterPath data member',
+      () async => expect((await testMovie).posterPath, isNotNull));
+  test('Movie releaseDate data member',
+      () async => expect((await testMovie).releaseDate, isNotNull));
+  test('Movie overview data member',
+      () async => expect((await testMovie).overview, isNotNull));
+  test('Movie original title data member',
+      () async => expect((await testMovie).originalTitle, isNotNull));
+  test('Movie title data member',
+      () async => expect((await testMovie).title, isNotNull));
+  test('Movie video data member',
+      () async => expect((await testMovie).video, isNotNull));
+  test('Movie voteCount data member',
+      () async => expect((await testMovie).voteCount, isNotNull));
+  test('Movie genres data member',
+      () async => expect((await testMovie).genres, isNotNull));
+  test('Movie status data member',
+      () async => expect((await testMovie).status, isNotNull));
+  test('Movie budget data member',
+      () async => expect((await testMovie).budget, isNotNull));
+  test('Movie homepage data member',
+      () async => expect((await testMovie).homepage, isNotNull));
+  test('Movie revenue data member',
+      () async => expect((await testMovie).revenue, isNotNull));
+  test('Movie runtime data member',
+      () async => expect((await testMovie).runtime, isNotNull));
+  test('Movie tagline data member',
+      () async => expect((await testMovie).tagline, isNotNull));
+  test('Movie spokenLanguages data member',
+      () async => expect((await testMovie).spokenLanguages, isNotNull));
+  test('Movie productionCompanies data member',
+      () async => expect((await testMovie).productionCompanies, isNotNull));
+  test('Movie productionCountries data member',
+      () async => expect((await testMovie).productionCountries, isNotNull));
+  test('Movie cast data member',
+      () async => expect((await testMovie).cast, isNotNull));
+  test('Movie crew data member',
+      () async => expect((await testMovie).crew, isNotNull));
+  test('Movie poster data member',
+      () async => expect((await testMovie).poster, isNotNull));
+  test('Movie reviews data member',
+      () async => expect((await testMovie).reviews, isNotNull));
+  test('Movie backdrops data member',
+      () async => expect((await testMovie).backdrops, isNotNull));
+  test('Movie recommendations data member',
+      () async => expect((await testMovie).recommendations, isNotNull));
+  test('Movie videos data member',
+      () async => expect((await testMovie).videos, isNotNull));
+  test('Movie releases data member',
+      () async => expect((await testMovie).releases, isNotNull));
+  test('Movie reviews data member',
+      () async => expect((await testMovie).reviews, isNotNull));
+  test('TV Show posterPath data member',
+      () async => expect((await testShow).posterPath, isNotNull));
+  test('TV Show originalLanguage data member',
+      () async => expect((await testShow).originalLanguage, isNotNull));
+  test('TV Show originalName data member',
+      () async => expect((await testShow).originalName, isNotNull));
+  test('TV Show originCountries data member',
+      () async => expect((await testShow).originCountries, isNotNull));
+  test('TV Show backdropPath data member',
+      () async => expect((await testShow).backdropPath, isNotNull));
+  test('TV Show id data member',
+      () async => expect((await testShow).id, isNotNull));
+  test('TV Show overview data member',
+      () async => expect((await testShow).overview, isNotNull));
+  test('TV Show popularity data member',
+      () async => expect((await testShow).popularity, isNotNull));
+  test('TV Show firstAirDate data member',
+      () async => expect((await testShow).firstAirDate, isNotNull));
+  test('TV Show name data member',
+      () async => expect((await testShow).name, isNotNull));
+  test('TV Show voteAverage data member',
+      () async => expect((await testShow).voteAverage, isNotNull));
+  test('TV Show voteCount data member',
+      () async => expect((await testShow).voteCount, isNotNull));
+  test('TV Show genres data member',
+      () async => expect((await testShow).genres, isNotNull));
+  test('TV Show creators data member',
+      () async => expect((await testShow).creators, isNotNull));
+  test('TV Show homepage data member',
+      () async => expect((await testShow).homepage, isNotNull));
+  test('TV Show episodeRunTimes data member',
+      () async => expect((await testShow).episodeRunTimes, isNotNull));
+  test('TV Show languages data member',
+      () async => expect((await testShow).languages, isNotNull));
+  test('TV Show isInProduction data member',
+      () async => expect((await testShow).isInProduction, isNotNull));
+  test('TV Show lastAirDate data member',
+      () async => expect((await testShow).lastAirDate, isNotNull));
+  test('TV Show lastEpisodeToAir data member',
+      () async => expect((await testShow).lastEpisodeToAir, isNotNull));
+  test('TV Show nextEpisodeToAir data member',
+      () async => expect((await testShow).nextEpisodeToAir, isNotNull));
+  test('TV Show networks data member',
+      () async => expect((await testShow).networks, isNotNull));
+  test('TV Show numberOfEpisodes data member',
+      () async => expect((await testShow).numberOfEpisodes, isNotNull));
+  test('TV Show numberOfSeasons data member',
+      () async => expect((await testShow).numberOfSeasons, isNotNull));
+  test('TV Show productionCountries data member',
+      () async => expect((await testShow).productionCountries, isNotNull));
+  test('TV Show productionCompanies data member',
+      () async => expect((await testShow).productionCompanies, isNotNull));
+  test('TV Show seasons data member',
+      () async => expect((await testShow).seasons, isNotNull));
+  test('TV Show spokenLanguages data member',
+      () async => expect((await testShow).spokenLanguages, isNotNull));
+  test('TV Show status data member',
+      () async => expect((await testShow).status, isNotNull));
+  test('TV Show crew data member',
+      () async => expect((await testShow).crew, isNotNull));
+  test('TV Show cast data member',
+      () async => expect((await testShow).cast, isNotNull));
+  test('TV Show type data member',
+      () async => expect((await testShow).type, isNotNull));
+  test('TV Show recommendations data member',
+      () async => expect((await testShow).recommendations, isNotNull));
+  test('TV Show videos data member',
+      () async => expect((await testShow).videos, isNotNull));
+  test('TV Show reviews data member',
+      () async => expect((await testShow).reviews, isNotNull));
+  test('TV Show backdrops data member',
+      () async => expect((await testShow).backdrops, isNotNull));
+  test('TV Show poster data member',
+      () async => expect((await testShow).poster, isNotNull));
 }
+
+/*
+Future<Person> getDetailsPerson({
+  required personId,
+}) async {
+  final String endpoint =
+      "/person/$personId?api_key=$_apiKey&append_to_response=combined_credits,images";
+  final responseJson = await _helper.get(endpoint);
+  Person person = Person.fromJson(json: responseJson);
+  return person;
+}*/
