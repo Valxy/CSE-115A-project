@@ -6,6 +6,7 @@ import '../models/tmdb_api_wrapper.dart';
 import '../widgets/backdrops_carousel.dart';
 import '../widgets/persons.dart';
 import '../widgets/reviews.dart';
+import '../widgets/seasons.dart';
 
 class TVShowPage extends StatefulWidget {
   final num id;
@@ -160,6 +161,9 @@ class _TVShowPageState extends State<TVShowPage> {
                       ),
                     ]),
                   ),
+                ),
+                Seasons(
+                  seasons: tvShow.seasons,
                 ),
                 Reviews(
                   reviews: tvShow.reviews,
