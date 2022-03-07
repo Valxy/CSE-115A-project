@@ -98,15 +98,15 @@ class _EpisodesState extends State<Episodes> {
                               Row(
                                 children: [
                                   SizedBox(
-                                      height: 60,
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              const BorderRadius.vertical(
-                                            top: Radius.circular(8.0),
-                                            bottom: Radius.circular(8.0),
-                                          ),
-                                          child:
-                                              season.episodes[index].poster)),
+                                    height: 60,
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(8.0),
+                                        bottom: Radius.circular(8.0),
+                                      ),
+                                      child: season.episodes[index].poster,
+                                    ),
+                                  ),
                                   Expanded(
                                     child: Container(
                                       padding: const EdgeInsets.all(10),
@@ -116,12 +116,21 @@ class _EpisodesState extends State<Episodes> {
                                             season.episodes[index].name,
                                           ),
                                           Text(
-                                              formatter.format(DateTime.parse(
-                                                  season.episodes[index]
-                                                      .airDate)),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .caption),
+                                            season.episodes[index].airDate
+                                                        .length !=
+                                                    10
+                                                ? ""
+                                                : formatter.format(
+                                                    DateFormat('yyyy-MM-dd')
+                                                        .parse(
+                                                      season.episodes[index]
+                                                          .airDate,
+                                                    ),
+                                                  ),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .caption,
+                                          ),
                                         ],
                                       ),
                                     ),
