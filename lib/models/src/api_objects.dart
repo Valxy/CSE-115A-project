@@ -711,6 +711,15 @@ class TvEpisode {
   ///The number of users that have rated the episode
   late int voteCount;
 
+  ///
+  late List<CrewMember> crew;
+
+  ///
+  late List<Person> guestStars;
+
+  ///Image for the episode.
+  late Widget poster;
+
   TvEpisode({
     required this.airDate,
     required this.episodeNumber,
@@ -777,6 +786,24 @@ class TvEpisode {
     } else {
       voteCount = 0;
     }
+
+    if (json['crew'] != null && !json['crew'].isEmpty) {
+      List<dynamic> list = json['crew'];
+      crew = list.map((e) => CrewMember.fromJson(json: e)).toList();
+    }
+
+    if (json['guest_stars'] != null && json['guest_stars']!.isNotEmpty) {
+      List<dynamic> list = json['guest_stars'];
+      guestStars = list.map((e) => CastMember.fromJson(json: e)).toList();
+    }
+    poster = _getImage(imagePath: json['still_path']);
+  }
+
+  Widget _getImage({required imagePath, size = "w500"}) {
+    if (imagePath != null && imagePath.isNotEmpty) {
+      return Image.network("https://image.tmdb.org/t/p/$size" + imagePath);
+    }
+    return const SizedBox.shrink();
   }
 
   @override
@@ -858,6 +885,9 @@ class TvShowSeason {
   ///Season number
   late int seasonNumber;
 
+  ///List of episode objects
+  late List<TvEpisode> episodes;
+
   TvShowSeason({
     required this.airDate,
     required this.episodeCount,
@@ -905,6 +935,13 @@ class TvShowSeason {
       seasonNumber = json['season_number'];
     } else {
       seasonNumber = 0;
+    }
+
+    if (json['episodes'] != null && json['episodes']!.isNotEmpty) {
+      List<dynamic> list = json['episodes'];
+      episodes = list.map((e) => TvEpisode.fromJson(json: e)).toList();
+    } else {
+      episodes = [];
     }
   }
 

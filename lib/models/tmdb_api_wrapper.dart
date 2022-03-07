@@ -254,6 +254,17 @@ class TmdbApiWrapper {
     return TvShow.fromJson(json: responseJson);
   }
 
+  ///returns a completed TvShowSeason object. [tvId] can be found as
+  ///a data member of a minimized tv show object.
+  Future<TvShowSeason> getDetailsTvShowSeason({
+    required tvId,
+    seasonNumber = 1,
+  }) async {
+    final String endpoint = "tv/$tvId/season/$seasonNumber?api_key=$_apiKey";
+    final responseJson = await _helper.get(endpoint);
+    return TvShowSeason.fromJson(json: responseJson);
+  }
+
   ///Returns the top 20 most popular movies
   ///as a list of minimized Movie objects.
   Future<List<MinimizedMovie>> getPopularMovies(int pageNumber) async {

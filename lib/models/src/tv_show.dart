@@ -294,6 +294,8 @@ class TvShow extends MinimizedTvShow {
               0, (backdrops.length > maxPicCapacity ? 6 : backdrops.length))
           .map((e) => getImage(imagePath: e['file_path'], size: "w1280"))
           .toList();
+    } else {
+      backdrops.add(const SizedBox.shrink());
     }
 
     // Only the first poster in the list is ever used, but
