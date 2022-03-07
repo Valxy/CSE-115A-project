@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../models/tmdb_api_wrapper.dart';
 import '../widgets/backdrops_carousel.dart';
 import '../widgets/persons.dart';
+import '../widgets/reviews.dart';
 
 class MoviePage extends StatefulWidget {
   final num id;
@@ -166,6 +167,7 @@ class _MoviePageState extends State<MoviePage> {
                     ]),
                   ),
                 ),
+                Reviews(reviews: movie.reviews),
                 Persons(title: "Cast", persons: movie.cast),
                 Persons(title: "Crew", persons: uniqueCrew),
               ],

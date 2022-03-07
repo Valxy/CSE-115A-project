@@ -40,6 +40,7 @@ dependencies:
   filter_list: ^1.0.1
   percent_indicator: ^4.0.0
   font_awesome_flutter: ^9.0.0-nullsafety
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
