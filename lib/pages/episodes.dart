@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tmdb/models/src/api_objects.dart';
-import 'package:tmdb/tabs/explore.dart';
+
+import '../models/src/api_objects.dart';
 import '../models/tmdb_api_wrapper.dart';
 
 class Episodes extends StatefulWidget {
@@ -20,20 +20,14 @@ class Episodes extends StatefulWidget {
 
 class _EpisodesState extends State<Episodes> {
   late Future<TvShowSeason> seasonDetails;
-  late String dropDownValue;
-  late int numberOfSeasons;
   late int seasonNumber;
-  late int tvId;
 
   @override
   void initState() {
     super.initState();
     seasonDetails = TmdbApiWrapper().getDetailsTvShowSeason(
         tvId: widget.tvShow.id, seasonNumber: widget.seasonNumber);
-    dropDownValue = "Season ${widget.seasonNumber}";
-    numberOfSeasons = widget.tvShow.numberOfSeasons;
     seasonNumber = widget.seasonNumber;
-    tvId = widget.tvShow.id;
     //_CustomMenuItem(
     //  name: "Season ${widget.seasonNumber}", index: widget.seasonNumber);
   }
@@ -53,28 +47,24 @@ class _EpisodesState extends State<Episodes> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownButton<String>(
-              isExpanded: true,
-              value: dropDownValue,
-              onChanged: (String? newValue) {
-                setState(() {
-                  dropDownValue = newValue!;
-                  //numberOfSeasons = numberOfSeasons;
-                  //tvId = tvId;
-                  seasonNumber =
-                      int.parse(newValue.substring(newValue.length - 1));
-                  seasonDetails = TmdbApiWrapper().getDetailsTvShowSeason(
-                      tvId: widget.tvShow.id, seasonNumber: seasonNumber);
-                });
-              },
-              items: List<String>.generate(
-                      numberOfSeasons, (index) => "Season ${++index}")
-                  .map<DropdownMenuItem<String>>((e) {
-                return DropdownMenuItem<String>(
-                  value: e,
-                  child: Text(e),
-                );
-              }).toList()),
+          DropdownButton<int>(
+            isExpanded: true,
+            value: seasonNumber,
+            onChanged: (int? newValue) {
+              setState(() {
+                seasonNumber = newValue!;
+
+                seasonDetails = TmdbApiWrapper().getDetailsTvShowSeason(
+                    tvId: widget.tvShow.id, seasonNumber: seasonNumber);
+              });
+            },
+            items: widget.tvShow.seasons
+                .map((e) => DropdownMenuItem<int>(
+                      value: e.seasonNumber,
+                      child: Text(e.name),
+                    ))
+                .toList(),
+          ),
           FutureBuilder(
             future: seasonDetails,
             builder: (BuildContext ctx, AsyncSnapshot<TvShowSeason> snapshot) {
