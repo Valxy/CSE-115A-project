@@ -22,7 +22,10 @@ class GenreChips extends StatelessWidget {
             )
             .map(
               (e) => SizedBox(
-                child: Chip(
+                child: ActionChip(
+                  onPressed: () {
+                    // TODO: Filter page
+                  },
                   label: Text(
                     e.name,
                     style: Theme.of(context).textTheme.labelSmall,
