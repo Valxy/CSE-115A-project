@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import '../models/tmdb_api_wrapper.dart';
 import '../widgets/backdrops_carousel.dart';
+import '../widgets/genre_chips.dart';
 import '../widgets/persons.dart';
 import '../widgets/reviews.dart';
 import '../widgets/seasons.dart';
@@ -113,32 +112,8 @@ class _TVShowPageState extends State<TVShowPage> {
                               const SizedBox(
                                 height: 5,
                               ),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Wrap(
-                                  spacing: 4,
-                                  children: tvShow.genres
-                                      .sublist(
-                                        0,
-                                        min(tvShow.genres.length, 3),
-                                      )
-                                      .map(
-                                        (e) => SizedBox(
-                                          child: Chip(
-                                            label: Text(
-                                              e.name,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .labelSmall,
-                                            ),
-                                            visualDensity: const VisualDensity(
-                                                horizontal: -4.0,
-                                                vertical: -4.0),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
+                              GenreChips(
+                                genres: tvShow.genres,
                               ),
                               const SizedBox(
                                 height: 5,
