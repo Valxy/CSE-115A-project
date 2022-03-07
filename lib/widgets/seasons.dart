@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../models/src/api_objects.dart';
+import '../models/src/tv_show.dart';
+import '../pages/episodes.dart';
 
 class Seasons extends StatelessWidget {
-  final List<TvShowSeason> seasons;
+  final TvShow tvShow;
 
-  const Seasons({Key? key, required this.seasons}) : super(key: key);
+  const Seasons({Key? key, required this.tvShow}) : super(key: key);
 
   @override
   build(BuildContext context) {
@@ -25,11 +26,20 @@ class Seasons extends StatelessWidget {
             constraints: const BoxConstraints(maxHeight: 220),
             child: ListView(
               shrinkWrap: true,
-              children: seasons.reversed
+              children: tvShow.seasons.reversed
                   .map(
                     (e) => InkWell(
                       onTap: () {
-                        // TODO: Episodes page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext context) => Episodes(
+                              tvShow: tvShow,
+                              seasonNumber: e.seasonNumber,
+                            ),
+                            fullscreenDialog: true,
+                          ),
+                        );
                       },
                       child: ListTile(
                         dense: false,

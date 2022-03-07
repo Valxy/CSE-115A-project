@@ -138,7 +138,7 @@ class _TVShowPageState extends State<TVShowPage> {
                   ),
                 ),
                 Seasons(
-                  seasons: tvShow.seasons,
+                  tvShow: tvShow,
                 ),
                 Reviews(
                   reviews: tvShow.reviews,
