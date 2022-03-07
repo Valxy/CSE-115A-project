@@ -97,14 +97,7 @@ class _EpisodesState extends State<Episodes> {
                     return InkWell(
                       // this is for when you click on an episode
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext context) =>
-                                const ExploreTab(),
-                            fullscreenDialog: true,
-                          ),
-                        );
+                        // TODO: subpage for each episode
                       },
 
                       child: Card(
