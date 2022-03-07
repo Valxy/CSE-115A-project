@@ -1,11 +1,10 @@
 import 'dart:math';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import '../models/tmdb_api_wrapper.dart';
+import '../widgets/backdrops_carousel.dart';
 import '../widgets/persons.dart';
-import '../widgets/youtube_player.dart';
 
 class TVShowPage extends StatefulWidget {
   final num id;
@@ -67,36 +66,12 @@ class _TVShowPageState extends State<TVShowPage> {
 
           uniqueCrew.sort((a, b) => (b.popularity - a.popularity).ceil());
 
-          List<Video> youtubeVideos =
-              tvShow.videos.where((video) => video.site == "YouTube").toList();
-
-          youtubeVideos.shuffle();
-
           return SingleChildScrollView(
             child: Column(
               children: [
-                CarouselSlider(
-                  options: CarouselOptions(
-                    disableCenter: true,
-                    viewportFraction: 1,
-                  ),
-                  items: (youtubeVideos.isNotEmpty
-                          ? <Widget>[
-                              YoutubeTrailer(
-                                  "https://www.youtube.com/watch?v=${youtubeVideos.first.key}"),
-                            ]
-                          : <Widget>[]) +
-                      tvShow.backdrops
-                          .map(
-                            (e) => SizedBox(
-                              width: 384.0,
-                              child: FittedBox(
-                                child: e,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          )
-                          .toList(),
+                BackdropsCarousel(
+                  backdrops: tvShow.backdrops,
+                  videos: tvShow.videos,
                 ),
                 Card(
                   child: Container(
