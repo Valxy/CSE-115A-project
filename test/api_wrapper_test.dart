@@ -150,8 +150,8 @@ Future<bool> _testSearch(String query) async {
 Future<bool> _testGenreGetters() async {
   for (var k in TmdbApiWrapper.genreDictionary.keys) {
     try {
-      TmdbApiWrapper()
-          .getMovieListFromGenreId(genreId: TmdbApiWrapper.genreDictionary[k]);
+      TmdbApiWrapper().getMovieListFromGenreId(
+          genreId: TmdbApiWrapper.genreDictionary[k], pageNumber: 1);
     } on PageNotFoundException {
       // expect a page not found exception for genres
       // that are specific to tv or movie. Simply continue
@@ -160,8 +160,8 @@ Future<bool> _testGenreGetters() async {
       return false;
     }
     try {
-      TmdbApiWrapper()
-          .getTvListFromGenreId(genreId: TmdbApiWrapper.genreDictionary[k]);
+      TmdbApiWrapper().getTvListFromGenreId(
+          genreId: TmdbApiWrapper.genreDictionary[k], pageNumber: 1);
     } on PageNotFoundException {
       // expect a page not found exception for genres
       // that are specific to tv or movie. Simply continue

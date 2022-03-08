@@ -203,69 +203,69 @@ class TmdbApiWrapper {
   }
 
   Future<List<MinimizedMovie>> getHorrorMovies() async {
-    return getMovieListFromGenreId(genreId: genreDictionary['Horror']);
+    return getMovieListFromGenreId(genreId: genreDictionary['Horror'], pageNumber: 1);
   }
 
   Future<List<MinimizedMovie>> getActionMovies() async {
-    return getMovieListFromGenreId(genreId: genreDictionary['Action']);
+    return getMovieListFromGenreId(genreId: genreDictionary['Action'], pageNumber: 1);
   }
 
   Future<List<MinimizedMovie>> getRomanceMovies() async {
-    return getMovieListFromGenreId(genreId: genreDictionary['Romance']);
+    return getMovieListFromGenreId(genreId: genreDictionary['Romance'], pageNumber: 1);
   }
 
   Future<List<MinimizedMovie>> getAdventureMovies() async {
-    return getMovieListFromGenreId(genreId: genreDictionary['Adventure']);
+    return getMovieListFromGenreId(genreId: genreDictionary['Adventure'], pageNumber: 1);
   }
 
   Future<List<MinimizedMovie>> getComedyMovies() async {
-    return getMovieListFromGenreId(genreId: genreDictionary['Comedy']);
+    return getMovieListFromGenreId(genreId: genreDictionary['Comedy'], pageNumber: 1);
   }
 
   Future<List<MinimizedMovie>> getDramaMovies() async {
-    return getMovieListFromGenreId(genreId: genreDictionary['Drama']);
+    return getMovieListFromGenreId(genreId: genreDictionary['Drama'], pageNumber: 1);
   }
 
   Future<List<MinimizedMovie>> getMovieListFromGenreId(
-      {required genreId}) async {
+      {required genreId, required pageNumber}) async {
     final String endPoint =
-        "discover/movie?api_key=$_apiKey&with_genres=$genreId&include_adult=false";
+        "discover/movie?api_key=$_apiKey&with_genres=$genreId&include_adult=false&page=$pageNumber";
     final responseJson = await _helper.get(endPoint);
     final List<dynamic> parsed = responseJson['results'];
     return _getMovieListFromJson(parsedList: parsed);
   }
 
   Future<List<MinimizedTvShow>> getAnimatedTvShows() async {
-    return getTvListFromGenreId(genreId: genreDictionary['Animation']);
+    return getTvListFromGenreId(genreId: genreDictionary['Animation'], pageNumber: 1);
   }
 
   Future<List<MinimizedTvShow>> getNewsTvShows() async {
-    return getTvListFromGenreId(genreId: genreDictionary['News']);
+    return getTvListFromGenreId(genreId: genreDictionary['News'], pageNumber: 1);
   }
 
   Future<List<MinimizedTvShow>> getKidsTvShows() async {
-    return getTvListFromGenreId(genreId: genreDictionary['Kids']);
+    return getTvListFromGenreId(genreId: genreDictionary['Kids'], pageNumber: 1);
   }
 
   Future<List<MinimizedTvShow>> getActionAndAdventureTvShows() async {
-    return getTvListFromGenreId(genreId: genreDictionary['Action & Adventure']);
+    return getTvListFromGenreId(genreId: genreDictionary['Action & Adventure'], pageNumber: 1);
   }
 
   Future<List<MinimizedTvShow>> getComedyTvShows() async {
-    return getTvListFromGenreId(genreId: genreDictionary['Comedy']);
+    return getTvListFromGenreId(genreId: genreDictionary['Comedy'], pageNumber: 1);
   }
 
   Future<List<MinimizedTvShow>> getDramaTvShows() async {
-    return getTvListFromGenreId(genreId: genreDictionary['Drama']);
+    return getTvListFromGenreId(genreId: genreDictionary['Drama'], pageNumber: 1);
   }
 
   Future<List<MinimizedTvShow>> getFamilyTvShows() async {
-    return getTvListFromGenreId(genreId: genreDictionary['Family']);
+    return getTvListFromGenreId(genreId: genreDictionary['Family'], pageNumber: 1);
   }
 
-  Future<List<MinimizedTvShow>> getTvListFromGenreId({required genreId}) async {
+  Future<List<MinimizedTvShow>> getTvListFromGenreId({required genreId, required pageNumber}) async {
     final String endPoint =
-        "discover/tv?api_key=$_apiKey&with_genres=$genreId&include_adult=false";
+        "discover/tv?api_key=$_apiKey&with_genres=$genreId&include_adult=false&page=$pageNumber";
     final responseJson = await _helper.get(endPoint);
     final List<dynamic> parsed = responseJson['results'];
     return _getTvShowListFromJson(parsedList: parsed);

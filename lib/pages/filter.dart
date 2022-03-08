@@ -17,7 +17,11 @@ class FilterResults extends StatefulWidget {
 class FilterModel {
   String title;
   bool isCheck = false;
-  FilterModel(this.title, this.isCheck);
+  int gid;
+  int minYear;
+  int maxYear;
+  FilterModel(this.title, this.isCheck, this.gid, this.minYear, this.maxYear);
+
   @override
   String toString() {
     return {'title': title, 'isCheck': isCheck}.toString();
@@ -42,37 +46,71 @@ class _FilterResultsState extends State<FilterResults> {
   late List<MinimizedMovie> movieList1 = [];
   late List<MinimizedTvShow> tvList1 = [];
   late List<MinimizedMovie> movieList = [];
-  late List<MinimizedTvShow>? tvList = [];
-  late List<dynamic> resultList;
+  late List<MinimizedTvShow> tvList = [];
+  List<MinimizedTvShow> resultList = [];
   List<FilterModel> movieYear = [
-    FilterModel('1990', false),
-    FilterModel("2000", false),
-    FilterModel("2010", false),
-    FilterModel("2015", false),
-    FilterModel("2016", false),
-    FilterModel("2017", false),
-    FilterModel("2018", false),
-    FilterModel("2019", false),
-    FilterModel("2020", false),
-    FilterModel("2022", false),
+    FilterModel('Before 1980', false, -1, 1900, 1979),
+    FilterModel('1980-1999', false, -1, 1980, 1999),
+    FilterModel('2000-2010', false, -1, 2000, 2010),
+    FilterModel("2011-2015", false, -1, 2011, 2015),
+    FilterModel("2016-2020", false, -1, 2016, 2020),
+    FilterModel("2021", false, -1, 2021, 2021),
+    FilterModel("2022", false, -1, 2022, 2022),
   ];
-  // List<FilterModel> movieGenre = [
-  //   FilterModel('Action', false),
-  //   FilterModel("Action&Advanture", false),
-  //   FilterModel("Horror", false),
-  //   FilterModel("Animation", false),
-  //   FilterModel("Crime", false),
-  //   FilterModel("Comedy", false),
-  //   FilterModel("Drama", false),
-  //   FilterModel("Romance", false),
-  // ];
+  List<FilterModel> movieGenre = [
+    FilterModel('Action', false, 28, 0, 0),
+    FilterModel("Action&Advanture", false, 10759, 0, 0),
+    FilterModel("Adventure", false, 12, 0, 0),
+    FilterModel("Animation", false, 16, 0, 0),
+    FilterModel("Comedy", false, 35, 0, 0),
+    FilterModel("Crime", false, 80, 0, 0),
+    FilterModel("Documentary", false, 99, 0, 0),
+    FilterModel("Drama", false, 18, 0, 0),
+    FilterModel("Family", false, 10751, 0, 0),
+    FilterModel("Kids", false, 10762, 0, 0),
+    FilterModel("Fantasy", false, 14, 0, 0),
+    FilterModel("History", false, 36, 0, 0),
+    FilterModel("Horror", false, 27, 0, 0),
+    FilterModel("Music", false, 10402, 0, 0),
+    FilterModel("Mystery", false, 9648, 0, 0),
+    FilterModel("News", false, 10763, 0, 0),
+    FilterModel("Romance", false, 10749, 0, 0),
+    FilterModel("Science Fiction", false, 878, 0, 0),
+    FilterModel("Sci-Fi & Fantasy", false, 10765, 0, 0),
+    FilterModel("Talk", false, 10767, 0, 0),
+    FilterModel("TV Movie", false, 10770, 0, 0),
+    FilterModel("Thriller", false, 53, 0, 0),
+    FilterModel("War", false, 10752, 0, 0),
+    FilterModel("War & Politics", false, 10768, 0, 0),
+    FilterModel("Western", false, 37, 0, 0),
+  ];
   List<FilterModel> movieType = [
-    FilterModel("Movie", false),
-    FilterModel('TV Show', false),
+    FilterModel("Movie", false, -1, 0, 0),
+    FilterModel('TV Show', false, -1, 0, 0),
   ];
   int yearIndex = -1;
   int genreIndex = -1;
   int typeIndex = -1;
+
+  Future<List<MinimizedTvShow>> makeTvQuery(int pageNumber) async {
+    return TmdbApiWrapper()
+        .getTvListFromGenreId(genreId: widget.genre, pageNumber: pageNumber);
+  }
+
+  Future<void> updateTvResultList(int i) async {
+    List<MinimizedTvShow> results = await makeTvQuery(i);
+    tvList.addAll(results);
+  }
+
+  Future<List<MinimizedMovie>> makeMovieQuery(int pageNumber) async {
+    return TmdbApiWrapper()
+        .getMovieListFromGenreId(genreId: widget.genre, pageNumber: pageNumber);
+  }
+
+  Future<void> updateMovieResultList(int i) async {
+    List<MinimizedMovie> movieResults = await makeMovieQuery(i);
+    movieList.addAll(movieResults);
+  }
 
   @override
   void initState() {
@@ -84,19 +122,19 @@ class _FilterResultsState extends State<FilterResults> {
   }
 
   _loadData() async {
-    movieList1 =
-        await TmdbApiWrapper().getMovieListFromGenreId(genreId: widget.genre);
-    movieList =
-        await TmdbApiWrapper().getMovieListFromGenreId(genreId: widget.genre);
-    tvList1 = await TmdbApiWrapper().getPopularTvShows(1);
-    tvList = await TmdbApiWrapper().getTvListFromGenreId(genreId: widget.genre);
-    // tvList = await TmdbApiWrapper().getTvListFromGenreId(genreId: widget.genre);
+    movieList = await TmdbApiWrapper()
+        .getMovieListFromGenreId(genreId: widget.genre, pageNumber: 1);
 
-    //resultList.add(movieList);
-    setState(() {
-      //var temp = movieList1.length;
-      //print(temp);
-    });
+    for (int i = 2; i < 8; i++) {
+      updateMovieResultList(i);
+    }
+    tvList = await TmdbApiWrapper()
+        .getTvListFromGenreId(genreId: widget.genre, pageNumber: 1);
+    for (int i = 2; i < 8; i++) {
+      updateTvResultList(i);
+    }
+
+    setState(() {});
   }
 
   reset() {
@@ -106,8 +144,6 @@ class _FilterResultsState extends State<FilterResults> {
     setState(() {});
     Navigator.pop(context);
   }
-
-  apply() {}
 
   @override
   Widget build(BuildContext context) {
@@ -137,34 +173,108 @@ class _FilterResultsState extends State<FilterResults> {
         widget.genre == 10767 ||
         widget.genre == 10768 ||
         widget.genre == 37) {
-      if ((tvList == null || tvList!.isEmpty)) {
+      if ((tvList.isEmpty)) {
         return Container();
       }
     }
 
-    switch (typeIndex) {
-      case -1:
-        late List<MinimizedTvShow> tvShowList = [];
-        late List<MinimizedMovie> showList = [];
-        if (yearIndex == -1) {
-          tvShowList.addAll(tvList!);
-          showList.addAll(movieList);
-        } else {
-          for (var element in tvList!) {
-            if (element.firstAirDate.isNotEmpty &&
-                movieYear[yearIndex].title ==
-                    '${DateTime.parse(element.firstAirDate).year}') {
+    void updateTvShowGenre(List<MinimizedTvShow> tvShowList) {
+      for (var element in tvList) {
+        if (element.genres.isNotEmpty) {
+          for (var e in element.genres) {
+            if (e.id == movieGenre[genreIndex].gid) {
               tvShowList.add(element);
             }
           }
+        }
+      }
+    }
 
-          for (var element in movieList) {
-            if (element.releaseDate.isNotEmpty &&
-                movieYear[yearIndex].title ==
-                    '${DateTime.parse(element.releaseDate).year}') {
+    void updateTvShowYear(List<MinimizedTvShow> tvShowList) {
+      for (var element in tvList) {
+        if (element.firstAirDate.isNotEmpty &&
+            movieYear[yearIndex].minYear <=
+                DateTime.parse(element.firstAirDate).year &&
+            movieYear[yearIndex].maxYear >=
+                DateTime.parse(element.firstAirDate).year) {
+          tvShowList.add(element);
+        }
+      }
+    }
+
+    void updateTvShowBoth(List<MinimizedTvShow> tvShowList) {
+      for (var element in tvList) {
+        if (element.genres.isNotEmpty && element.firstAirDate.isNotEmpty) {
+          for (var e in element.genres) {
+            if (e.id == movieGenre[genreIndex].gid &&
+                movieYear[yearIndex].minYear <=
+                    DateTime.parse(element.firstAirDate).year &&
+                movieYear[yearIndex].maxYear >=
+                    DateTime.parse(element.firstAirDate).year) {
+              tvShowList.add(element);
+            }
+          }
+        }
+      }
+    }
+
+    void updateMovieGenre(List<MinimizedMovie> showList) {
+      for (var element in movieList) {
+        if (element.genres.isNotEmpty) {
+          for (var e in element.genres) {
+            if (e.id == movieGenre[genreIndex].gid) {
               showList.add(element);
             }
           }
+        }
+      }
+    }
+
+    void updateMovieYear(List<MinimizedMovie> showList) {
+      for (var element in movieList) {
+        if (element.releaseDate.isNotEmpty &&
+            movieYear[yearIndex].minYear <=
+                DateTime.parse(element.releaseDate).year &&
+            movieYear[yearIndex].maxYear >=
+                DateTime.parse(element.releaseDate).year) {
+          showList.add(element);
+        }
+      }
+    }
+
+    void updateMovieBoth(List<MinimizedMovie> showList) {
+      for (var element in movieList) {
+        if (element.genres.isNotEmpty && element.releaseDate.isNotEmpty) {
+          for (var e in element.genres) {
+            if (e.id == movieGenre[genreIndex].gid &&
+                movieYear[yearIndex].minYear <=
+                    DateTime.parse(element.releaseDate).year &&
+                movieYear[yearIndex].maxYear >=
+                    DateTime.parse(element.releaseDate).year) {
+              showList.add(element);
+            }
+          }
+        }
+      }
+    }
+
+    switch (typeIndex) {
+      // nothing chosen
+      case -1:
+        late List<MinimizedTvShow> tvShowList = [];
+        late List<MinimizedMovie> showList = [];
+        if (yearIndex == -1 && genreIndex == -1) {
+          tvShowList.addAll(tvList);
+          showList.addAll(movieList);
+        } else if (yearIndex != -1 && genreIndex == -1) {
+          updateTvShowYear(tvShowList);
+          updateMovieYear(showList);
+        } else if (genreIndex != -1 && yearIndex == -1) {
+          updateMovieGenre(showList);
+          updateTvShowGenre(tvShowList);
+        } else {
+          updateMovieBoth(showList);
+          updateTvShowBoth(tvShowList);
         }
 
         return GridView.builder(
@@ -183,18 +293,45 @@ class _FilterResultsState extends State<FilterResults> {
               //throw ("Error: One or more elements were not able to be built successfully!");
             });
 
+      //type movie
       case 0:
-        late List<MinimizedTvShow> tvShowList = [];
-        if (yearIndex == -1) {
-          tvShowList.addAll(tvList!);
+        late List<MinimizedMovie> showList = [];
+        if (yearIndex == -1 && genreIndex == -1) {
+          showList.addAll(movieList);
+        } else if (genreIndex == -1 && yearIndex != -1) {
+          updateMovieYear(showList);
+        } else if (yearIndex == -1 && genreIndex != -1) {
+          updateMovieGenre(showList);
         } else {
-          for (var element in tvList!) {
-            if (movieYear[yearIndex].title ==
-                '${DateTime.parse(element.firstAirDate).year}') {
-              tvShowList.add(element);
-            }
-          }
+          updateMovieBoth(showList);
         }
+
+        return GridView.builder(
+            itemCount: showList.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10.0,
+                crossAxisSpacing: 10.0,
+                childAspectRatio: 0.5),
+            itemBuilder: (BuildContext context, int index) {
+              return _buildBoxMovies(showList, index);
+              //throw ("Error: One or more elements were not able to be built successfully!");
+            });
+
+      // type tv
+      case 1:
+        late List<MinimizedTvShow> tvShowList = [];
+
+        if (yearIndex == -1 && genreIndex == -1) {
+          tvShowList.addAll(tvList);
+        } else if (genreIndex == -1 && yearIndex != -1) {
+          updateTvShowYear(tvShowList);
+        } else if (yearIndex == -1 && genreIndex != -1) {
+          updateTvShowGenre(tvShowList);
+        } else {
+          updateTvShowBoth(tvShowList);
+        }
+
         return GridView.builder(
             itemCount: tvShowList.length,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -204,30 +341,6 @@ class _FilterResultsState extends State<FilterResults> {
                 childAspectRatio: 0.5),
             itemBuilder: (BuildContext context, int index) {
               return _buildBoxShows(tvShowList, index);
-              //throw ("Error: One or more elements were not able to be built successfully!");
-            });
-
-      case 1:
-        late List<MinimizedMovie> showList = [];
-        if (yearIndex == -1) {
-          showList.addAll(movieList);
-        } else {
-          for (var element in movieList) {
-            if (movieYear[yearIndex].title ==
-                '${DateTime.parse(element.releaseDate).year}') {
-              showList.add(element);
-            }
-          }
-        }
-        return GridView.builder(
-            itemCount: movieList.length,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 10.0,
-                crossAxisSpacing: 10.0,
-                childAspectRatio: 0.5),
-            itemBuilder: (BuildContext context, int index) {
-              return _buildBoxMovies(movieList, index);
               //throw ("Error: One or more elements were not able to be built successfully!");
             });
     }
@@ -270,15 +383,15 @@ class _FilterResultsState extends State<FilterResults> {
                         runSpacing: 5,
                         children: filterItems(0, movieYear),
                       ),
-                      // Container(
-                      //   padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                      //   child: const Text('Genre'),
-                      // ),
-                      // Wrap(
-                      //   spacing: 2,
-                      //   runSpacing: 5,
-                      //   children: filterItems(1, movieGenre),
-                      // ),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: const Text('Genre'),
+                      ),
+                      Wrap(
+                        spacing: 2,
+                        runSpacing: 5,
+                        children: filterItems(1, movieGenre),
+                      ),
                       Container(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                         child: const Text('Type'),
@@ -295,7 +408,7 @@ class _FilterResultsState extends State<FilterResults> {
             ],
           ),
           Positioned(
-            bottom: 300,
+            bottom: 20,
             child: Container(
               padding: const EdgeInsets.fromLTRB(105, 0, 0, 0),
               child: Row(
@@ -305,13 +418,6 @@ class _FilterResultsState extends State<FilterResults> {
                       color: const Color.fromARGB(255, 97, 153, 218),
                       onPressed: () => reset(),
                       child: const Text('Reset')),
-                  // Container(
-                  //   width: 20,
-                  // ),
-                  // FlatButton(
-                  //     color: Color.fromARGB(255, 97, 153, 218),
-                  //     onPressed: () => apply(),
-                  //     child: const Text('Apply'))
                 ],
               ),
             ),
