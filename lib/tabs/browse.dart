@@ -85,10 +85,19 @@ class _BrowseTabState extends State<BrowseTab> {
           },
           child: Container(
               height: 20,
+              margin: const EdgeInsets.only(
+                  left: 5.0, top: 5.0, bottom: 5.0, right: 5.0),
               width: MediaQuery.of(context).size.width / 2 - 15,
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
-                  color: Color.fromARGB(255, 97, 153, 218)),
+                  color: Color.fromARGB(255, 97, 153, 218),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 4,
+                      offset: Offset(2, 4), // Shadow position
+                    ),
+                  ],
+              ),
               child: Row(
                 children: <Widget>[
                   const SizedBox(width: 8),
@@ -106,7 +115,6 @@ class _BrowseTabState extends State<BrowseTab> {
                           child: Text(
                             genreName[index].name,
                             overflow: TextOverflow.ellipsis,
-
                             /// index
                             //textAlign: TextAlign.center,
                             style: const TextStyle(

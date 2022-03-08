@@ -27,6 +27,7 @@ class _ExploreTabState extends State<ExploreTab> {
   late Future<List<MinimizedTvShow>> nowAiringShows;
   late Future<List<MinimizedTvShow>> topRatedShows;
 
+  // String List used for displaying the release dates of movies and tv shows (months displayed in words)
   List<String> months = [
     "Jan",
     "Feb",
@@ -42,10 +43,12 @@ class _ExploreTabState extends State<ExploreTab> {
     "Dec"
   ];
 
+  // initState() for initializing elements
   @override
   void initState() {
     super.initState();
 
+  // Instance of the TmdbApiWrapper to access its contents
     TmdbApiWrapper wrapper = TmdbApiWrapper();
 
     // The parameter inside each movie / tv show get method represents the "page"
@@ -107,7 +110,7 @@ class _ExploreTabState extends State<ExploreTab> {
         } else if (i == 11) {
           return _horizontalListViewShows(topRatedShows);
         }
-
+        
         throw ("Error: One or more elements were not able to be built successfully!");
       },
     ));
@@ -154,6 +157,7 @@ class _ExploreTabState extends State<ExploreTab> {
         margin: const EdgeInsets.all(10),
         height: 435,
         width: 200,
+        // Adds visual enhancement and improves aesthetics by adding shadows and other items
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8.0)),
           color: Theme.of(context).bottomAppBarColor,
@@ -298,6 +302,7 @@ class _ExploreTabState extends State<ExploreTab> {
                 shape: BoxShape.circle,
                 color: Color(0xff081c22),
               ),
+              // Widget used for building the circular rating visual
               child: CircularPercentIndicator(
                 radius: 20,
                 percent: voteAverage * (0.1),
