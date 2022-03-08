@@ -208,6 +208,8 @@ class Movie extends MinimizedMovie {
         }
       }
     }
+    //Guarantee at least some
+    //dummy element exists in releases
     if (releases.isEmpty) {
       Release rel = Release();
       rel.certification = "NA";
