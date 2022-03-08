@@ -286,9 +286,11 @@ class TvShow extends MinimizedTvShow {
     required Map json,
   }) {
     const int maxPicCapacity = 6;
-
-    if (json['backdrops'] != null && json['backdrops']!.isNotEmpty) {
+    print(json['backdrops'] != null);
+    if (json['backdrops'] != null && !json['backdrops'].isEmpty) {
+      print(json);
       List<dynamic> backdrops = json['backdrops'];
+      print(backdrops);
       this.backdrops = backdrops
           .sublist(
               0, (backdrops.length > maxPicCapacity ? 6 : backdrops.length))

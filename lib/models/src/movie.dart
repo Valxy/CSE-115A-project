@@ -267,7 +267,7 @@ class Movie extends MinimizedMovie {
   }) {
     const int maxPicCapacity = 6;
 
-    if (json['backdrops'] != null && json['backdrops']!.isNotEmpty) {
+    if (json['backdrops'] != null && !json['backdrops'].isEmpty) {
       List<dynamic> backdrops = json['backdrops'];
       this.backdrops = backdrops
           .sublist(
