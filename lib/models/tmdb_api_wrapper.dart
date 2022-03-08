@@ -113,6 +113,10 @@ export 'src/minimized_tv_show.dart' show MinimizedTvShow;
 class TmdbApiWrapper {
   static const String _apiKey = "b74073680e08dd4625e94ded81f2cb40";
 
+  ///Keys are genre IDs as int, and values are
+  ///the genre names, as string.
+  Map reverseGenreDictionary = {};
+
   /// Keys are genre names, capitalized, spaces allowed
   /// values are the TMDB genre ids
   static Map genreDictionary = {
@@ -143,8 +147,8 @@ class TmdbApiWrapper {
     "Western": 37,
   };
 
-  /// A helper object that holds the base url, and returns the
-  /// response or handles the error appropriately
+  ///A helper object that holds the base url, and returns the
+  ///response or handles the error appropriately
   final _ApiBaseHelper _helper = _ApiBaseHelper();
 
   // singleton class setup
@@ -153,6 +157,18 @@ class TmdbApiWrapper {
     return _tmdbApiWrapper;
   }
   TmdbApiWrapper._internal();
+
+  //Needed for the filter page
+  Map getGenreNameById({
+    required genreId,
+  }) {
+    if (reverseGenreDictionary.isEmpty) {
+      reverseGenreDictionary = genreDictionary.map(
+        (key, value) => MapEntry(value, key),
+      );
+    }
+    return reverseGenreDictionary[genreId];
+  }
 
   ///Returns a completed movie object. [movieId] can be found
   ///as a data member of a minimized Movie object.
@@ -173,6 +189,17 @@ class TmdbApiWrapper {
     final responseJson = await _helper.get(endpoint);
     Person person = Person.fromJson(json: responseJson);
     return person;
+  }
+
+  ///returns a completed tv show object. [tvId] can be found as
+  ///a data member of a minimized tv show object.
+  Future<TvShow> getDetailsTvShow({
+    required tvId,
+  }) async {
+    final String endpoint =
+        "tv/$tvId?api_key=$_apiKey&append_to_response=credits,images,recommendations,reviews,videos";
+    final responseJson = await _helper.get(endpoint);
+    return TvShow.fromJson(json: responseJson);
   }
 
   Future<List<MinimizedMovie>> getHorrorMovies() async {
@@ -242,17 +269,6 @@ class TmdbApiWrapper {
     final responseJson = await _helper.get(endPoint);
     final List<dynamic> parsed = responseJson['results'];
     return _getTvShowListFromJson(parsedList: parsed);
-  }
-
-  ///returns a completed tv show object. [tvId] can be found as
-  ///a data member of a minimized tv show object.
-  Future<TvShow> getDetailsTvShow({
-    required tvId,
-  }) async {
-    final String endpoint =
-        "tv/$tvId?api_key=$_apiKey&append_to_response=credits,images,recommendations,reviews,videos";
-    final responseJson = await _helper.get(endpoint);
-    return TvShow.fromJson(json: responseJson);
   }
 
   ///returns a completed TvShowSeason object. [tvId] can be found as
