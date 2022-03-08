@@ -202,7 +202,7 @@ class TmdbApiWrapper {
   Future<List<MinimizedMovie>> getMovieListFromGenreId(
       {required genreId}) async {
     final String endPoint =
-        "discover/movie?api_key=$_apiKey&with_genres=$genreId";
+        "discover/movie?api_key=$_apiKey&with_genres=$genreId&include_adult=false";
     final responseJson = await _helper.get(endPoint);
     final List<dynamic> parsed = responseJson['results'];
     return _getMovieListFromJson(parsedList: parsed);
@@ -237,7 +237,8 @@ class TmdbApiWrapper {
   }
 
   Future<List<MinimizedTvShow>> getTvListFromGenreId({required genreId}) async {
-    final String endPoint = "discover/tv?api_key=$_apiKey&with_genres=$genreId";
+    final String endPoint =
+        "discover/tv?api_key=$_apiKey&with_genres=$genreId&include_adult=false";
     final responseJson = await _helper.get(endPoint);
     final List<dynamic> parsed = responseJson['results'];
     return _getTvShowListFromJson(parsedList: parsed);
