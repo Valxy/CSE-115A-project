@@ -208,6 +208,14 @@ class Movie extends MinimizedMovie {
         }
       }
     }
+    if (releases.isEmpty) {
+      Release rel = Release();
+      rel.certification = "NA";
+      rel.releaseDate = "0000-00-00";
+      rel.type = 0;
+      rel.note = "NA";
+      releases.add(rel);
+    }
   }
 
   void _parseLanguages({
