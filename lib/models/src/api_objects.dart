@@ -972,6 +972,8 @@ class Release {
   ///TMDB note on the release
   late String note;
 
+  Release();
+
   Release.fromJson({
     required Map json,
   }) {
