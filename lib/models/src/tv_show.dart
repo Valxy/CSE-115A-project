@@ -285,9 +285,20 @@ class TvShow extends MinimizedTvShow {
   void _parseImages({
     required Map json,
   }) {
-    const int maxPicCapacity = 6;
+    // Only the first poster in the list is ever used, but
+    // [poster] data member was never called.
+    if (posterPath != "") {
+      poster = getImage(imagePath: posterPath);
+    } else if (json['posters'] != null && !json['posters'].isEmpty) {
+      List<dynamic> posters = json['posters'];
+      poster = getImage(imagePath: posters[0]['file_path']);
+    } else {
+      //this might cause a hang up if the flow ever gets here.
+      poster = const SizedBox.shrink();
+    }
 
-    if (json['backdrops'] != null && json['backdrops']!.isNotEmpty) {
+    const int maxPicCapacity = 6;
+    if (json['backdrops'] != null && !json['backdrops'].isEmpty) {
       List<dynamic> backdrops = json['backdrops'];
       this.backdrops = backdrops
           .sublist(
@@ -295,18 +306,7 @@ class TvShow extends MinimizedTvShow {
           .map((e) => getImage(imagePath: e['file_path'], size: "w1280"))
           .toList();
     } else {
-      backdrops.add(const SizedBox.shrink());
-    }
-
-    // Only the first poster in the list is ever used, but
-    // [poster] data member was never called.
-    if (posterPath != "") {
-      poster = getImage(imagePath: posterPath);
-    } else if (json['posters'] != null && json['posters']!.isNotEmpty) {
-      List<dynamic> posters = json['posters'];
-      poster = getImage(imagePath: posters[0]['file_path']);
-    } else {
-      poster = const SizedBox.shrink();
+      backdrops = [poster];
     }
   }
 
