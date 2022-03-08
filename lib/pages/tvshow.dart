@@ -94,6 +94,9 @@ class _TVShowPageState extends State<TVShowPage> {
                               Text(
                                 snapshot.data?.name ?? "",
                                 style: Theme.of(context).textTheme.titleLarge,
+                                softWrap: false,
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
                               ),
                               const SizedBox(
                                 height: 5,

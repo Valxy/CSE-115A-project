@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tmdb/models/src/api_objects.dart';
 
 import '../models/src/tv_show.dart';
 import '../pages/episodes.dart';
@@ -10,6 +11,13 @@ class Seasons extends StatelessWidget {
 
   @override
   build(BuildContext context) {
+    Iterable<TvShowSeason> validSeasons =
+        tvShow.seasons.reversed.where((e) => e.posterPath != "");
+
+    if (validSeasons.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -26,7 +34,7 @@ class Seasons extends StatelessWidget {
             constraints: const BoxConstraints(maxHeight: 220),
             child: ListView(
               shrinkWrap: true,
-              children: tvShow.seasons.reversed
+              children: validSeasons
                   .map(
                     (e) => InkWell(
                       onTap: () {

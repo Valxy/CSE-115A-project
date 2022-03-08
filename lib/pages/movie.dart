@@ -93,6 +93,9 @@ class _MoviePageState extends State<MoviePage> {
                               Text(
                                 snapshot.data?.title ?? "",
                                 style: Theme.of(context).textTheme.titleLarge,
+                                softWrap: false,
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
                               ),
                               const SizedBox(
                                 height: 5,

@@ -48,7 +48,7 @@ class _ExploreTabState extends State<ExploreTab> {
   void initState() {
     super.initState();
 
-  // Instance of the TmdbApiWrapper to access its contents
+    // Instance of the TmdbApiWrapper to access its contents
     TmdbApiWrapper wrapper = TmdbApiWrapper();
 
     // The parameter inside each movie / tv show get method represents the "page"
@@ -110,7 +110,7 @@ class _ExploreTabState extends State<ExploreTab> {
         } else if (i == 11) {
           return _horizontalListViewShows(topRatedShows);
         }
-        
+
         throw ("Error: One or more elements were not able to be built successfully!");
       },
     ));
