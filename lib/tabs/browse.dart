@@ -88,24 +88,31 @@ class _BrowseTabState extends State<BrowseTab> {
               width: MediaQuery.of(context).size.width / 2 - 15,
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
-                  color: Colors.blueGrey),
+                  color: Color.fromARGB(255, 97, 153, 218)),
               child: Row(
                 children: <Widget>[
                   const SizedBox(width: 8),
-                  FaIcon(
-                    icons[index],
-                    size: 40,
-                  ),
+                  SizedBox(
+                      width: 40,
+                      child: FaIcon(
+                        icons[index],
+                        size: 40,
+                      )),
                   const SizedBox(width: 10),
-                  Text(
-                    genreName[index].name,
+                  Expanded(
+                      child: Container(
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Text(
+                            genreName[index].name,
+                            overflow: TextOverflow.ellipsis,
 
-                    /// index
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 17,
-                    ),
-                  ),
+                            /// index
+                            //textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 17,
+                            ),
+                          ))),
                 ],
               )),
         );

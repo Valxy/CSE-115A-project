@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:tmdb/models/tmdb_api_wrapper.dart';
+import 'package:tmdb/pages/tvshow.dart';
 import 'movie.dart';
 
 class FilterResults extends StatefulWidget {
@@ -38,6 +39,8 @@ class _FilterResultsState extends State<FilterResults> {
     "Nov",
     "Dec"
   ];
+  late List<MinimizedMovie> movieList1 = [];
+  late List<MinimizedTvShow> tvList1 = [];
   late List<MinimizedMovie> movieList = [];
   late List<MinimizedTvShow>? tvList = [];
   late List<dynamic> resultList;
@@ -45,8 +48,12 @@ class _FilterResultsState extends State<FilterResults> {
     FilterModel('1990', false),
     FilterModel("2000", false),
     FilterModel("2010", false),
+    FilterModel("2015", false),
+    FilterModel("2016", false),
+    FilterModel("2017", false),
+    FilterModel("2018", false),
+    FilterModel("2019", false),
     FilterModel("2020", false),
-    FilterModel("2021", false),
     FilterModel("2022", false),
   ];
   // List<FilterModel> movieGenre = [
@@ -77,10 +84,15 @@ class _FilterResultsState extends State<FilterResults> {
   }
 
   _loadData() async {
+    movieList1 =
+        await TmdbApiWrapper().getMovieListFromGenreId(genreId: widget.genre);
     movieList =
         await TmdbApiWrapper().getMovieListFromGenreId(genreId: widget.genre);
+    tvList1 = await TmdbApiWrapper().getPopularTvShows(1);
     tvList = await TmdbApiWrapper().getTvListFromGenreId(genreId: widget.genre);
+    // tvList = await TmdbApiWrapper().getTvListFromGenreId(genreId: widget.genre);
 
+    //resultList.add(movieList);
     setState(() {
       //var temp = movieList1.length;
       //print(temp);
@@ -92,12 +104,20 @@ class _FilterResultsState extends State<FilterResults> {
     genreIndex = -1;
     typeIndex = -1;
     setState(() {});
+    Navigator.pop(context);
   }
+
+  apply() {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(leading: const BackButton()),
+        appBar: PreferredSize(
+            child: AppBar(
+              leading: const BackButton(),
+              backgroundColor: const Color.fromARGB(255, 97, 153, 218),
+            ),
+            preferredSize: const Size.fromHeight(50.0)),
         endDrawer: drawerSystem(),
         body: getTypeMainView());
   }
@@ -117,7 +137,7 @@ class _FilterResultsState extends State<FilterResults> {
         widget.genre == 10767 ||
         widget.genre == 10768 ||
         widget.genre == 37) {
-      if (tvList == null || tvList!.isEmpty) {
+      if ((tvList == null || tvList!.isEmpty)) {
         return Container();
       }
     }
@@ -131,15 +151,17 @@ class _FilterResultsState extends State<FilterResults> {
           showList.addAll(movieList);
         } else {
           for (var element in tvList!) {
-            if (movieYear[yearIndex].title ==
-                '${DateTime.parse(element.firstAirDate).year}') {
+            if (element.firstAirDate.isNotEmpty &&
+                movieYear[yearIndex].title ==
+                    '${DateTime.parse(element.firstAirDate).year}') {
               tvShowList.add(element);
             }
           }
 
           for (var element in movieList) {
-            if (movieYear[yearIndex].title ==
-                '${DateTime.parse(element.releaseDate).year}') {
+            if (element.releaseDate.isNotEmpty &&
+                movieYear[yearIndex].title ==
+                    '${DateTime.parse(element.releaseDate).year}') {
               showList.add(element);
             }
           }
@@ -220,9 +242,11 @@ class _FilterResultsState extends State<FilterResults> {
             children: [
               Container(
                 width: double.maxFinite,
+                height: MediaQuery.of(context).padding.top + 50,
                 padding: EdgeInsets.fromLTRB(10,
-                    MediaQueryData.fromWindow(window).padding.top + 10, 0, 10),
-                decoration: const BoxDecoration(color: Colors.blue),
+                    MediaQueryData.fromWindow(window).padding.top + 20, 0, 10),
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 97, 153, 218)),
                 child: const Text(
                   'Filter',
                   style: TextStyle(
@@ -271,16 +295,23 @@ class _FilterResultsState extends State<FilterResults> {
             ],
           ),
           Positioned(
-            bottom: 20,
+            bottom: 300,
             child: Container(
-              padding: const EdgeInsets.fromLTRB(60, 0, 0, 0),
+              padding: const EdgeInsets.fromLTRB(105, 0, 0, 0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   FlatButton(
-                      color: Colors.blue,
+                      color: const Color.fromARGB(255, 97, 153, 218),
                       onPressed: () => reset(),
                       child: const Text('Reset')),
+                  // Container(
+                  //   width: 20,
+                  // ),
+                  // FlatButton(
+                  //     color: Color.fromARGB(255, 97, 153, 218),
+                  //     onPressed: () => apply(),
+                  //     child: const Text('Apply'))
                 ],
               ),
             ),
@@ -416,23 +447,33 @@ class _FilterResultsState extends State<FilterResults> {
                   ),
                 ],
               ),
-              Container(
-                width: 200,
-                margin: const EdgeInsets.only(
-                    left: 10.0, top: 2.0, bottom: 2.0, right: 10.0),
-                child: Text(movies[index].title,
-                    style: Theme.of(context).textTheme.titleMedium),
-              ),
-              Container(
-                width: 200,
-                margin: const EdgeInsets.only(
-                    left: 10.0, top: 0.0, bottom: 2.0, right: 10.0),
-                child: Text(
-                    '${months[DateTime.parse(movies[index].releaseDate).month - 1]} '
-                    '${DateTime.parse(movies[index].releaseDate).day}, '
-                    '${DateTime.parse(movies[index].releaseDate).year}',
-                    style: Theme.of(context).textTheme.caption),
-              ),
+              Expanded(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 200,
+                    margin: const EdgeInsets.only(
+                        left: 10.0, top: 2.0, bottom: 2.0, right: 10.0),
+                    child: Text(movies[index].title,
+                        maxLines: 3,
+                        style: Theme.of(context).textTheme.titleSmall),
+                  ),
+                  Container(
+                    width: 200,
+                    padding: const EdgeInsets.only(bottom: 5),
+                    margin: const EdgeInsets.only(
+                        left: 10.0, top: 0.0, bottom: 2.0, right: 10.0),
+                    child: Text(
+                        movies[index].releaseDate.isEmpty
+                            ? ''
+                            : '${months[DateTime.parse(movies[index].releaseDate).month - 1]} '
+                                '${DateTime.parse(movies[index].releaseDate).day}, '
+                                '${DateTime.parse(movies[index].releaseDate).year}',
+                        style: Theme.of(context).textTheme.caption),
+                  ),
+                ],
+              ))
             ],
           ),
         ),
@@ -459,7 +500,7 @@ class _FilterResultsState extends State<FilterResults> {
               context,
               MaterialPageRoute<void>(
                 builder: (BuildContext context) =>
-                    MoviePage(id: shows[index].id),
+                    TVShowPage(id: shows[index].id),
                 fullscreenDialog: true,
               ),
             );
@@ -472,7 +513,7 @@ class _FilterResultsState extends State<FilterResults> {
                     width: 200,
                     height: 260,
                     margin: const EdgeInsets.only(
-                        left: 0.0, top: 0.0, bottom: 10.0, right: 0.0),
+                        left: 0.0, top: 0.0, bottom: 12.0, right: 0.0),
                     child: ClipRRect(
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(8.0),
@@ -507,23 +548,30 @@ class _FilterResultsState extends State<FilterResults> {
                   ),
                 ],
               ),
-              Container(
-                width: 200,
-                margin: const EdgeInsets.only(
-                    left: 10.0, top: 2, bottom: 2.0, right: 10.0),
-                child: Text(shows[index].name,
-                    style: Theme.of(context).textTheme.titleMedium),
-              ),
-              Container(
-                width: 200,
-                margin: const EdgeInsets.only(
-                    left: 10.0, top: 0.0, bottom: 2.0, right: 10.0),
-                child: Text(
-                    '${months[DateTime.parse(shows[index].firstAirDate).month - 1]} '
-                    '${DateTime.parse(shows[index].firstAirDate).day}, '
-                    '${DateTime.parse(shows[index].firstAirDate).year}',
-                    style: Theme.of(context).textTheme.caption),
-              ),
+              Expanded(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 200,
+                    margin: const EdgeInsets.only(
+                        left: 10.0, top: 2, bottom: 2.0, right: 10.0),
+                    child: Text(shows[index].name,
+                        maxLines: 3,
+                        style: Theme.of(context).textTheme.titleSmall),
+                  ),
+                  Container(
+                    width: 200,
+                    margin: const EdgeInsets.only(
+                        left: 10.0, top: 0.0, bottom: 2.0, right: 10.0),
+                    child: Text(
+                        '${months[DateTime.parse(shows[index].firstAirDate).month - 1]} '
+                        '${DateTime.parse(shows[index].firstAirDate).day}, '
+                        '${DateTime.parse(shows[index].firstAirDate).year}',
+                        style: Theme.of(context).textTheme.caption),
+                  ),
+                ],
+              )),
             ],
           ),
         ),
