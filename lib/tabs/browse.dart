@@ -79,8 +79,10 @@ class _BrowseTabState extends State<BrowseTab> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) =>
-                      FilterResults(genre: genreName[index].id),
+                  builder: (context) => FilterResults(
+                    genre: genreName[index].id,
+                    genreName: genreName[index].name,
+                  ),
                 ));
           },
           child: Container(

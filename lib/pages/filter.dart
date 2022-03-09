@@ -5,11 +5,14 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:tmdb/models/tmdb_api_wrapper.dart';
 import 'package:tmdb/pages/tvshow.dart';
+import '../tabs/browse.dart';
 import 'movie.dart';
 
 class FilterResults extends StatefulWidget {
-  const FilterResults({Key? key, required this.genre}) : super(key: key);
+  const FilterResults({Key? key, required this.genre, required this.genreName})
+      : super(key: key);
   final int genre;
+  final String genreName;
   @override
   _FilterResultsState createState() => _FilterResultsState();
 }
@@ -150,9 +153,10 @@ class _FilterResultsState extends State<FilterResults> {
     return Scaffold(
         appBar: PreferredSize(
             child: AppBar(
-              leading: const BackButton(),
-              backgroundColor: const Color.fromARGB(255, 97, 153, 218),
-            ),
+                centerTitle: true,
+                leading: const BackButton(),
+                backgroundColor: const Color.fromARGB(255, 97, 153, 218),
+                title: Text(widget.genreName)),
             preferredSize: const Size.fromHeight(50.0)),
         endDrawer: drawerSystem(),
         body: getTypeMainView());
@@ -432,19 +436,21 @@ class _FilterResultsState extends State<FilterResults> {
     return List.generate(filters.length, (index) {
       var item = filters[index];
       Color bgColor = Colors.grey.shade100;
-      Color txtColor = Colors.black;
       switch (type) {
         case 0:
-          bgColor = yearIndex == index ? Colors.blue : Colors.grey.shade100;
-          txtColor = yearIndex == index ? Colors.white : Colors.black;
+          bgColor = yearIndex == index
+              ? const Color.fromARGB(255, 97, 153, 218)
+              : Theme.of(context).bottomAppBarColor;
           break;
         case 1:
-          bgColor = genreIndex == index ? Colors.blue : Colors.grey.shade100;
-          txtColor = genreIndex == index ? Colors.white : Colors.black;
+          bgColor = genreIndex == index
+              ? const Color.fromARGB(255, 97, 153, 218)
+              : Theme.of(context).bottomAppBarColor;
           break;
         case 2:
-          bgColor = typeIndex == index ? Colors.blue : Colors.grey.shade100;
-          txtColor = typeIndex == index ? Colors.white : Colors.black;
+          bgColor = typeIndex == index
+              ? const Color.fromARGB(255, 97, 153, 218)
+              : Theme.of(context).bottomAppBarColor;
           break;
       }
       return InkWell(
@@ -458,7 +464,7 @@ class _FilterResultsState extends State<FilterResults> {
             padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
             child: Text(
               item.title,
-              style: TextStyle(color: txtColor),
+              style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
         ),
@@ -489,14 +495,14 @@ class _FilterResultsState extends State<FilterResults> {
         margin: const EdgeInsets.all(10),
         height: 435,
         width: 200,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Colors.white,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          color: Theme.of(context).bottomAppBarColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey,
+              color: Theme.of(context).shadowColor.withOpacity(0.5),
               blurRadius: 4,
-              offset: Offset(4, 8), // Shadow position
+              offset: const Offset(4, 8), // Shadow position
             ),
           ],
         ),
@@ -517,7 +523,6 @@ class _FilterResultsState extends State<FilterResults> {
                 children: <Widget>[
                   Container(
                       width: 200,
-                      height: 260,
                       margin: const EdgeInsets.only(
                           left: 0.0, top: 0.0, bottom: 12.0, right: 0.0),
                       child: ClipRRect(
@@ -532,12 +537,14 @@ class _FilterResultsState extends State<FilterResults> {
                     alignment: const Alignment(-0.8, 1.85),
                     child: Container(
                         decoration: const BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.black),
+                          shape: BoxShape.circle,
+                          color: Color(0xff081c22),
+                        ),
                         child: CircularPercentIndicator(
                           radius: 16,
                           percent: movies[index].voteAverage * (0.1),
                           lineWidth: 4,
-                          backgroundColor: Colors.yellow,
+                          backgroundColor: const Color(0xff1b3c27),
                           center: Text(
                             (movies[index].voteAverage * (0.1) * 100)
                                     .round()
@@ -548,7 +555,7 @@ class _FilterResultsState extends State<FilterResults> {
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold),
                           ),
-                          progressColor: Colors.green,
+                          progressColor: const Color(0xff21d07a),
                         )),
                   ),
                 ],
@@ -560,7 +567,7 @@ class _FilterResultsState extends State<FilterResults> {
                   Container(
                     width: 200,
                     margin: const EdgeInsets.only(
-                        left: 10.0, top: 2.0, bottom: 2.0, right: 10.0),
+                        left: 10.0, top: 8.0, bottom: 2.0, right: 10.0),
                     child: Text(movies[index].title,
                         maxLines: 3,
                         style: Theme.of(context).textTheme.titleSmall),
@@ -589,14 +596,14 @@ class _FilterResultsState extends State<FilterResults> {
         margin: const EdgeInsets.all(10),
         height: 435,
         width: 200,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          color: Colors.white,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          color: Theme.of(context).bottomAppBarColor,
           boxShadow: [
             BoxShadow(
-              color: Colors.grey,
+              color: Theme.of(context).shadowColor.withOpacity(0.5),
               blurRadius: 4,
-              offset: Offset(4, 8), // Shadow position
+              offset: const Offset(4, 8), // Shadow position
             ),
           ],
         ),
@@ -617,7 +624,6 @@ class _FilterResultsState extends State<FilterResults> {
                 children: <Widget>[
                   Container(
                     width: 200,
-                    height: 260,
                     margin: const EdgeInsets.only(
                         left: 0.0, top: 0.0, bottom: 12.0, right: 0.0),
                     child: ClipRRect(
@@ -633,12 +639,14 @@ class _FilterResultsState extends State<FilterResults> {
                     alignment: const Alignment(-0.8, 1.85),
                     child: Container(
                         decoration: const BoxDecoration(
-                            shape: BoxShape.circle, color: Colors.black),
+                          shape: BoxShape.circle,
+                          color: Color(0xff081c22),
+                        ),
                         child: CircularPercentIndicator(
                           radius: 16,
                           percent: shows[index].voteAverage * (0.1),
                           lineWidth: 4,
-                          backgroundColor: Colors.yellow,
+                          backgroundColor: const Color(0xff1b3c27),
                           center: Text(
                             (shows[index].voteAverage * (0.1) * 100)
                                     .round()
@@ -649,7 +657,7 @@ class _FilterResultsState extends State<FilterResults> {
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold),
                           ),
-                          progressColor: Colors.green,
+                          progressColor: const Color(0xff21d07a),
                         )),
                   ),
                 ],
@@ -661,7 +669,7 @@ class _FilterResultsState extends State<FilterResults> {
                   Container(
                     width: 200,
                     margin: const EdgeInsets.only(
-                        left: 10.0, top: 2, bottom: 2.0, right: 10.0),
+                        left: 10.0, top: 8, bottom: 2.0, right: 10.0),
                     child: Text(shows[index].name,
                         maxLines: 3,
                         style: Theme.of(context).textTheme.titleSmall),
