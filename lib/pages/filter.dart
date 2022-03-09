@@ -363,10 +363,9 @@ class _FilterResultsState extends State<FilterResults> {
                     MediaQueryData.fromWindow(window).padding.top + 20, 0, 10),
                 decoration: const BoxDecoration(
                     color: Color.fromARGB(255, 97, 153, 218)),
-                child: const Text(
+                child: Text(
                   'Filter',
-                  style: TextStyle(
-                      color: Colors.black87, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ),
               Expanded(
@@ -575,7 +574,7 @@ class _FilterResultsState extends State<FilterResults> {
                     width: 200,
                     padding: const EdgeInsets.only(bottom: 5),
                     margin: const EdgeInsets.only(
-                        left: 10.0, top: 0.0, bottom: 2.0, right: 10.0),
+                        left: 10.0, top: 0.0, bottom: 10.0, right: 10.0),
                     child: Text(
                         movies[index].releaseDate.isEmpty
                             ? ''
@@ -676,7 +675,7 @@ class _FilterResultsState extends State<FilterResults> {
                   Container(
                     width: 200,
                     margin: const EdgeInsets.only(
-                        left: 10.0, top: 0.0, bottom: 2.0, right: 10.0),
+                        left: 10.0, top: 0.0, bottom: 10.0, right: 10.0),
                     child: Text(
                         '${months[DateTime.parse(shows[index].firstAirDate).month - 1]} '
                         '${DateTime.parse(shows[index].firstAirDate).day}, '
