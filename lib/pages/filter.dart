@@ -490,9 +490,8 @@ class _FilterResultsState extends State<FilterResults> {
 
   // build method for each individual movie
   Widget _buildBoxMovies(List<MinimizedMovie> movies, int index) => Container(
-        margin: const EdgeInsets.all(10),
-        height: 435,
-        width: 200,
+        width: MediaQuery.of(context).size.width / 2,
+        margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8.0)),
           color: Theme.of(context).bottomAppBarColor,
@@ -520,7 +519,7 @@ class _FilterResultsState extends State<FilterResults> {
               Stack(
                 children: <Widget>[
                   Container(
-                      width: 200,
+                      width: MediaQuery.of(context).size.width / 2,
                       margin: const EdgeInsets.only(
                           left: 0.0, top: 0.0, bottom: 12.0, right: 0.0),
                       child: ClipRRect(
@@ -531,15 +530,14 @@ class _FilterResultsState extends State<FilterResults> {
                       )),
                   Container(
                     height: 200,
-                    width: 32,
-                    alignment: const Alignment(-0.8, 1.85),
+                    alignment: const Alignment(-0.8, 2.1),
                     child: Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color(0xff081c22),
                         ),
                         child: CircularPercentIndicator(
-                          radius: 16,
+                          radius: 20,
                           percent: movies[index].voteAverage * (0.1),
                           lineWidth: 4,
                           backgroundColor: const Color(0xff1b3c27),
@@ -591,9 +589,8 @@ class _FilterResultsState extends State<FilterResults> {
       );
 
   Widget _buildBoxShows(List<MinimizedTvShow> shows, int index) => Container(
-        margin: const EdgeInsets.all(10),
-        height: 435,
-        width: 200,
+        margin: const EdgeInsets.all(8),
+        width: MediaQuery.of(context).size.width / 2,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8.0)),
           color: Theme.of(context).bottomAppBarColor,
@@ -621,7 +618,7 @@ class _FilterResultsState extends State<FilterResults> {
               Stack(
                 children: <Widget>[
                   Container(
-                    width: 200,
+                    width: MediaQuery.of(context).size.width / 2,
                     margin: const EdgeInsets.only(
                         left: 0.0, top: 0.0, bottom: 12.0, right: 0.0),
                     child: ClipRRect(
@@ -633,15 +630,14 @@ class _FilterResultsState extends State<FilterResults> {
                   ),
                   Container(
                     height: 200,
-                    width: 32,
-                    alignment: const Alignment(-0.8, 1.85),
+                    alignment: const Alignment(-0.8, 2),
                     child: Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Color(0xff081c22),
                         ),
                         child: CircularPercentIndicator(
-                          radius: 16,
+                          radius: 20,
                           percent: shows[index].voteAverage * (0.1),
                           lineWidth: 4,
                           backgroundColor: const Color(0xff1b3c27),
