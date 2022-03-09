@@ -3,137 +3,72 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tmdb/models/src/errors.dart';
 import 'package:tmdb/models/tmdb_api_wrapper.dart';
 
-Future<bool> _testGetPopularMovies() async {
-  try {
-    List<MinimizedMovie> popularMovies =
-        await TmdbApiWrapper().getPopularMovies(1);
-
-    expect(popularMovies, isNotEmpty);
-  } catch (e) {
-    return false;
-  }
-  return true;
+void _testGetPopularMovies() async {
+  List<MinimizedMovie> popularMovies =
+      await TmdbApiWrapper().getPopularMovies(1);
+  expect(popularMovies, isNotEmpty);
 }
 
-Future<bool> _testNowPlayingMovies() async {
-  try {
-    List<MinimizedMovie> nowPlayingMovies =
-        await TmdbApiWrapper().getNowPlayingMovies(1);
-
-    expect(nowPlayingMovies, isNotEmpty);
-  } catch (e) {
-    return false;
-  }
-  return true;
+void _testNowPlayingMovies() async {
+  List<MinimizedMovie> nowPlayingMovies =
+      await TmdbApiWrapper().getNowPlayingMovies(1);
+  expect(nowPlayingMovies, isNotEmpty);
 }
 
-Future<bool> _testGetTopRatedMovies() async {
-  try {
-    List<MinimizedMovie> topRatedMovies =
-        await TmdbApiWrapper().getTopRatedMovies(1);
-
-    expect(topRatedMovies, isNotEmpty);
-  } catch (e) {
-    return false;
-  }
-  return true;
+void _testGetTopRatedMovies() async {
+  List<MinimizedMovie> topRatedMovies =
+      await TmdbApiWrapper().getTopRatedMovies(1);
+  expect(topRatedMovies, isNotEmpty);
 }
 
-Future<bool> _testGetLatestMovie() async {
-  try {
-    MinimizedMovie latestMovies = await TmdbApiWrapper().getLatestMovie();
-
-    expect(latestMovies, isNotNull);
-  } catch (e) {
-    return false;
-  }
-  return true;
+void _testGetLatestMovie() async {
+  MinimizedMovie latestMovies = await TmdbApiWrapper().getLatestMovie();
+  expect(latestMovies, isNotNull);
 }
 
-Future<bool> _testGetTopRatedTvShows() async {
-  try {
-    List<MinimizedTvShow> topRatedTvShows =
-        await TmdbApiWrapper().getTopRatedTvShows(1);
-
-    expect(topRatedTvShows, isNotEmpty);
-  } catch (e) {
-    return false;
-  }
-  return true;
+void _testGetTopRatedTvShows() async {
+  List<MinimizedTvShow> topRatedTvShows =
+      await TmdbApiWrapper().getTopRatedTvShows(1);
+  expect(topRatedTvShows, isNotEmpty);
 }
 
-Future<bool> _testGetNowAiringTvShows() async {
-  try {
-    List<MinimizedTvShow> nowAiringTvShows =
-        await TmdbApiWrapper().getNowAiringTvShows(1);
+void _testGetNowAiringTvShows() async {
+  List<MinimizedTvShow> nowAiringTvShows =
+      await TmdbApiWrapper().getNowAiringTvShows(1);
 
-    expect(nowAiringTvShows, isNotEmpty);
-  } catch (e) {
-    return false;
-  }
-  return true;
+  expect(nowAiringTvShows, isNotEmpty);
 }
 
-Future<bool> _testGetOnTheAirTvShows() async {
-  try {
-    List<MinimizedTvShow> onTheAirTvShows =
-        await TmdbApiWrapper().getOnTheAirTvShows(1);
-
-    expect(onTheAirTvShows, isNotEmpty);
-  } catch (e) {
-    return false;
-  }
-  return true;
+void _testGetOnTheAirTvShows() async {
+  List<MinimizedTvShow> onTheAirTvShows =
+      await TmdbApiWrapper().getOnTheAirTvShows(1);
+  expect(onTheAirTvShows, isNotEmpty);
 }
 
-Future<bool> _testGetPopularTvShows() async {
-  try {
-    List<MinimizedTvShow> popularTvShows =
-        await TmdbApiWrapper().getPopularTvShows(1);
-
-    expect(popularTvShows, isNotEmpty);
-  } catch (e) {
-    return false;
-  }
-  return true;
+void _testGetPopularTvShows() async {
+  List<MinimizedTvShow> popularTvShows =
+      await TmdbApiWrapper().getPopularTvShows(1);
+  expect(popularTvShows, isNotEmpty);
 }
 
-Future<bool> _testGetDetailsMovie(MinimizedMovie movie) async {
-  try {
-    Movie movieDetails =
-        await TmdbApiWrapper().getDetailsMovie(movieId: movie.id);
+void _testGetDetailsMovie(MinimizedMovie movie) async {
+  Movie movieDetails =
+      await TmdbApiWrapper().getDetailsMovie(movieId: movie.id);
 
-    expect(movieDetails, isNotNull);
-  } catch (e) {
-    return false;
-  }
-  return true;
+  expect(movieDetails, isNotNull);
 }
 
-Future<bool> _testGetDetailsTvShow(MinimizedTvShow show) async {
-  try {
-    TvShow tvShowDetails =
-        await TmdbApiWrapper().getDetailsTvShow(tvId: show.id);
-
-    expect(tvShowDetails, isNotNull);
-  } catch (e) {
-    return false;
-  }
-  return true;
+void _testGetDetailsTvShow(MinimizedTvShow show) async {
+  TvShow tvShowDetails = await TmdbApiWrapper().getDetailsTvShow(tvId: show.id);
+  expect(tvShowDetails, isNotNull);
 }
 
-Future<bool> _testSearch(String query) async {
-  try {
-    List<dynamic> searchResults = await TmdbApiWrapper().search(query: query);
-
-    expect(searchResults, isNotEmpty);
-  } catch (e) {
-    return false;
-  }
-  return true;
+void _testSearch(String query) async {
+  List<dynamic> searchResults = await TmdbApiWrapper().search(query: query);
+  expect(searchResults, isNotEmpty);
 }
 
-Future<bool> _testGenreGetters() async {
+void _testGenreGetters() async {
   for (var k in TmdbApiWrapper.genreDictionary.keys) {
     try {
       TmdbApiWrapper().getMovieListFromGenreId(
@@ -142,9 +77,8 @@ Future<bool> _testGenreGetters() async {
       // expect a page not found exception for genres
       // that are specific to tv or movie. Simply continue
       continue;
-    } catch (e) {
-      return false;
     }
+
     try {
       TmdbApiWrapper().getTvListFromGenreId(
           genreId: TmdbApiWrapper.genreDictionary[k], pageNumber: 1);
@@ -152,34 +86,23 @@ Future<bool> _testGenreGetters() async {
       // expect a page not found exception for genres
       // that are specific to tv or movie. Simply continue
       continue;
-    } catch (e) {
-      return false;
     }
   }
-  return true;
 }
 
 void main() async {
-  test('Get popular movies',
-      () async => expect(await _testGetPopularMovies(), true));
-  test('Now playing movies',
-      () async => expect(await _testNowPlayingMovies(), true));
-  test('Top rated movies',
-      () async => expect(await _testGetTopRatedMovies(), true));
-  test('Latest movie', () async => expect(await _testGetLatestMovie(), true));
+  test('Get popular movies', _testGetPopularMovies);
+  test('Now playing movies', _testNowPlayingMovies);
+  test('Top rated movies', _testGetTopRatedMovies);
+  test('Latest movie', _testGetLatestMovie);
 
-  test('Top rated TV',
-      () async => expect(await _testGetTopRatedTvShows(), true));
-  test('Now airing TV Shows',
-      () async => expect(await _testGetNowAiringTvShows(), true));
-  test('On the air TV Shows',
-      () async => expect(await _testGetOnTheAirTvShows(), true));
-  test('Popular TV Shows',
-      () async => expect(await _testGetPopularTvShows(), true));
+  test('Top rated TV', _testGetTopRatedTvShows);
+  test('Now airing TV Shows', _testGetNowAiringTvShows);
+  test('On the air TV Shows', _testGetOnTheAirTvShows);
+  test('Popular TV Shows', _testGetPopularTvShows);
 
-  test('Test search', () async => expect(await _testSearch("Charles"), true));
-  test('Test genre getters',
-      () async => expect(await _testGenreGetters(), true));
+  test('Test search', () async => _testSearch("Charles"));
+  test('Test genre getters', _testGenreGetters);
 
   Future<MinimizedMovie> tMovie = TmdbApiWrapper().getLatestMovie();
   Future<Movie> testMovie = (() async =>
@@ -188,10 +111,8 @@ void main() async {
   Future<List<MinimizedTvShow>> shows = TmdbApiWrapper().getAnimatedTvShows();
   Future<TvShow> testShow = (() async =>
       TmdbApiWrapper().getDetailsTvShow(tvId: (await shows)[0].id))();
-  test('Get details movie',
-      () async => expect(await _testGetDetailsMovie(await testMovie), true));
-  test('Get detail TV Show',
-      () async => expect(await _testGetDetailsTvShow(await testShow), true));
+  test('Get details movie', () async => _testGetDetailsMovie(await testMovie));
+  test('Get detail TV Show', () async => _testGetDetailsTvShow(await testShow));
   test('Movie original language data member',
       () async => expect((await testMovie).originalLanguage, isNotNull));
   test('Movie id data member',
