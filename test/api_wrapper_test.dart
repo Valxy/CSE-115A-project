@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:tmdb/models/src/errors.dart';
 import 'package:tmdb/models/tmdb_api_wrapper.dart';
 
@@ -40,8 +41,9 @@ Future<bool> _testGetTopRatedMovies() async {
 
 Future<bool> _testGetLatestMovie() async {
   try {
-    // ignore: unused_local_variable
     MinimizedMovie latestMovies = await TmdbApiWrapper().getLatestMovie();
+
+    expect(latestMovies, isNotNull);
   } catch (e) {
     return false;
   }
@@ -98,9 +100,10 @@ Future<bool> _testGetPopularTvShows() async {
 
 Future<bool> _testGetDetailsMovie(MinimizedMovie movie) async {
   try {
-    // ignore: unused_local_variable
     Movie movieDetails =
         await TmdbApiWrapper().getDetailsMovie(movieId: movie.id);
+
+    expect(movieDetails, isNotNull);
   } catch (e) {
     return false;
   }
@@ -109,9 +112,10 @@ Future<bool> _testGetDetailsMovie(MinimizedMovie movie) async {
 
 Future<bool> _testGetDetailsTvShow(MinimizedTvShow show) async {
   try {
-    // ignore: unused_local_variable
     TvShow tvShowDetails =
         await TmdbApiWrapper().getDetailsTvShow(tvId: show.id);
+
+    expect(tvShowDetails, isNotNull);
   } catch (e) {
     return false;
   }
