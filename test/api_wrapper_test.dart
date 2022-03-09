@@ -43,8 +43,6 @@ Future<bool> _testGetTopRatedMovies() async {
 Future<bool> _testGetLatestMovie() async {
   try {
     MinimizedMovie latestMovies = await TmdbApiWrapper().getLatestMovie();
-
-    expect(latestMovies, isNotEmpty);
   } catch (e) {
     return false;
   }
@@ -99,25 +97,10 @@ Future<bool> _testGetPopularTvShows() async {
   return true;
 }
 
-Future<bool> testGetImageTvAndMovie(
-    MinimizedMovie movie, MinimizedTvShow show) async {
-  try {
-    Widget image = await TmdbApiWrapper().getImage(imagePath: movie.posterPath);
-    image = await TmdbApiWrapper().getImage(imagePath: show.posterPath);
-
-    expect(image, isNotEmpty);
-  } catch (e) {
-    return false;
-  }
-  return true;
-}
-
 Future<bool> _testGetDetailsMovie(MinimizedMovie movie) async {
   try {
     Movie movieDetails =
         await TmdbApiWrapper().getDetailsMovie(movieId: movie.id);
-
-    expect(movieDetails, isNotEmpty);
   } catch (e) {
     return false;
   }
@@ -128,8 +111,6 @@ Future<bool> _testGetDetailsTvShow(MinimizedTvShow show) async {
   try {
     TvShow tvShowDetails =
         await TmdbApiWrapper().getDetailsTvShow(tvId: show.id);
-
-    expect(tvShowDetails, isNotEmpty);
   } catch (e) {
     return false;
   }
@@ -202,11 +183,6 @@ void main() async {
   Future<List<MinimizedTvShow>> shows = TmdbApiWrapper().getAnimatedTvShows();
   Future<TvShow> testShow = (() async =>
       TmdbApiWrapper().getDetailsTvShow(tvId: (await shows)[0].id))();
-
-  test(
-      'Testing getImage',
-      () async => expect(
-          await testGetImageTvAndMovie(await testMovie, await testShow), true));
   test('Get details movie',
       () async => expect(await _testGetDetailsMovie(await testMovie), true));
   test('Get detail TV Show',
@@ -309,8 +285,6 @@ void main() async {
       () async => expect((await testShow).lastAirDate, isNotNull));
   test('TV Show lastEpisodeToAir data member',
       () async => expect((await testShow).lastEpisodeToAir, isNotNull));
-  test('TV Show nextEpisodeToAir data member',
-      () async => expect((await testShow).nextEpisodeToAir, isNotNull));
   test('TV Show networks data member',
       () async => expect((await testShow).networks, isNotNull));
   test('TV Show numberOfEpisodes data member',
@@ -344,14 +318,3 @@ void main() async {
   test('TV Show poster data member',
       () async => expect((await testShow).poster, isNotNull));
 }
-
-/*
-Future<Person> getDetailsPerson({
-  required personId,
-}) async {
-  final String endpoint =
-      "/person/$personId?api_key=$_apiKey&append_to_response=combined_credits,images";
-  final responseJson = await _helper.get(endpoint);
-  Person person = Person.fromJson(json: responseJson);
-  return person;
-}*/
