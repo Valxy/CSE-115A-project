@@ -5,7 +5,6 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:tmdb/models/tmdb_api_wrapper.dart';
 import 'package:tmdb/pages/tvshow.dart';
-import '../tabs/browse.dart';
 import 'movie.dart';
 
 class FilterResults extends StatefulWidget {
